@@ -1,0 +1,22 @@
+{
+    "database_credentials": {
+      "host": "ec2-18-209-153-180.compute-1.amazonaws.com",
+      "user": "lfbuzzehmthxff",
+      "database": "d1hc7hcommdhsi",
+      "password":"07fc7ad6f5c53a130a588c0d81e116d116b7af3027a983732d263432b231eb5a",
+      "connectionLimit": 5
+    },
+    "jwtPrivateKey":"test",
+    "email_transporter_credentials": {
+      "host": "smtp.gmail.com",
+      "port": 465,
+      "secure": true,
+      "auth":{
+        "user":"dtsh14@gmail.com",
+        "pass":"@Password123"
+      }
+    },
+    "closing_period": "1",
+    "site_name": "http://localhost:3000"
+  }
+  

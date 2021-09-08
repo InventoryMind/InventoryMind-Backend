@@ -1,13 +1,15 @@
-const pg = require("pg");
+const {Client} = require("pg");
 const config = require("config");
 const _pool = new WeakMap();
 const _connectionError = new WeakMap();
 const _getResults = new WeakMap();
+// const client = new Client(config.get("database_credentials"));
 
 class Database {
   constructor() {
     try {
-      _pool.set(this, pg.createPool(config.get("database_credentials")));
+      _pool.set(this, new Client(config.get("database_credentials")));
+      _pool.get(this).connect();
       _connectionError.set(this, false);
     } catch (ex) {
       _connectionError.set(this, true);
