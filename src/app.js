@@ -1,24 +1,27 @@
-require('dotenv').config()
-
 const express = require('express')
-const cors = require('cors')
 const bcrypt=require('bcrypt');
+const cookieParser=require('cookie-parser');
+const { application } = require('express');
+const config = require('config');
 const server = express()
 const port = process.env.PORT || 8000
 
-server.use(cors())
+const authRouter=require("./routes/auth");
+
 server.use(express.json())
+server.use(express.urlencoded({extended:true}));
+server.use(cookieParser());
 
-server.get('/', (req, res) => {
-    res.send('<h1>This is a test application</h1>')
-})
-
-server.get('/hi', async (req, res) => {
+server.get('/', async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash("admin", salt);
     console.log(hashedPassword);
-    res.send('<h1>$hashassword</h1>');
+    res.send('<h1>This is a test application</h1>')
 })
+
+server.use("/auth",authRouter);
+
+
 
 server.listen(port, () => {
     console.log(`\n=== Server listening on port ${port} ===\n`)
