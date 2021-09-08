@@ -9,7 +9,7 @@ class Database {
   constructor() {
     try {
       _pool.set(this, new Client(config.get("database_credentials")));
-      _pool.get(this).connect();
+      _pool.get(this).connect().then(()=>console.log("DB is connected")).catch(e=>console.error(e.stack));
       _connectionError.set(this, false);
     } catch (ex) {
       _connectionError.set(this, true);
@@ -44,7 +44,15 @@ class Database {
         );
     });
   }
-
+read(email){
+  return new Promise((resolve)=>{
+    const query={
+      text:"SELECT * FROM administrator WHERE email=$1",
+      values:[email]
+    }
+    _pool.get(this).query(query,(error,results)=>resolve({error:error,result:results}))
+  });
+}
   //read data from single table
   readSingleTable(tableName, columns, action = [], sort = [], limit = []) {
     return new Promise((resolve) => {
@@ -57,7 +65,7 @@ class Database {
             limit.length == 0 ? `` : `LIMIT ?`
           }`,
           [columns, tableName, action[0], action[2], sort, limit],
-          (error, results, fields) => {
+          (error, results) => {
             resolve(_getResults.get(this)(error, results));
           }
         );

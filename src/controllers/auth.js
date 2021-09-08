@@ -3,9 +3,8 @@ const config = require('config');
 const User=require('../models/User');
 
 exports.login =async (req,res)=>{
-    const user=new User(req.body);
+    const user=new User(req.query);
     const result=await user.login();
-    console.log(result);
     if (result.validationError){
         console.log("dgdagd");
         return res.status(400).json({
@@ -39,5 +38,5 @@ exports.login =async (req,res)=>{
 
     const payload=JSON.parse(JSON.stringify(result.tokenData));
     const token = jwt.sign(payload,config.get("jwtPrivateKey"));
-    res.cookie("ets-auth-token",token,cookieOption).status(200);
+    res.cookie("ets-auth-token",token,cookieOption).status(200).json({isLoginned: true});
 };
