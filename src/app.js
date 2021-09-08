@@ -12,10 +12,10 @@ server.use(express.json())
 server.use(express.urlencoded({extended:true}));
 server.use(cookieParser());
 
-server.get('/', async (req, res) => {
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash("admin", salt);
-    console.log(hashedPassword);
+server.get('/', (req, res) => {
+    // const salt = await bcrypt.genSalt(10);
+    // const hashedPassword = await bcrypt.hash("admin", salt);
+    // console.log(hashedPassword);
     res.send('<h1>This is a test application</h1>')
 })
 
