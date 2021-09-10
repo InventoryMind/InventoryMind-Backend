@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const config = require("config");
 
 exports.tokenAuthorize = (req, res, next) => {
-  const token = req.cookies["ets-auth-token"];
+  const token = req.cookies["auth-token"];
   if (!token)
     return res.status(401).json({
       title: "Error",
@@ -24,7 +24,7 @@ exports.tokenAuthorize = (req, res, next) => {
 };
 
 exports.isGuestUser = (req, res, next) => {
-  const token = req.cookies["ets-auth-token"];
+  const token = req.cookies["auth-token"];
   if (!token) {
     next();
   } else {
@@ -91,7 +91,7 @@ exports.isLecturerRole = (req, res, next) => {
   };
 
 exports.isAlreadyLogin = (req, res, next) => {
-  if (!req.cookies["ets-auth-token"]) {
+  if (!req.cookies["auth-token"]) {
     next();
   } else {
     res.status(400).json({
