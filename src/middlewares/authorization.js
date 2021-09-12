@@ -13,6 +13,7 @@ exports.tokenAuthorize = (req, res, next) => {
   try {
     const payload = jwt.verify(token, config.get("jwtPrivateKey"));
     req.user = payload;
+    console.log(req.user["user_type"]);
     next();
   } catch (ex) {
     res.status(400).json({
@@ -43,7 +44,7 @@ exports.isGuestUser = (req, res, next) => {
   }
 };
 exports.isAdminRole = (req, res, next) => {
-  if (req.user["user_type"] === "admin") {
+  if (req.user.user_type === "administrator") {
     next();
   } else {
     res.status(403).json({
@@ -55,7 +56,7 @@ exports.isAdminRole = (req, res, next) => {
 };
 
 exports.isLecturerRole = (req, res, next) => {
-    if (req.user["user_type"] === "lecturer") {
+    if (req.user.user_type === "lecturer") {
       next();
     } else {
       res.status(403).json({
@@ -67,7 +68,7 @@ exports.isLecturerRole = (req, res, next) => {
   };
 
   exports.isTechnicalOfficerRole = (req, res, next) => {
-    if (req.user["user_type"] === "technical_officer") {
+    if (req.user.user_type === "technical_officer") {
       next();
     } else {
       res.status(403).json({

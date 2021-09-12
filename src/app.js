@@ -7,6 +7,7 @@ const server = express()
 const port = process.env.PORT || 8000
 
 const authRouter=require("./routes/auth");
+const adminRouter=require("./routes/admin");
 
 server.use(express.json())
 server.use(express.urlencoded({extended:true}));
@@ -20,7 +21,7 @@ server.get('/', (req, res) => {
 })
 
 server.use("/auth",authRouter);
-
+server.use("/admin",adminRouter);
 
 
 server.listen(port, () => {

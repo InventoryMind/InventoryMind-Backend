@@ -3,9 +3,9 @@ const config = require('config');
 const User=require('../models/User');
 
 exports.login =async (req,res)=>{
-    console.log(req);
-    const user=new User(req.body);
-    const result=await user.login();
+    // console.log(req);
+    const user=new User({email:req.body.email,userType:req.body.userType});
+    const result=await user.login(req.body.password);
     if (result.validationError){
         console.log("dgdagd");
         return res.status(400).json({

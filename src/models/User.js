@@ -13,27 +13,55 @@ class User {
     _is_active;
     _database;
     _userType;
-    _data;
+
     constructor(data){
         this._database=new Database();
         this._userType=data.userType;
-        // this._u_id=u_id;
-        // this._first_name=first_name;
-        // this._last_name=last_name;
         this._email=data.email;
-        this._password=data.password;
-        // this._contact_no=contact_no;
-        // this._is_active=is_active;
-        this._data=data;
+        // this._password=data.password;
+    
     }
 
-    async login(){
+    // async register(){
+    //     const validateData=Joi.object(
+    //         {   userId:Joi.string().max(10).required(),
+    //             firstName:Joi.string().max(20).required(),
+    //             lastName:Joi.ref('firstName'),
+    //             email: Joi.string().max(30).email().required(),
+    //             contactNo:Joi.num(10).max().required()
+    //         }).validate({
+    //             userId:this._u_id,
+    //             firstName:this._first_name,
+    //             lastName:this._last_name,
+    //             email:this._email,
+    //             contactNo:this._contact_no
+    //         });
+    //     if(validateData.error){
+    //         return new Promise((resolve)=>resolve({validationError:validateData.error}));
+    //     }
+
+    //     if(this._database.connectionError){
+    //         return new Promise((resolve)=>resolve({connectionError:true}));
+    //     }
+    //    if (this._password==null){
+    //        this._password=firstName+'@'+userId;
+    //    }
+    //     const result=await this._database.insert(this.constructor.name,[this._u_id,this._first_name,this._last_name,this._email,this._password,this._contact_no,true]);
+
+    //     if (result.result.error){
+    //         return new Promise((resolve)=>resolve({action:false}))
+    //     }
+
+    //     return new Promise((resolve)=>resolve({action:true}));
+    // }
+
+    async login(password){
         const validateResult= Joi.object({
             email: Joi.string().max(30).email().required().label("email"),
-            password:Joi.string().required().label("password")
+             password:Joi.string().required().label("password")
         }).validate({
             email : this._email,
-            password : this._password
+             password : password
         });
 
         if (validateResult.error){
@@ -60,7 +88,7 @@ class User {
         this._is_active=userData.rows[0].isActive;
         this._user_password=userData.rows[0].password;
         
-        const isCompare= await bcrypt.compare(this._password,this._user_password);
+        const isCompare= await bcrypt.compare(password,this._user_password);
         // console.log(isCompare);
 
         if (!isCompare){

@@ -29,10 +29,12 @@ class Database {
   }
 
   //Insert new tuples into database
-  insert(tableName, columns, values) {
+  insert(tableName, values) {
+    //console.log([tableName,values]);
     return new Promise((resolve) => {
+       //console.log(values);
       const query=format("INSERT INTO %I VALUES (%L)",tableName,values)
-      _pool.get(this).query(query, resolve({error:error, result:results}));
+      _pool.get(this).query(query,(error,results)=> resolve({error:error, result:results}));
     });
   }
 
@@ -61,15 +63,10 @@ class Database {
   //delete tuples from a table
   delete(tableName, action) {
     return new Promise((resolve) => {
-      _pool
-        .get(this)
-        .query(
-          `DELETE FROM ?? WHERE ?? ${action[1]} ?`,
-          [tableName, action[0], action[2]],
-          (error, results, fields) => {
+      let query=format("DELETE FROM %I WHERE %I %s %L",tableName,action[0],action[1],action[2])
+      _pool.get(this).query(query,(error, results) => {
             resolve(_getResults.get(this)(error, results));
-          }
-        );
+          });
     });
   }
 
