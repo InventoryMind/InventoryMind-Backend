@@ -1,6 +1,9 @@
+const dotenv=require('dotenv');
 const bcrypt=require('bcrypt');
 const Joi=require('joi');
 const Database= require('../database/database');
+
+dotenv.config();
 
 class User {
     _u_id;

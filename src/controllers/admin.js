@@ -1,4 +1,3 @@
-const config= require('config');
 const Admin = require('../models/Admin');
 
 exports.addStaff =async (req,res)=>{

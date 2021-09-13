@@ -1,5 +1,5 @@
 const jwt = require ('jsonwebtoken');
-const config = require('config');
+
 const User=require('../models/User');
 
 exports.login =async (req,res)=>{
@@ -38,7 +38,7 @@ exports.login =async (req,res)=>{
     };
 
     const payload=JSON.parse(JSON.stringify(result.tokenData));
-    const token = jwt.sign(payload,config.get("jwtPrivateKey"));
+    const token = jwt.sign(payload,process.env.jwtPrivateKey);
     res.cookie("auth-token",token,cookieOption).status(200).json({isLoginned: true});
 };
 
