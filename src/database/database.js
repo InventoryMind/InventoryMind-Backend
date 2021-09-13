@@ -1,4 +1,5 @@
-const {Client} = require("pg");
+const {Pool} = require("pg");
+const format =require('pg-format');
 const config = require("config");
 const _pool = new WeakMap();
 const _connectionError = new WeakMap();
@@ -8,8 +9,8 @@ const _getResults = new WeakMap();
 class Database {
   constructor() {
     try {
-      _pool.set(this, new Client(config.get("database_credentials")));
-      _pool.get(this).connect();
+      _pool.set(this, new Pool(config.get("database_credentials")));
+      _pool.get(this).connect().then(()=>console.log("DB is connected")).catch(e=>console.error(e.stack));
       _connectionError.set(this, false);
     } catch (ex) {
       _connectionError.set(this, true);
@@ -28,114 +29,44 @@ class Database {
   }
 
   //Insert new tuples into database
-  create(tableName, columns, values) {
+  insert(tableName, values) {
+    //console.log([tableName,values]);
     return new Promise((resolve) => {
-      _pool
-        .get(this)
-        .query(
-          `INSERT INTO ?? ${columns.length === 0 ? "" : "(??)"} VALUES ${
-            typeof values[0] === "object" ? "?" : "(?)"
-          }`,
-          [tableName, columns, values],
-          (error, results, fields) => {
-            console.log(error, results, fields);
-            resolve(_getResults.get(this)(error, results));
-          }
-        );
+       //console.log(values);
+      const query=format("INSERT INTO %I VALUES (%L)",tableName,values)
+      _pool.get(this).query(query,(error,results)=> resolve({error:error, result:results}));
     });
   }
 
   //read data from single table
   readSingleTable(tableName, columns, action = [], sort = [], limit = []) {
     return new Promise((resolve) => {
-      _pool
-        .get(this)
-        .query(
-          `SELECT ?? FROM ?? ${
-            action.length === 0 ? `` : `WHERE ?? ${action[1]} ?`
-          } ${sort.length === 0 ? `` : `ORDER BY ??`} ${
-            limit.length == 0 ? `` : `LIMIT ?`
-          }`,
-          [columns, tableName, action[0], action[2], sort, limit],
-          (error, results, fields) => {
-            resolve(_getResults.get(this)(error, results));
-          }
-        );
+       const query=format('SELECT * FROM %I WHERE %I %s %L',tableName,action[0],action[1],action[2]);
+      _pool.get(this).query(query,(error,results)=>resolve({error:error,result:results}));
     });
   }
 
   //read data from multiple tables using join operators
-  readMultipleTable(
-    mainTable,
-    join,
-    joiningTables,
-    columns,
-    action = [],
-    sort = [],
-    limit = []
-  ) {
+  readMultipleTable(mainTable,joiningTable,columns,action = [],sort = [],limit = []) {
     return new Promise((resolve) => {
-      _pool
-        .get(this)
-        .query(
-          `SELECT ?? FROM ?? ${joiningTables
-            .map((e, i) =>
-              i % 2 === 0
-                ? `${join === "outer" ? `LEFT` : ``} JOIN ?? USING (??)`
-                : ``
-            )
-            .join("")} ${
-            action.length === 0 ? `` : `WHERE ?? ${action[1]} ?`
-          } ${sort.length === 0 ? `` : `ORDER BY ??`} ${
-            limit.length == 0 ? `` : `LIMIT ?`
-          }`,
-          [
-            columns,
-            mainTable,
-            ...joiningTables,
-            action[0],
-            action[2],
-            sort,
-            limit,
-          ],
-          (error, results, fields) => {
-            resolve(_getResults.get(this)(error, results));
+      const query= format('SELECT * FROM %I NATURAL JOIN %I WHERE %I %s %L',mainTable,joiningTable,action[0],action[1],action[2]);
+      _pool.get(this).query(query,(error, results) => {
+            resolve({error:error,result:results});
           }
         );
     });
   }
 
-  //update a table
-  update(tableName, updates, action = []) {
-    return new Promise((resolve) => {
-      _pool
-        .get(this)
-        .query(
-          `UPDATE ?? SET ${updates
-            .map((e, i) =>
-              i % 2 === 0 ? `?? = ?` : `${i === updates.length - 1 ? `` : `,`}`
-            )
-            .join("")} WHERE ?? ${action[1]} ?`,
-          [tableName, ...updates, action[0], action[2]],
-          (error, results, fields) => {
-            resolve(_getResults.get(this)(error, results));
-          }
-        );
-    });
-  }
+  // //update a table
+
 
   //delete tuples from a table
   delete(tableName, action) {
     return new Promise((resolve) => {
-      _pool
-        .get(this)
-        .query(
-          `DELETE FROM ?? WHERE ?? ${action[1]} ?`,
-          [tableName, action[0], action[2]],
-          (error, results, fields) => {
+      let query=format("DELETE FROM %I WHERE %I %s %L",tableName,action[0],action[1],action[2])
+      _pool.get(this).query(query,(error, results) => {
             resolve(_getResults.get(this)(error, results));
-          }
-        );
+          });
     });
   }
 

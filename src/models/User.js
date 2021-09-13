@@ -13,51 +13,83 @@ class User {
     _is_active;
     _database;
     _userType;
-    _data;
+
     constructor(data){
         this._database=new Database();
         this._userType=data.userType;
-        // this._u_id=u_id;
-        // this._first_name=first_name;
-        // this._last_name=last_name;
         this._email=data.email;
-        this._password=data.password;
-        // this._contact_no=contact_no;
-        // this._is_active=is_active;
-        this._data=data;
+        // this._password=data.password;
+    
     }
 
-    async login(){
+    // async register(){
+    //     const validateData=Joi.object(
+    //         {   userId:Joi.string().max(10).required(),
+    //             firstName:Joi.string().max(20).required(),
+    //             lastName:Joi.ref('firstName'),
+    //             email: Joi.string().max(30).email().required(),
+    //             contactNo:Joi.num(10).max().required()
+    //         }).validate({
+    //             userId:this._u_id,
+    //             firstName:this._first_name,
+    //             lastName:this._last_name,
+    //             email:this._email,
+    //             contactNo:this._contact_no
+    //         });
+    //     if(validateData.error){
+    //         return new Promise((resolve)=>resolve({validationError:validateData.error}));
+    //     }
+
+    //     if(this._database.connectionError){
+    //         return new Promise((resolve)=>resolve({connectionError:true}));
+    //     }
+    //    if (this._password==null){
+    //        this._password=firstName+'@'+userId;
+    //    }
+    //     const result=await this._database.insert(this.constructor.name,[this._u_id,this._first_name,this._last_name,this._email,this._password,this._contact_no,true]);
+
+    //     if (result.result.error){
+    //         return new Promise((resolve)=>resolve({action:false}))
+    //     }
+
+    //     return new Promise((resolve)=>resolve({action:true}));
+    // }
+
+    async login(password){
         const validateResult= Joi.object({
-            email: Joi.string().max(30).required().label("email"),
-            password:Joi.string().required().label("password")
+            email: Joi.string().max(30).email().required().label("email"),
+             password:Joi.string().required().label("password")
         }).validate({
             email : this._email,
-            password : this._password
+             password : password
         });
-        // console.log(validateResult.error);
 
-        // if (validateResult.error){
-        //     console.log("validate error");
-        //     return new Promise((resolve)=>
-        //     resolve({validationError:validateResult.error}));
-        // }
+        if (validateResult.error){
+            // console.log("validate error");
+            return new Promise((resolve)=>
+            resolve({validationError:true}));
+        }
 
         if (this._database.connectionError){
             return new Promise((resolve)=> resolve({connectionError:true}));
         }
-        const userData= await this._database.readSingleTable(this._userType,['user_id','first_name','last_name','email','password','contact','isActive'],['email','=',this._email]);
-        if (userData.error || !userData.result[0]){
+       
+
+        var userData= await this._database.readSingleTable(this._userType,['user_id','first_name','last_name','email','password','contact_no','is_active'],['email','=',this._email]);
+        // console.log(userData.result);
+        if (userData.error || !userData.result.rows[0]){
             return new Promise((resolve)=> resolve({allowedAccess: false}));
         }
-        this._u_id=userData.result[0]['user_id'];
-        this._first_name=userData.result[0]['first_name'];
-        this._last_name=userData.result[0]['last_name'];
-        this._contact_no=userData.result[0]['contact'];
-        this._is_active=userData.result[0]['isActive'];
-        this._user_password=userData.result[0]['password'];
-
-        const isCompare= await bcrypt.compare(this._password,this._user_password);
+        userData=userData.result;
+        this._u_id=userData.rows[0].user_id;
+        this._first_name=userData.rows[0].first_name;
+        this._last_name=userData.rows[0].last_name;
+        this._contact_no=userData.rows[0].contact;
+        this._is_active=userData.rows[0].isActive;
+        this._user_password=userData.rows[0].password;
+        
+        const isCompare= await bcrypt.compare(password,this._user_password);
+        // console.log(isCompare);
 
         if (!isCompare){
             return new Promise((resolve)=>resolve({allowedAccess: false}));
