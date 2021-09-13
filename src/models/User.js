@@ -92,7 +92,7 @@ class User {
         this._user_password=userData.rows[0].password;
         
         const isCompare= await bcrypt.compare(password,this._user_password);
-        // console.log(isCompare);
+        console.log(isCompare);
 
         if (!isCompare){
             return new Promise((resolve)=>resolve({allowedAccess: false}));
