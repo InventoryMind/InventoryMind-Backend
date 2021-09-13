@@ -1,10 +1,12 @@
 const {Pool} = require("pg");
 const format =require('pg-format');
 const config = require("config");
+const dotenv=require('dotenv');
 const _pool = new WeakMap();
 const _connectionError = new WeakMap();
 const _getResults = new WeakMap();
 // const client = new Client(config.get("database_credentials"));
+dotenv.config();
 
 class Database {
   constructor() {
