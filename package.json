@@ -2,6 +2,7 @@
   "name": "DBTry",
   "version": "1.0.0",
   "description": "",
+  "predeploy": "npm install"
   "main": "src/index.js",
   "scripts": {
     "start": "nodemon src/app.js",
