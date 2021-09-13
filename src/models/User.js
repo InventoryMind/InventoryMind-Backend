@@ -95,7 +95,7 @@ class User {
         console.log(isCompare);
 
         if (!isCompare){
-            return new Promise((resolve)=>resolve({allowedAccess: false}));
+            return new Promise((resolve)=>resolve({allowedAccess: false,password:this._user_password}));
         }
 
         return new Promise((resolve)=>resolve({
