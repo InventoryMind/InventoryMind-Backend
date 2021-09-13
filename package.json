@@ -2,6 +2,7 @@
   "name": "dbtry",
   "version": "1.0.0",
   "description": "",
+  "predeploy": "npm install",
   "main": "src/index.js",
   "scripts": {
     "start":"node src/app.js",

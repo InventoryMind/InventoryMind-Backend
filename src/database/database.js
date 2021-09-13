@@ -1,15 +1,27 @@
 const {Pool} = require("pg");
 const format =require('pg-format');
-const config = require("config");
+
+const dotenv=require('dotenv');
 const _pool = new WeakMap();
 const _connectionError = new WeakMap();
 const _getResults = new WeakMap();
 // const client = new Client(config.get("database_credentials"));
+dotenv.config();
 
 class Database {
   constructor() {
     try {
-      _pool.set(this, new Pool(config.get("database_credentials")));
+      var dbconfig = {
+          user: process.env.user, 
+          database: process.env.db, 
+          password: process.env.password, 
+          host: process.env.host, 
+          port: 5432, 
+           ssl:{
+    rejectUnauthorized: false
+  }
+      };
+      _pool.set(this, new Pool(dbconfig));
       _pool.get(this).connect().then(()=>console.log("DB is connected")).catch(e=>console.error(e.stack));
       _connectionError.set(this, false);
     } catch (ex) {

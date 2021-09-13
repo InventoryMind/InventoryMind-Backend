@@ -81,7 +81,7 @@ class User {
         var userData= await this._database.readSingleTable(this._userType,['user_id','first_name','last_name','email','password','contact_no','is_active'],['email','=',this._email]);
         // console.log(userData.result);
         if (userData.error || !userData.result.rows[0]){
-            return new Promise((resolve)=> resolve({allowedAccess: false}));
+            return new Promise((resolve)=> resolve({allowedAccess: false,error:userData.error}));
         }
         userData=userData.result;
         this._u_id=userData.rows[0].user_id;
@@ -92,10 +92,10 @@ class User {
         this._user_password=userData.rows[0].password;
         
         const isCompare= await bcrypt.compare(password,this._user_password);
-        // console.log(isCompare);
+        console.log(isCompare);
 
         if (!isCompare){
-            return new Promise((resolve)=>resolve({allowedAccess: false}));
+            return new Promise((resolve)=>resolve({allowedAccess: false,password:this._user_password}));
         }
 
         return new Promise((resolve)=>resolve({
