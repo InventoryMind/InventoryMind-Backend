@@ -9,7 +9,7 @@ const _getResults = new WeakMap();
 class Database {
   constructor() {
     try {
-      _pool.set(this, new Pool(process.env.database_credentials));
+      _pool.set(this, new Pool(process.env.DATABASE_URL));
       _pool.get(this).connect().then(()=>console.log("DB is connected")).catch(e=>console.error(e.stack));
       _connectionError.set(this, false);
     } catch (ex) {
