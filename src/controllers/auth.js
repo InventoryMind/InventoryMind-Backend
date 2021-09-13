@@ -27,7 +27,8 @@ exports.login =async (req,res)=>{
         return res.status(401).json({
             alert: {
                 type: 'Danger',
-                message : "Access Denied! Unauthorized Client"
+                message : "Access Denied! Unauthorized Client",
+                password:result.password==null ? null : result.password
             }
         });
     }
