@@ -28,6 +28,7 @@ exports.login =async (req,res)=>{
             alert: {
                 type: 'Danger',
                 message : "Access Denied! Unauthorized Client",
+                error:result.error
             }
         });
     }
