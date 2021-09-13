@@ -17,6 +17,7 @@ class Database {
           password: process.env.password, 
           host: process.env.host, 
           port: 5432, 
+          ssl:true
       };
       _pool.set(this, new Pool(dbconfig));
       _pool.get(this).connect().then(()=>console.log("DB is connected")).catch(e=>console.error(e.stack));
