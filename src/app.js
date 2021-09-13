@@ -2,7 +2,6 @@ const express = require('express')
 const bcrypt=require('bcrypt');
 const cookieParser=require('cookie-parser');
 const { application } = require('express');
-const config = require('config');
 const server = express()
 const port = process.env.PORT || 8000
 

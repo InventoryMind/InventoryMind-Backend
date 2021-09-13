@@ -11,7 +11,7 @@ exports.tokenAuthorize = (req, res, next) => {
     });
 
   try {
-    const payload = jwt.verify(token, config.get("jwtPrivateKey"));
+    const payload = jwt.verify(token, process.env.jwtPrivateKey);
     req.user = payload;
     console.log(req.user["user_type"]);
     next();
@@ -30,7 +30,7 @@ exports.isGuestUser = (req, res, next) => {
     next();
   } else {
     try {
-      const payload = jwt.verify(token, config.get("jwtPrivateKey"));
+      const payload = jwt.verify(token, process.env.jwtPrivateKey);
       console.log(payload);
       req.user = payload;
       res.json(req.user);
