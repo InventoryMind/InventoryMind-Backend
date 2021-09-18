@@ -1,48 +1,54 @@
 const e = require("express");
 const Joi = require("joi");
 const User = require("./User");
+const bcrypt=require('bcrypt');
 
 class Admin extends User{
     constructor(data){
         super(data);
     }
 
-   async addLaboratory(id,name,building,floor,technicalOfficerId,eqIds){
+   async addLaboratory(id,name,building,floor){
         const validateData=Joi.object(
             {   id:Joi.string().max(10).required(),
                 name:Joi.string().max(20).required(),
                 building:Joi.string().max(20).required(),
-                floor: Joi.string().max(30).email().required(),
-                technicalOfficerId:Joi.string().min(10).max(10).required(),
-                eqIds:Joi.string().max(20).required()
+                floor: Joi.number().max(3).required(),
             }).validate({
                 id:id,
                 name:name,
                 building:building,
                 floor:floor,
-                technicalOfficerId:technicalOfficerId,
-                eqIds:eqIds
             });
 
         if (this._database.connectionError){
             return new Promise((resolve)=>resolve({connectionError:true}));
         }
 
-        const result=await this._database.insert("laboratory",[id,name])
+        if(validateData.error){
+            return new Promise((resolve)=>resolve({validationError:validateData.error}));
+        }
+
+        const result=await this._database.insert("laboratory",[id,name,building,floor,true]);
+        console.log(result);
+        if(result.error){
+            return new Promise((resolve)=>resolve({action:false}));
+        }
+    
+        return new Promise((resolve)=>resolve({action:true}));
     }
 
     async removeLaboratory(labId){
         if (this._database.connectionError){
             return new Promise((resolve)=>resolve({connectionError:true}));
         }
-
-        const result=await this._database.delete("laboratory",["lab_id","=",labId]);
-
-        if (result.error){
-            return new Promise((resolve)=>resolve({action:false}));
+        console.log(labId);
+        const result=await this._database.update("laboratory",["is_active","=",false,"lab_id","=",labId]);
+        console.log(result);
+        if (!result.error){
+            return new Promise((resolve)=>resolve({action:true}));
         }
-
-        return new Promise((resolve)=>resolve({action:true}));
+        return new Promise((resolve)=>resolve({action:false}));
     }
 
     async addStaff(userId,firstName,lastName,email,contactNo,staffType){
@@ -71,11 +77,17 @@ class Admin extends User{
             return new Promise((resolve)=>resolve({connectionError:true}));
         }
         let password=firstName+'@'+userId;
+         //encrypt the password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        password = hashedPassword;
+
         const values=[userId,firstName,lastName,email,password,contactNo,true];
         // console.log(values);
         //console.log([staffType,[userId,firstName,lastName,email,password,contactNo,true]]);
         const result=await this._database.insert(staffType,values);
-        //console.log(result);
+        console.log(result);
+
         if (result.error){
             return new Promise((resolve)=>resolve({action:false}))
         }
@@ -89,7 +101,7 @@ class Admin extends User{
             return new Promise((resolve)=>resolve({connectionError:true}));
         }
 
-        const result=await this._database.delete(userType,["user_id","=",userId]);
+        const result=await this._database.update(userType,["is_active","=",false,"user_id","=",userId]);
         console.log(result);
 
         if (result.error){
@@ -123,8 +135,11 @@ class Admin extends User{
         console.log(result);
 
         if(result.error){
+            if(result.error.code==23505){var message="Already assigned"}
+            else{var message="Laboratory or Technical officer doesn't exist"}
             return new Promise((resolve)=>resolve({
-                action:false
+                action:false,
+                error:message
             }));
         }
 
