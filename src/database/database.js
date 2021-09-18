@@ -17,9 +17,9 @@ class Database {
           password: process.env.password, 
           host: process.env.host, 
           port: 5432, 
-           ssl:{
-    rejectUnauthorized: false
-  }
+    //        ssl:{
+    // rejectUnauthorized: false
+  // }
       };
       _pool.set(this, new Pool(dbconfig));
       _pool.get(this).connect().then(()=>console.log("DB is connected")).catch(e=>console.error(e.stack));
@@ -27,13 +27,6 @@ class Database {
     } catch (ex) {
       _connectionError.set(this, true);
     }
-
-    _getResults.set(this, (error, results) => {
-      if (error) {
-        return { error: true };
-      }
-      return { error: false, result: results };
-    });
   }
 
   get connectionError() {
@@ -70,14 +63,22 @@ class Database {
   }
 
   // //update a table
-
+  update(tableName,action){
+    return new Promise((resolve)=>{
+      let query=format("UPDATE %I SET %I %s %L WHERE %I %s %L",tableName,action[0],action[1],action[2],action[3],action[4],action[5]);
+      const result=_pool.get(this).query(query,(error, results) => {
+        console.log(results);
+        resolve({error:error,result:results});
+      });
+    });
+  }
 
   //delete tuples from a table
   delete(tableName, action) {
     return new Promise((resolve) => {
       let query=format("DELETE FROM %I WHERE %I %s %L",tableName,action[0],action[1],action[2])
-      _pool.get(this).query(query,(error, results) => {
-            resolve(_getResults.get(this)(error, results));
+      const result=_pool.get(this).query(query,(error, results) => {
+            resolve({error:error,result:results});
           });
     });
   }

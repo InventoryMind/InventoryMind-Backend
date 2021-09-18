@@ -25,10 +25,9 @@ exports.login =async (req,res)=>{
 
     if (!result.allowedAccess){
         return res.status(401).json({
-            alert: {
-                type: 'Danger',
-                message : "Access Denied! Unauthorized Client",
-            }
+            title: "Error",
+            status: "401",
+            message: "Access Denied! Unauthorized Client",
         });
     }
 
@@ -39,7 +38,11 @@ exports.login =async (req,res)=>{
 
     const payload=JSON.parse(JSON.stringify(result.tokenData));
     const token = jwt.sign(payload,process.env.jwtPrivateKey);
-    res.cookie("auth-token",token,cookieOption).status(200).json({isLoginned: true});
+    res.cookie("auth-token",token,cookieOption).status(200).json({
+        title: "Login Status",
+        status: "200",
+        message: "User Loginned Succesfully",
+    });
 };
 
 exports.logout=(req,res)=>{

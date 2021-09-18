@@ -89,6 +89,67 @@ exports.assignTO=async (req,res)=>{
     return res.status(200).json({
         title: "Failed",
         status: "200",
-        message: "Laboratory or Technical officer doesn't exist",
+        message: result.error,
+    });
+}
+
+exports.addLaboratory=async (req,res)=>{
+    const admin=new Admin({email:req.user.email,userType:req.user.user_type});
+    const result=await admin.addLaboratory(req.body.labId,req.body.name,req.body.building,req.body.floor);
+    console.log(result);
+    if(result.connectionError){
+        return res.status(500).json({
+            title: "Error",
+            status: "500",
+            message: "Internal Server Error",
+        })
+    }
+    if(result.validationError){
+        return res.status(400).json({
+            title: "Error",
+            status: "400",
+            message: "Validation Error",
+        })
+    }
+
+    if(result.action){
+        return res.status(200).json({
+            title: "Success",
+            status: "200",
+            message: "Laboratory added succesfully",
+        });
+    }
+
+    return res.status(200).json({
+        title: "Failed",
+        status: "200",
+        message: "Try Again Later",
+    });
+}
+
+exports.removeLaboratory=async (req,res)=>{
+    const admin=new Admin({email:req.user.email,userType:req.user.userType});
+    const result = await admin.removeLaboratory(req.body.labId);
+    // console.log(result);
+    if (result.connectionError){
+        return res.status(400).json({
+            title:"Error",
+            status:"400",
+            message:"Internal Error"
+        });
+    }
+
+    if (result.action){
+        return res.status(200).json({
+            title:"Success",
+            status:"200",
+            message:"Laboratory is removed"
+        });
+    }
+
+    return res.status(200).json({
+        title:"Failed",
+        status:"200",
+        message:"Laboratory couldn't be deleted"
     })
 }
