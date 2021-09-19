@@ -1,5 +1,6 @@
 
 class Request{
+    normalBorrowing;
     constructor(){
 
     }

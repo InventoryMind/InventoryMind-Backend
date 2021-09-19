@@ -14,7 +14,7 @@ exports.tokenAuthorize = (req, res, next) => {
   try {
     const payload = jwt.verify(token, process.env.jwtPrivateKey);
     req.user = payload;
-    console.log(req.user["user_type"]);
+    // console.log(req.user["user_type"]);
     next();
   } catch (ex) {
     res.status(400).json({

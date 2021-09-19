@@ -7,6 +7,8 @@ const port = process.env.PORT || 8000
 
 const authRouter=require("./routes/auth");
 const adminRouter=require("./routes/admin");
+const studentRouter = require('./routes/student');
+const TORouter=require("./routes/technicalOfficer");
 
 server.use(express.json())
 server.use(express.urlencoded({extended:true}));
@@ -21,7 +23,8 @@ server.get('/', (req, res) => {
 
 server.use("/auth",authRouter);
 server.use("/admin",adminRouter);
-
+server.use("/student",studentRouter);
+server.use("/techOff",TORouter);
 
 server.listen(port, () => {
     console.log(`\n=== Server listening on port ${port} ===\n`)

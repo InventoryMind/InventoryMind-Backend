@@ -7,7 +7,6 @@ exports.login =async (req,res)=>{
     const user=new User({email:req.body.email,userType:req.body.userType});
     const result=await user.login(req.body.password);
     if (result.validationError){
-        console.log("dgdagd");
         return res.status(400).json({
             alert : {
                 type : "danger",
