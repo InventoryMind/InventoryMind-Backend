@@ -78,7 +78,7 @@ class User {
         }
        
 
-        var userData= await this._database.readSingleTable(this._userType,['user_id','first_name','last_name','email','password','contact_no','is_active'],['email','=',this._email]);
+        var userData= await this._database.readSingleTable(this._userType,null,['email','=',this._email]);
         // console.log(userData.result);
         if (userData.error || !userData.result.rows[0]){
             return new Promise((resolve)=> resolve({allowedAccess: false}));

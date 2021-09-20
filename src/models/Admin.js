@@ -2,6 +2,7 @@ const e = require("express");
 const Joi = require("joi");
 const User = require("./User");
 const bcrypt=require('bcrypt');
+const { Pool } = require("pg");
 
 class Admin extends User{
     constructor(data){
@@ -85,7 +86,7 @@ class Admin extends User{
         const values=[userId,firstName,lastName,email,password,contactNo,true];
         // console.log(values);
         //console.log([staffType,[userId,firstName,lastName,email,password,contactNo,true]]);
-        const result=await this._database.insert(staffType,values);
+        const result=await this._database.insert(staffType,null,values);
         console.log(result);
 
         if (result.error){
@@ -130,7 +131,7 @@ class Admin extends User{
             return new Promise((resolve)=>resolve({connectionError:true}));
         }
 
-        const result=await this._database.insert("assigned_t_o",[T_OId,labId]);
+        const result=await this._database.insert("assigned_t_o",null,[T_OId,labId]);
 
         console.log(result);
 
@@ -146,8 +147,18 @@ class Admin extends User{
         return new Promise((resolve)=>resolve({action:true}));
     }
 
-    viewAssignedTechnicalOfficers(){
+    async viewAssignedTechnicalOfficers(){
+        if (this._database.connectionError){
+            return new Promise((resolve)=>resolve({connectionError:true}));
+        }
 
+        const results=await this._database.readThreeTable(['lecturer','assigned_t_o','laboratory']);
+        console.log(results);
+        if (results.error){
+            return new Promise ((resolve)=>resolve({action:false}));
+        }
+
+        return new Promise((resolve)=>resolve({action:true,result:results.result.rows}));
     }
 
     viewReports(){

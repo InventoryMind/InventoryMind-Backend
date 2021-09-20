@@ -132,9 +132,9 @@ exports.removeLaboratory=async (req,res)=>{
     const result = await admin.removeLaboratory(req.body.labId);
     // console.log(result);
     if (result.connectionError){
-        return res.status(400).json({
+        return res.status(500).json({
             title:"Error",
-            status:"400",
+            status:"500",
             message:"Internal Error"
         });
     }
@@ -151,5 +151,32 @@ exports.removeLaboratory=async (req,res)=>{
         title:"Failed",
         status:"200",
         message:"Laboratory couldn't be deleted"
+    })
+}
+
+exports.viewAssignedTO = async (req,res)=>{
+    const admin=new Admin({email:req.user.email,userType:req.user.userType});
+    const result=await admin.viewAssignedTechnicalOfficers();
+   
+    if (result.connectionError){
+        return res.status(400).json({
+            title:"Error",
+            status:"400",
+            message:"Internal Error"
+        });
+    }
+
+    if (result.action){
+        return res.status(200).json({
+            title:"Success",
+            status:"200",
+            data:result.result
+        });
+    }
+
+    return res.status(200).json({
+        title:"Failed",
+        status:"200",
+        message:"Try again Later"
     })
 }
