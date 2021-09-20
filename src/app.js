@@ -9,6 +9,7 @@ const authRouter=require("./routes/auth");
 const adminRouter=require("./routes/admin");
 const studentRouter = require('./routes/student');
 const TORouter=require("./routes/technicalOfficer");
+const lecturerRouter=require('./routes/lecturer')
 
 server.use(express.json())
 server.use(express.urlencoded({extended:true}));
@@ -25,6 +26,7 @@ server.use("/auth",authRouter);
 server.use("/admin",adminRouter);
 server.use("/student",studentRouter);
 server.use("/techOff",TORouter);
+server.use("/lecturer",lecturerRouter);
 
 server.listen(port, () => {
     console.log(`\n=== Server listening on port ${port} ===\n`)

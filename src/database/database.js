@@ -62,7 +62,16 @@ class Database {
         );
     });
   }
-
+  //Get max column value
+  readMax(tableName,columnName){
+    return new Promise((resolve)=>{
+      let query=format("SELECT MAX(%I) FROM %I",columnName,tableName);
+      _pool.get(this).query(query,(error,result)=>{
+        resolve({error:error,result:result});
+      });
+    }
+    );
+  }
   //read data from single table
   readSingleTable(tableName, columns, action) {
     return new Promise((resolve) => {
@@ -140,7 +149,7 @@ class Database {
         action[5]
       );
       _pool.get(this).query(query, (error, results) => {
-        console.log(results);
+        // console.log(results);
         resolve({ error: error, result: results });
       });
     });
