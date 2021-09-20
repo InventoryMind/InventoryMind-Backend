@@ -124,10 +124,13 @@ class Database {
   readThreeTable(tables = [], action = []) {
     return new Promise((resolve) => {
       const query = format(
-        "SELECT DISTINCT * FROM (%I NATURAL JOIN %I) NATURAL JOIN %I ",
+        "SELECT DISTINCT * FROM (%I NATURAL JOIN %I) NATURAL JOIN %I WHERE %I %s %L",
         tables[0],
         tables[1],
-        tables[2]
+        tables[2],
+        action[0],
+        action[1],
+        action[2]
       );
       _pool.get(this).query(query, (error, results) => {
         resolve({ error: error, result: results });

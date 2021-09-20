@@ -1,7 +1,7 @@
 const Lecturer =require('../models/Lecturer');
 
 exports.approve = async(req,res)=>{
-    const lecturer= new Lecturer({email:req.user.email,userType:req.user.userType});
+    const lecturer= new Lecturer({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
     const result=await lecturer.approve(req.params.reqId);
 
     if (result.validationError){
@@ -28,7 +28,7 @@ exports.approve = async(req,res)=>{
 }
 
 exports.reject = async(req,res)=>{
-    const lecturer= new Lecturer({email:req.user.email,userType:req.user.userType});
+    const lecturer= new Lecturer({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
     const result=await lecturer.reject(req.params.reqId);
 
     if (result.validationError){
