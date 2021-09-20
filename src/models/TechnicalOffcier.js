@@ -34,7 +34,7 @@ class TechnicalOffcier extends User{
             labId=labId.result.rows[0].lab_id;
             // console.log(labId);
             var date=new Date();
-            var add_date=date.getDay()+'/'+(parseInt(date.getMonth())+1)+'/'+date.getFullYear();
+            var add_date=date.getDate()+'/'+(parseInt(date.getMonth())+1)+'/'+date.getFullYear();
             const result1=await this._database.insert("equipment",null,[equipId,labId,name,type_id,add_date,0,"NEW"]);
             // console.log(result1);
             if (!result1.error){

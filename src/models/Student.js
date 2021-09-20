@@ -84,8 +84,38 @@ class Student extends User{
         return new Promise((resolve)=>resolve({action:true}));
     }
 
-    borrowTemporarily(){
+    async borrowTemporarily(reason,eqIds){
+        const validateData=Joi.object(
+            {   reason:Joi.string().max(30).required(),
+                eqIds:Joi.array().items(Joi.string().max(20)).required()
+            }).validate({
+                reason:reason,
+                eqIds:eqIds
+            });
+        // console.log(validateData);
+        if(validateData.error){
+            return new Promise((resolve)=>resolve({validationError:validateData.error}));
+        }
+        if(this._database.connectionError){
+            return new Promise((resolve)=>resolve({connectionError:true}));
+        }
+        let availability=await this.checkItemAvailability(eqIds);
+        // console.log(availability);
+        if (!availability.available){
+            return new Promise((resolve)=>{
+                resolve({action:false,msg:"Item not available",data:availability.data});
+            });
+        }
+        let date=new Date();
+        var dateOfBorrowing=date.getDate()+'/'+(parseInt(date.getMonth())+1)+'/'+date.getFullYear();
+        const result=await this._database.borrowTemporarily(this._u_id,dateOfBorrowing,reason,eqIds);
+        console.log(result);
 
+        if (result.error){
+            return new Promise((resolve)=>resolve({action:false}))
+        }
+
+        return new Promise((resolve)=>resolve({action:true}));
     }
 
     checkRequestStatus(){
@@ -94,6 +124,42 @@ class Student extends User{
 
     viewBorrowedHistory(){
 
+    }
+
+    async checkItemAvailability(eqIds){
+        // console.log("check called")
+        let isItemAvailable = async (eqId)=>{
+            const result=await this._database.readSingleTable("equipment",null,["eq_id","=",eqId]);
+            // console.log(result);
+            if (result.error || result.result.rowCount==0){
+            return new Promise((resolve)=>{
+                resolve({
+                    error:true
+                })
+            });
+            }
+            return new Promise((resolve)=>{
+                let state=["available","requested","temporarily borrowed","borrowed","not usable","removed"];
+                resolve({eqId:result.result.rows[0].eq_id,state:state[parseInt(result.result.rows[0].state)]});
+            });
+        }
+        
+        
+        // console.log(result);
+        let availability=[];
+        let available=true;
+        for (let i=0;i<eqIds.length;i++){
+            availability[i]=await isItemAvailable(eqIds[i]);
+            available=available && availability[i].state==="available";
+            // console.log(available);
+        }
+        // console.log(availability);
+        return new Promise((resolve)=>{
+            resolve({
+                data:availability,
+                available:available
+            });
+        });
     }
     
 }

@@ -6,5 +6,6 @@ const router=express.Router();
 
 router.post('/register',StudentController.register);
 router.post('/makeBorrowRequest',authorization.tokenAuthorize,authorization.isStudentRole,StudentController.makeBorrowRequest);
+router.post('/borrowTemporarily',authorization.tokenAuthorize,authorization.isStudentRole,StudentController.borrowTemporarily);
 
 module.exports=router;
