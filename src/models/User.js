@@ -21,6 +21,7 @@ class User {
         this._database=new Database();
         this._userType=data.userType;
         this._email=data.email;
+        this._u_id=data.userId;
         // this._password=data.password;
     
     }
@@ -101,10 +102,11 @@ class User {
         return new Promise((resolve)=>resolve({
             allowedAccess:true,
             tokenData:{
-                'user_id' : this._u_id,
-                'first_name' : this._first_name,
-                'last_name' : this._last_name,
-                'user_type' : this._userType,
+                'userId' : this._u_id,
+                'email':this._email,
+                'firstName' : this._first_name,
+                'lastName' : this._last_name,
+                'userType' : this._userType,
             }
         }));
     }

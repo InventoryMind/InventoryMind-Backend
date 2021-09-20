@@ -44,8 +44,9 @@ exports.isGuestUser = (req, res, next) => {
     }
   }
 };
+
 exports.isAdminRole = (req, res, next) => {
-  if (req.user.user_type === "administrator") {
+  if (req.user.userType === "administrator") {
     next();
   } else {
     res.status(403).json({
@@ -57,7 +58,7 @@ exports.isAdminRole = (req, res, next) => {
 };
 
 exports.isLecturerRole = (req, res, next) => {
-    if (req.user.user_type === "lecturer") {
+    if (req.user.userType === "lecturer") {
       next();
     } else {
       res.status(403).json({
@@ -69,7 +70,7 @@ exports.isLecturerRole = (req, res, next) => {
   };
 
   exports.isTechnicalOfficerRole = (req, res, next) => {
-    if (req.user.user_type === "technical_officer") {
+    if (req.user.userType === "technical_officer") {
       next();
     } else {
       res.status(403).json({
@@ -81,7 +82,7 @@ exports.isLecturerRole = (req, res, next) => {
   };
 
   exports.isStudentRole = (req, res, next) => {
-    if (req.user["user_type"] === "student") {
+    if (req.user["userType"] === "student") {
       next();
     } else {
       res.status(403).json({

@@ -6,21 +6,15 @@ class TechnicalOffcier extends User{
         super(data);
     }
 
-    async addEquipment(EqId,name,labId,type,brand){
+    async addEquipment(name,type_id){
         const validateData=Joi.object(
-            {   EqId:Joi.string().max(10).required(),
-                name:Joi.string().max(20).required(),
-                labId:Joi.string().max(3).required(),
-                type:Joi.string().max(20).required(),
-                brand:Joi.string().max(20).required(),
+            {   name:Joi.string().max(20).required(),
+                type_id:Joi.string().max(20).required(),
             }).validate({
-                EqId:EqId,
                 name:name,
-                labId:labId,
-                type:type,
-                brand:brand
+                type_id:type_id,
             });
-
+            console.log(validateData);
         if (this._database.connectionError){
             return new Promise((resolve)=>resolve({connectionError:true}));
         }
@@ -29,29 +23,26 @@ class TechnicalOffcier extends User{
             return new Promise((resolve)=>resolve({validationError:validateData.error}));
         }
 
-        const result=await this._database.readSingleTable("equipment_type",null,["type","=",type]);
+        var labId=await this._database.readTwoTable("laboratory","assigned_t_o",["t_o_id","=",this._u_id]);
         // console.log(result);
 
-        if(result.result.rowCount==0){
-            var typeId=await this._database.readMax("equipment_type","type_id");
+        if(labId.rowCount!=0){
+            var equipId=await this._database.readMax("equipment","eq_id");
             // console.log("New type");
-            typeId=typeId.result.rows[0].max;
-            typeId=parseInt(typeId)+1;
-            const result1=await this._database.insert("equipment_type",null,[typeId,type,brand]);
-            if (result1.error){
-                return new Promise((resolve)=>resolve({action:false}));
+            equipId=equipId.result.rows[0].max;
+            equipId=parseInt(equipId)+1;
+            labId=labId.result.rows[0].lab_id;
+            // console.log(labId);
+            var date=new Date();
+            var add_date=date.getDate()+'/'+(parseInt(date.getMonth())+1)+'/'+date.getFullYear();
+            const result1=await this._database.insert("equipment",null,[equipId,labId,name,type_id,add_date,0,"NEW"]);
+            // console.log(result1);
+            if (!result1.error){
+                return new Promise((resolve)=>resolve({action:true}));
             }
         }       
-        // console.log("Type already exist");
-        typeId=result.result.rowCount==0 ? typeId : result.result.rows[0].type_id; 
-        var date=new Date();
-        var add_date=date.getDay()+'/'+(parseInt(date.getMonth())+1)+'/'+date.getFullYear();
-        const result1=await this._database.insert("equipment",null,[EqId,labId,name,typeId,add_date,0,"NEW"]);
-        // console.log(result1);
-        if (result1.error){
-            return new Promise((resolve)=>resolve({action:false}));    
-        }
-        return new Promise((resolve)=>resolve({action:true}));      
+        return new Promise((resolve)=>resolve({action:false})); 
+            
     }
 
    async removeEquipment(eqId){
@@ -147,6 +138,27 @@ class TechnicalOffcier extends User{
         return new Promise((resolve)=>resolve({action:false}));
     }
 
+    async getEquipTypes(){
+        if (this._database.connectionError){
+            return new Promise((resolve)=>resolve({connectionError:true}));
+        }
+
+        var result=await this._database.readSingleTable("equipment_type",null,["type_id",">",0]);
+        var count=result.result.rowCount;
+        // console.log(result);
+        if (count!=0){
+            result=result.result.rows;
+            var eqTypes=[];
+            for (let i=0;i<count;i++){
+                eqTypes[i]={typeId:result[i].type_id,name:result[i].brand + "   " + result[i].type}
+            }
+            console.log(eqTypes[0]);
+            return new Promise((resolve)=>resolve({action:true,data:eqTypes}));    
+        }
+        return new Promise((resolve)=>{
+            resolve({action:false});
+        });
+    }
 }
 
 module.exports = TechnicalOffcier;

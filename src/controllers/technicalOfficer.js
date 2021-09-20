@@ -4,13 +4,12 @@ exports.addEquipment = async (req, res) => {
   const to = new TechnicalOffcier({
     email: req.user.email,
     userType: req.user.userType,
+    userId:req.user.userId
   });
+//   console.log(req.user);
   const result = await to.addEquipment(
-    req.body.eqId,
     req.body.name,
-    req.body.labId,
-    req.body.type,
-    req.body.brand
+    req.body.typeId
   );
 
   if (result.validationError) {
@@ -37,7 +36,7 @@ exports.addEquipment = async (req, res) => {
 };
 
 exports.removeEquipment= async (req,res)=>{
-    const TO= new TechnicalOffcier({email:req.user.mail,userType:req.user.userType});
+    const TO= new TechnicalOffcier({email:req.user.mail,userType:req.user.userType,userId:req.user.userId});
     const result = await TO.removeEquipment(req.params.eqId);
     // console.log(req.params.eqId);
     if (result.validationError) {
@@ -64,7 +63,7 @@ exports.removeEquipment= async (req,res)=>{
 }
 
 exports.transferEquipment = async (req,res)=>{
-    const TO=new TechnicalOffcier({email:req.user.email,userType:req.user.userType});
+    const TO=new TechnicalOffcier({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
     const result= await TO.transferEquipment(req.body.eqId,req.body.labId);
 
     if (result.validationError) {
@@ -91,7 +90,7 @@ exports.transferEquipment = async (req,res)=>{
 }
 
 exports.reportEquipCondition = async (req,res)=>{
-    const TO=new TechnicalOffcier({email:req.user.email,userType:req.user.userType});
+    const TO=new TechnicalOffcier({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
     const result= await TO.reportCondition(req.body.eqId,req.body.condition);
     console.log(result);
     if (result.validationError) {
@@ -118,9 +117,32 @@ exports.reportEquipCondition = async (req,res)=>{
 }
 
 exports.viewAvailableLabEquips = async (req,res)=>{
-    const TO=new TechnicalOffcier({email:req.user.email,userType:req.user.userType});
+    const TO=new TechnicalOffcier({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
     const result= await TO.viewAvailableLabEquipment();
     console.log(result);
+       
+      if (result.connectionError) {
+        return res.json({
+          msg: "Connection error",
+        });
+      }
+    
+      if (result.action) {
+        return res.json({
+          msg: "Success",
+          data:result.data
+        });
+      }
+    
+      return res.json({
+        msg: "Failed",
+      });
+}
+
+exports.getEquipTypes = async (req,res)=>{
+    const TO=new TechnicalOffcier({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
+    const result= await TO.getEquipTypes();
+    // console.log(result);
        
       if (result.connectionError) {
         return res.json({

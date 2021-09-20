@@ -124,10 +124,13 @@ class Database {
   readThreeTable(tables = [], action = []) {
     return new Promise((resolve) => {
       const query = format(
-        "SELECT DISTINCT * FROM (%I NATURAL JOIN %I) NATURAL JOIN %I ",
+        "SELECT DISTINCT * FROM (%I NATURAL JOIN %I) NATURAL JOIN %I WHERE %I %s %L",
         tables[0],
         tables[1],
-        tables[2]
+        tables[2],
+        action[0],
+        action[1],
+        action[2]
       );
       _pool.get(this).query(query, (error, results) => {
         resolve({ error: error, result: results });
@@ -190,6 +193,11 @@ class Database {
     eqIds
   ) {
     return new Promise(async (resolve) => {
+      let rollback=()=>{
+        console.log("Rollbacked2");
+          client.query("ROLLBACK");
+          resolve({ error: true });
+      }
       const client= await _pool.get(this).connect();
       try {
         await client.query("BEGIN");
@@ -198,13 +206,13 @@ class Database {
         var reqId;
         const result = await client
           .query(query, async (err, result) => {
-            console.log(err);
+            // console.log(err);
 
             reqId = result.rows[0].max;
-            console.log(reqId);
+            // console.log(reqId);
             reqId = parseInt(reqId) + 1;
             // console.log("2")
-            console.log(reqId);
+            // console.log(reqId);
             await client.query("SET datestyle = dmy");
             query = format(
               "INSERT INTO request VALUES (%L,%L,%L,%L,%L,%L,0)",
@@ -226,24 +234,75 @@ class Database {
                 eqId
               );
               // console.log(query);
-              await client.query(query);
+              await client.query(query,(err,result)=>{if(err){rollback()}});
             });
             // console.log("commit");
             await client
-              .query("COMMIT",(err,res)=>console.log(res));
-            console.log("COMMITED");
+              .query("COMMIT");
+            // console.log("COMMITED");
             resolve({ result: true, error: false });
           })
-      } catch (e) {
-        console.log("Rollbacked");
-        client.query("ROLLBACK",(err, res) => console.log(res));
-        resolve({ error: true });
-      }
-    }).catch((e)=>{
-      console.log("Rollbacked2");
-        client.query("ROLLBACK",(err, res) => console.log(res));
-        resolve({ error: true });
-    });
+      } catch (e) {rollback()}
+    }).catch((e)=>{rollback()});
+  }
+//Procedure for borrow temporarily
+  async borrowTemporarily(
+    studentId,
+    dateOfBorrowing,
+    reason,
+    eqIds
+  ) {
+    return new Promise(async (resolve) => {
+      let rollback=()=>{
+          console.log("Rollbacked2");
+            client.query("ROLLBACK");
+            resolve({ error: true });
+        }
+      
+      const client= await _pool.get(this).connect();
+      try {
+        await client.query("BEGIN");
+        // console.log("1")
+        var query = format("SELECT MAX(CAST(borrow_id AS integer)) FROM temporary_borrowing");
+        var borrowId;
+        const result = await client
+          .query(query, async (err, result) => {
+            // console.log(result);
+
+            borrowId = result.rows[0].max==null ? 0 : result.rows[0].max;
+            // console.log(borrowId);
+            borrowId = parseInt(borrowId) + 1;
+            // console.log("2")
+            // console.log(borrowId);
+            await client.query("SET datestyle = dmy");
+            query = format(
+              "INSERT INTO temporary_borrowing VALUES (%L,%L,%L,%L,0)",
+              borrowId,
+              studentId,
+              dateOfBorrowing,
+              reason
+            );
+            // console.log(query);
+            await client.query(query);
+            // console.log("inserted to request");
+
+            eqIds.forEach(async (eqId) => {
+              query = format(
+                "INSERT INTO temporary_borrowed_equipments VALUES (%L,%L)",
+                borrowId,
+                eqId
+              );
+              // console.log(query);
+              await client.query(query,(err,res)=>{if(err){rollback()}});
+            });
+            // console.log("commit");
+            await client
+              .query("COMMIT");
+            // console.log("COMMITED");
+            resolve({ result: true, error: false });
+          })
+      } catch (e) {rollback()}
+    }).catch((e)=>{rollback()});
   }
 }
 module.exports = Database;

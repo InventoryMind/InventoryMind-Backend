@@ -2,7 +2,7 @@ const Admin = require('../models/Admin');
 
 exports.addStaff =async (req,res)=>{
 
-    const admin =new Admin({email: req.user.email, userType:req.user.user_type});
+    const admin =new Admin({email: req.user.email, userType:req.user.user_type,userId:req.user.userId});
     // Admin.addStaff(0001,"Sri","Thuva","sth@gmail.com","0771234567","lecturer")
     const result=await admin.addStaff(req.body.userId,req.body.firstName,req.body.lastName,req.body.email,req.body.contactNo,req.body.userType);
     console.log(result);
@@ -35,7 +35,7 @@ exports.addStaff =async (req,res)=>{
 }
 
 exports.removeUser=async (req,res)=>{
-    const admin=new Admin({email:req.user.email,userType:req.user.user_type});
+    const admin=new Admin({email:req.user.email,userType:req.user.user_type,userId:req.user.userId});
     const results=await admin.removeUser(req.body.userType,req.body.userId);
 
     if (results.connectionError){
@@ -60,7 +60,7 @@ exports.removeUser=async (req,res)=>{
 
 
 exports.assignTO=async (req,res)=>{
-    const admin=new Admin({email:req.user.email,userType:req.user.user_type});
+    const admin=new Admin({email:req.user.email,userType:req.user.user_type,userId:req.user.userId});
     const result=await admin.assignTechnicalOfficer(req.body.labId,req.body.T_OId);
 
     if(result.connectionError){
@@ -94,7 +94,7 @@ exports.assignTO=async (req,res)=>{
 }
 
 exports.addLaboratory=async (req,res)=>{
-    const admin=new Admin({email:req.user.email,userType:req.user.user_type});
+    const admin=new Admin({email:req.user.email,userType:req.user.user_type,userId:req.user.userId});
     const result=await admin.addLaboratory(req.body.labId,req.body.name,req.body.building,req.body.floor);
     console.log(result);
     if(result.connectionError){
@@ -128,7 +128,7 @@ exports.addLaboratory=async (req,res)=>{
 }
 
 exports.removeLaboratory=async (req,res)=>{
-    const admin=new Admin({email:req.user.email,userType:req.user.userType});
+    const admin=new Admin({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
     const result = await admin.removeLaboratory(req.body.labId);
     // console.log(result);
     if (result.connectionError){
@@ -155,7 +155,7 @@ exports.removeLaboratory=async (req,res)=>{
 }
 
 exports.viewAssignedTO = async (req,res)=>{
-    const admin=new Admin({email:req.user.email,userType:req.user.userType});
+    const admin=new Admin({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
     const result=await admin.viewAssignedTechnicalOfficers();
    
     if (result.connectionError){
