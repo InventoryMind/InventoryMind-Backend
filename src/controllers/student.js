@@ -34,7 +34,7 @@ exports.register=async (req,res)=>{
 
 exports.makeBorrowRequest=async (req,res)=>{
     const student= new Student({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
-    const result = await student.makeBorrowRequest(req.body.studentId,req.body.lecturerId,req.body.dateOfBorrowing,req.body.dateOfReturning,req.body.reason,req.body.eqIds);
+    const result = await student.makeBorrowRequest(req.body.lecturerId,req.body.dateOfBorrowing,req.body.dateOfReturning,req.body.reason,req.body.eqIds);
 
     if (result.validationError){
         return res.status(400).json({

@@ -8,10 +8,9 @@ exports.login =async (req,res)=>{
     const result=await user.login(req.body.password);
     if (result.validationError){
         return res.status(400).json({
-            alert : {
-                type : "danger",
-                message: "Email is Ivalid. Enter a valid email address"
-            }
+            title:"Validation Error",
+            status:400,
+            message: "Email is Ivalid. Enter a valid email address"
         });
     }
 
@@ -38,7 +37,7 @@ exports.login =async (req,res)=>{
     const payload=JSON.parse(JSON.stringify(result.tokenData));
     const token = jwt.sign(payload,process.env.jwtPrivateKey);
     res.cookie("auth-token",token,cookieOption).status(200).json({
-        title: "Login Status",
+        title: "Status",
         status: "200",
         message: "User Loginned Succesfully",
     });
@@ -49,5 +48,9 @@ exports.logout=(req,res)=>{
         expires:new Date(Date.now() - 24*60*60*1000),
         httpOnly : true
     };
-    res.cookie('auth-token',"",cookieOption).status(200).json("logged out");
+    res.cookie('auth-token',"",cookieOption).status(200).json({
+        title:"Log out",
+        status:200,
+        message:"Logged Out"
+    });
 }
