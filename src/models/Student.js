@@ -47,16 +47,14 @@ class Student extends User{
         return new Promise((resolve)=>resolve({action:true}));
     }
 
-    async makeBorrowRequest(studentId,lecturerId,dateOfBorrowing,dateOfReturning,reason,eqIds){
+    async makeBorrowRequest(lecturerId,dateOfBorrowing,dateOfReturning,reason,eqIds){
         const validateData=Joi.object(
-            {   studentId:Joi.string().max(10).required(),
-                lecturerId:Joi.string().max(10).required(),
+            {   lecturerId:Joi.string().max(10).required(),
                 dateOfBorrowing:Joi.date().format("DD/MM/YYYY").required(),
                 dateOfReturning: Joi.date().format("DD/MM/YYYY").required(),
                 reason:Joi.string().max(30).required(),
                 eqIds:Joi.array().items(Joi.string().max(20)).required()
             }).validate({
-                studentId:studentId,
                 lecturerId:lecturerId,
                 dateOfBorrowing:dateOfBorrowing,
                 dateOfReturning:dateOfReturning,
@@ -74,7 +72,7 @@ class Student extends User{
         // const values=[req_id,userId,firstName,lastName,email,password,contactNo,true];
         // console.log(values);
         //console.log([staffType,[userId,firstName,lastName,email,password,contactNo,true]]);
-        const result=await this._database.makeRequest(studentId,lecturerId,dateOfBorrowing,dateOfReturning,reason,eqIds);
+        const result=await this._database.makeRequest(this._u_id,lecturerId,dateOfBorrowing,dateOfReturning,reason,eqIds);
         console.log(result);
 
         if (result.error){

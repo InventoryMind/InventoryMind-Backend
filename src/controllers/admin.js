@@ -9,10 +9,9 @@ exports.addStaff =async (req,res)=>{
 
     if (result.validationError){
         return res.status(400).json({
-            alert : {
-                type : "danger",
+                title : "Validation Error",
+                status:400,
                 message:result.validationError.details[0].message
-            }
         });
     }
 
@@ -25,12 +24,18 @@ exports.addStaff =async (req,res)=>{
 
     if(result.action){
         return res.status(200).json({
-            msg:"Success"
+            title: "Success",
+            status: "200",
+            message: "Staff added successfully",
+            // success:true
         });
     }
 
     return res.status(200).json({
-        msg: "Failed"
+        title: "Failed",
+        status: "200",
+        message: "Adding new Staff Failed",
+        // success:false
     });
 }
 
@@ -48,12 +53,18 @@ exports.removeUser=async (req,res)=>{
     console.log(results.action);
     if (results.action){
         return res.status(200).json({
-            msg:"Success"
+            title: "Success",
+            status: "200",
+            message: "Successfully Removed Staff",
+            // success:true
         })
     }
 
     return res.status(200).json({
-        msg:"Failed"
+        title: "Failed",
+        status: "200",
+        message: "Removing staff failed",
+        // success:false
     })
 
 }
