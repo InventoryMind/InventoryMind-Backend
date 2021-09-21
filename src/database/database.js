@@ -18,9 +18,9 @@ class Database {
         password: process.env.password,
         host: process.env.host,
         port: 5432,
-        //        ssl:{
-        // rejectUnauthorized: false
-        // }
+               ssl:{
+        rejectUnauthorized: false
+        }
       };
       _pool.set(this, new Pool(dbconfig));
       _pool
