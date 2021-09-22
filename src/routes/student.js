@@ -8,4 +8,5 @@ router.post('/register',authorization.isGuestUser,StudentController.register);
 router.post('/makeBorrowRequest',authorization.tokenAuthorize,authorization.isStudentRole,StudentController.makeBorrowRequest);
 router.post('/borrowTemporarily',authorization.tokenAuthorize,authorization.isStudentRole,StudentController.borrowTemporarily);
 router.get('/getDashboardDataM',authorization.tokenAuthorize,authorization.isStudentRole,StudentController.getDashboardDataM);
+router.get('/getUserDetails',authorization.tokenAuthorize,authorization.isStudentRole,StudentController.getUserDetails);
 module.exports=router;

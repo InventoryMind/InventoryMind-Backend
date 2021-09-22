@@ -79,6 +79,29 @@ class User {
             }
         }));
     }
+
+    async getUserDetails(){
+        if (this._database.connectionError){
+            return new Promise((resolve)=>{
+                resolve({
+                    connectionError:true
+                });
+            });
+        }
+
+        const result=await this._database.readSingleTable(this._userType,null,["user_id","=",this._u_id]);
+
+        if (result.error || result.result.rowCount==0){
+            return new Promise((resolve)=>{
+                action:false
+            });
+        }
+        let data=result.result.rows[0];
+        data.password=undefined;
+        return new Promise((resolve)=>{
+            resolve({action:true,data:data});
+        });
+    }
 }
 
 module.exports= User;

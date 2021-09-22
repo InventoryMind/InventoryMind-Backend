@@ -7,4 +7,5 @@ const router=express.Router();
 router.post("/approve/:reqId",authorization.tokenAuthorize,authorization.isLecturerRole,lecturerController.approve);
 router.post("/reject/:reqId",authorization.tokenAuthorize,authorization.isLecturerRole,lecturerController.reject);
 router.get("/getDashboardDataM",authorization.tokenAuthorize,authorization.isLecturerRole,lecturerController.getDashboardDataMob);
+router.get("/getUserDetails",authorization.tokenAuthorize,authorization.isLecturerRole,lecturerController.getUserDetails);
 module.exports=router;

@@ -9,4 +9,5 @@ router.post("/addLaboratory",authorization.tokenAuthorize,authorization.isAdminR
 router.post("/removeLaboratory",authorization.tokenAuthorize,authorization.isAdminRole,adminCotroller.removeLaboratory);
 router.post("/assignTO",authorization.tokenAuthorize,authorization.isAdminRole,adminCotroller.assignTO);
 router.get("/viewAssignedTO",authorization.tokenAuthorize,authorization.isAdminRole,adminCotroller.viewAssignedTO);
+router.get("/getUserDetails",authorization.tokenAuthorize,authorization.isAdminRole,adminCotroller.getUserDetails);
 module.exports =router;

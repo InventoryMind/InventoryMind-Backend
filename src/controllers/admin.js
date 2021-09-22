@@ -191,3 +191,24 @@ exports.viewAssignedTO = async (req,res)=>{
         message:"Try again Later"
     })
 }
+
+exports.getUserDetails = async(req,res)=>{
+    const admin= new Admin({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
+    const result=await admin.getUserDetails();
+
+    if (result.connectionError){
+        return res.status(500).json({
+            msg:"connection error"
+        });
+    }
+
+    if (result.action){
+        return res.status(200).json({
+            msg:result
+        });
+    }
+
+    return res.status(201).json({
+        msg:"Failed"
+    });
+}
