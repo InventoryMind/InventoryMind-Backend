@@ -53,3 +53,24 @@ exports.reject = async(req,res)=>{
         msg:"Failed"
     });
 }
+
+exports.getDashboardData = async(req,res)=>{
+    const lecturer= new Lecturer({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
+    const result=await lecturer.getDashboardData();
+
+    if (result.connectionError){
+        return res.status(500).json({
+            msg:"connection error"
+        });
+    }
+
+    if (result.action){
+        return res.status(200).json({
+            msg:result
+        });
+    }
+
+    return res.status(201).json({
+        msg:"Failed"
+    });
+}

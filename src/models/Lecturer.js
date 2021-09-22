@@ -80,6 +80,32 @@ class Lecturer extends User{
 
     }
 
+    async getDashboardData(){
+        if (this._database.connectionError){
+            return new Promise((resolve)=>{resolve({connectionError:true})});
+        }
+            const result=await this._database.getCount("request","state",["lecturer_id","=",this._u_id]);
+
+            if (result.error){
+                return new Promise((resolve)=>{action:false})
+            }
+            
+            let data=result.result.rows
+            console.log(data)
+            let state=["Pending","Approved","Rejected"];
+            for (let i=0;i<data.length;i++){
+                console.log(data[i].state)
+                if (data[i].state==0){data[i].state=state[0]}
+                
+                else if (data[i].state==1){data[i].state=state[1]}
+                
+                else if (data[i].state==2){data[i].state=state[2]}
+                console.log(data)
+                
+            }
+            return new Promise((resolve)=>resolve({action:true,data:data}))
+        
+    }
 }
 
 module.exports = Lecturer;
