@@ -183,6 +183,17 @@ class Database {
     });
   }
 
+
+  getCount(tableName,column,condition){
+    return new Promise((resolve)=>{
+      let query=format("SELECT %I,COUNT(%I) FROM %I WHERE %I %s %L GROUP BY %I",column,column,tableName,condition[0],condition[1],condition[2],column);
+      // console.log(query);
+      _pool.get(this).query(query,(error,results)=>{
+        // console.log(results)
+        resolve({error:error,result:results});
+      });
+    });
+  }
   //Procedure for makeRequest
   async makeRequest(
     studentId,

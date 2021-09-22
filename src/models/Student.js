@@ -159,6 +159,43 @@ class Student extends User{
             });
         });
     }
+
+    async getDashboardDataM(){
+        if (this._database.connectionError){
+            return new Promise((resolve)=>{
+                resolve({connectionError:true});
+            });
+        }
+
+        var result= await this._database.readSingleTable("request",null,["student_id","=",this._u_id]);
+        // console.log(result.result)
+
+        if (result.error){
+            return new Promise((resolve)=>{
+                resolve({action:false});
+            });
+        }
+        result=result.result.rows;
+        // console.log(result)
+        let data=[];
+        result.forEach(element => {
+            // console.log(element.date_of_borrowing.getFullYear());
+            if  (element.state==0){
+                let y=element.date_of_borrowing.getFullYear();
+                let m=element.date_of_borrowing.getMonth();
+                let d=element.date_of_borrowing.getDate();
+                m=parseInt(m)+1;
+                data.push({
+                    requestId:element.request_id,
+                    dateOfBorrowing:(y+"/"+m+"/"+d)
+                });
+            }          
+        });
+
+        return new Promise((resolve)=>{
+            resolve({action:true,data:data})
+        })
+    }
     
 }
 
