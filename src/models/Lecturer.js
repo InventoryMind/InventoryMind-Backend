@@ -80,7 +80,7 @@ class Lecturer extends User{
 
     }
 
-    async getDashboardData(){
+    async getDashboardDataMob(){
         if (this._database.connectionError){
             return new Promise((resolve)=>{resolve({connectionError:true})});
         }
@@ -92,18 +92,24 @@ class Lecturer extends User{
             
             let data=result.result.rows
             console.log(data)
+            let data1=[];
             let state=["Pending","Approved","Rejected"];
-            for (let i=0;i<data.length;i++){
-                console.log(data[i].state)
-                if (data[i].state==0){data[i].state=state[0]}
-                
-                else if (data[i].state==1){data[i].state=state[1]}
-                
-                else if (data[i].state==2){data[i].state=state[2]}
-                console.log(data)
+            for (let i=0;i<3;i++){
+                if (data[i]==null){
+                    data1[i]={state:state[i],
+                    count: 0
+                }
+                }
+                else if (data[i].state==i){
+                    data1[i]={
+                        state:state[i],
+                        count:data[i].count
+                    }
+                }
+                console.log(data1)
                 
             }
-            return new Promise((resolve)=>resolve({action:true,data:data}))
+            return new Promise((resolve)=>resolve({action:true,data:data1}))
         
     }
 }

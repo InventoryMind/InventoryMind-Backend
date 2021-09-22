@@ -86,3 +86,25 @@ exports.borrowTemporarily=async (req,res)=>{
         msg:"Failed"
     })
 }
+
+
+exports.getDashboardDataM=async (req,res)=>{
+    const student= new Student({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
+    const result = await student.getDashboardDataM();
+    // console.log(result);
+    if (result.connectionError){
+        return res.status(500).json({
+            msg:"connection error"
+        });
+    }
+
+    if (result.action){
+        return res.status(200).json({
+            msg:result.data
+        });
+    }
+
+    return res.status(401).json({
+        msg:"Failed"
+    })
+}

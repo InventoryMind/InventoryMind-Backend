@@ -54,9 +54,9 @@ exports.reject = async(req,res)=>{
     });
 }
 
-exports.getDashboardData = async(req,res)=>{
+exports.getDashboardDataMob = async(req,res)=>{
     const lecturer= new Lecturer({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
-    const result=await lecturer.getDashboardData();
+    const result=await lecturer.getDashboardDataMob();
 
     if (result.connectionError){
         return res.status(500).json({
