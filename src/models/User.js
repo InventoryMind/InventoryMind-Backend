@@ -26,46 +26,15 @@ class User {
     
     }
 
-    // async register(){
-    //     const validateData=Joi.object(
-    //         {   userId:Joi.string().max(10).required(),
-    //             firstName:Joi.string().max(20).required(),
-    //             lastName:Joi.ref('firstName'),
-    //             email: Joi.string().max(30).email().required(),
-    //             contactNo:Joi.num(10).max().required()
-    //         }).validate({
-    //             userId:this._u_id,
-    //             firstName:this._first_name,
-    //             lastName:this._last_name,
-    //             email:this._email,
-    //             contactNo:this._contact_no
-    //         });
-    //     if(validateData.error){
-    //         return new Promise((resolve)=>resolve({validationError:validateData.error}));
-    //     }
-
-    //     if(this._database.connectionError){
-    //         return new Promise((resolve)=>resolve({connectionError:true}));
-    //     }
-    //    if (this._password==null){
-    //        this._password=firstName+'@'+userId;
-    //    }
-    //     const result=await this._database.insert(this.constructor.name,[this._u_id,this._first_name,this._last_name,this._email,this._password,this._contact_no,true]);
-
-    //     if (result.result.error){
-    //         return new Promise((resolve)=>resolve({action:false}))
-    //     }
-
-    //     return new Promise((resolve)=>resolve({action:true}));
-    // }
-
     async login(password){
         const validateResult= Joi.object({
             email: Joi.string().max(30).email().required().label("email"),
-             password:Joi.string().required().label("password")
+             password:Joi.string().required().label("password"),
+             userType:Joi.string().max(20).required()
         }).validate({
             email : this._email,
-             password : password
+             password : password,
+             userType:this._userType
         });
 
         if (validateResult.error){

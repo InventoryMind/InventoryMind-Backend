@@ -36,10 +36,12 @@ exports.login =async (req,res)=>{
 
     const payload=JSON.parse(JSON.stringify(result.tokenData));
     const token = jwt.sign(payload,process.env.jwtPrivateKey);
+    let data={userId:payload.userId,email:payload.email,firstName:payload.firstName,lastName:payload.lastName};
     res.cookie("auth-token",token,cookieOption).status(200).json({
         title: "Status",
         status: "200",
         message: "User Loginned Succesfully",
+        data:data
     });
 };
 

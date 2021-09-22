@@ -97,10 +97,13 @@ exports.isAlreadyLogin = (req, res, next) => {
   if (!req.cookies["auth-token"]) {
     next();
   } else {
+    const payload = jwt.verify(req.cookies['auth-token'], process.env.jwtPrivateKey);
+    let data={userId:payload.userId,email:payload.email,firstName:payload.firstName,lastName:payload.lastName};
     res.status(400).json({
       title: "Error",
       status: "400",
       message: "You have already logged in",
+      data: data
     });
   }
 };

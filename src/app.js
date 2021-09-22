@@ -1,5 +1,6 @@
 const express = require('express')
 const bcrypt=require('bcrypt');
+const cors=require('cors');
 const cookieParser=require('cookie-parser');
 const { application } = require('express');
 const server = express()
@@ -14,6 +15,12 @@ const lecturerRouter=require('./routes/lecturer')
 server.use(express.json())
 server.use(express.urlencoded({extended:true}));
 server.use(cookieParser());
+server.use(cors({origin: "http://localhost:3000", credentials: true}));
+// server.use(function(req, res, next) {
+//     res.header("Access-Control-Allow-Origin", "*");
+//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//     next();
+//   });
 
 server.get('/', (req, res) => {
     // const salt = await bcrypt.genSalt(10);
