@@ -10,5 +10,5 @@ router.post("/transferEquipment",authorization.tokenAuthorize,authorization.isTe
 router.post("/reportCondition",authorization.tokenAuthorize,authorization.isTechnicalOfficerRole,TOCOntroller.reportEquipCondition);
 router.get("/viewAvailableEquips",authorization.tokenAuthorize,authorization.isTechnicalOfficerRole,TOCOntroller.viewAvailableLabEquips);
 router.get("/getEquipTypes",authorization.tokenAuthorize,authorization.isTechnicalOfficerRole,TOCOntroller.getEquipTypes);
-
+router.get("/getDashboardDataM",authorization.tokenAuthorize,authorization.isTechnicalOfficerRole,TOCOntroller.getDashboardDataM);
 module.exports = router;
