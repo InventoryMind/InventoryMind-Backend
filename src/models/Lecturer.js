@@ -90,26 +90,32 @@ class Lecturer extends User{
                 return new Promise((resolve)=>{action:false})
             }
             
+            const insert = function (arr, index, item ) {
+                arr.splice( index, 0, item );
+            };
+
             let data=result.result.rows
             console.log(data)
             let data1=[];
             let state=["Pending","Approved","Rejected"];
-            for (let i=0;i<3;i++){
-                if (data[i]==null){
-                    data1[i]={state:state[i],
-                    count: 0
-                }
-                }
-                else if (data[i].state==i){
-                    data1[i]={
-                        state:state[i],
-                        count:data[i].count
-                    }
-                }
-                console.log(data1)
-                
-            }
-            return new Promise((resolve)=>resolve({action:true,data:data1}))
+        for (let i=0;i<3;i++){
+        if (data[i]==null){
+            insert(data,i,{
+                state:state[i],
+                count:0
+            });
+        }
+        else if (data[i].state!=i){
+            insert(data,i,{
+                state:state[i],
+                count:0
+            });
+        }
+        else{
+            data[i].state=state[data[i].state]
+        }
+    }
+            return new Promise((resolve)=>resolve({action:true,data:data}))
         
     }
 }

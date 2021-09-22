@@ -241,21 +241,35 @@ class TechnicalOffcier extends User {
       });
     }
 
-    let data = result.result.rows;
-    console.log(data);
-    let state = ["Available", "Requested", "Rejected"];
-    for (let i = 0; i < data.length; i++) {
-      console.log(data[i].state);
-      if (data[i].state == 0) {
-        data[i].state = state[0];
-      } else if (data[i].state == 1) {
-        data[i].state = state[1];
-      } else if (data[i].state == 2) {
-        data[i].state = state[2];
-      }
-      console.log(data);
+    let data=result.result.rows
+    console.log(data)
+    let data1=[];
+   
+    console.log(data1);
+    const insert = function (arr, index, item ) {
+        arr.splice( index, 0, item );
+    };
+    let state=["Available","Requested","Temp Borrowed","Borrowed","Not Usable","Removed"];
+    for (let i=0;i<6;i++){
+        if (data[i]==null){
+            insert(data,i,{
+                state:state[i],
+                count:0
+            });
+        }
+        else if (data[i].state!=i){
+            insert(data,i,{
+                state:state[i],
+                count:0
+            });
+        }
+        else{
+            data[i].state=state[data[i].state]
+        }
     }
-    return new Promise((resolve) => resolve({ action: true, data: data }));
+    console.log(data)
+
+    return new Promise((resolve)=>resolve({action:true,data:data}));
   }
 }
 
