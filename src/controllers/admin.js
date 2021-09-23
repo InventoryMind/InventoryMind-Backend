@@ -195,7 +195,7 @@ exports.viewAssignedTO = async (req,res)=>{
 exports.getUserDetails = async(req,res)=>{
     const admin= new Admin({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
     const result=await admin.getUserDetails();
-
+    // console.log(req.cookie)
     if (result.connectionError){
         return res.status(500).json({
             msg:"connection error"
