@@ -224,9 +224,9 @@ class TechnicalOffcier extends User {
     const res=await this._database.readSingleTable('assigned_t_o',null,["t_o_id","=",this._u_id]);
 
     if (res.error || res.result.rowCount==0){
-        return new Promise((resolve) => {
-            action: false;
-          });
+        return new Promise((resolve) => resolve({
+            action: false
+          }));
     }
     let labId=res.result.rows[0].lab_id;
     const result = await this._database.getCount("equipment", "state", [
