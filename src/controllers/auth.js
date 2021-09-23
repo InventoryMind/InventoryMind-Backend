@@ -35,8 +35,8 @@ exports.login =async (req,res)=>{
     };
 
     const payload=JSON.parse(JSON.stringify(result.tokenData));
-    const token = jwt.sign(payload,process.env.jwtPrivateKey);
-    let data={userId:payload.userId,email:payload.email,firstName:payload.firstName,lastName:payload.lastName};
+    const token = jwt.sign(payload,process.env.jwtPrivateKey,{expiresIn:new Date(Date.now() + 24*60*60*1000)});
+    let data={userId:payload.userId,email:payload.email,firstName:payload.firstName,lastName:payload.lastName,userId:payload.userId};
     res.cookie("auth-token",token,cookieOption).status(200).json({
         title: "Status",
         status: "200",
@@ -54,6 +54,7 @@ exports.logout=(req,res)=>{
     res.cookie('auth-token',"",cookieOption).status(200).json({
         title:"Log out",
         status:200,
-        message:"Logged Out"
+        message:"Logged Out",
+        token:""
     });
 }

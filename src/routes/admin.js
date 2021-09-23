@@ -11,5 +11,6 @@ router.post("/assignTO",authorization.tokenAuthorize,authorization.isAdminRole,a
 router.get("/viewAssignedTO",authorization.tokenAuthorize,authorization.isAdminRole,adminCotroller.viewAssignedTO);
 router.get("/getUserDetails",authorization.tokenAuthorize,authorization.isAdminRole,adminCotroller.getUserDetails);
 router.get("/viewLab",authorization.tokenAuthorize,authorization.isAdminRole,adminCotroller.viewLaboratories);
+router.get("/viewUsers/:userType",authorization.tokenAuthorize,authorization.isAdminRole,adminCotroller.viewUsers);
 
 module.exports =router;
