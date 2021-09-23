@@ -120,6 +120,23 @@ class Database {
     });
   }
 
+  // readTwoTableN(mainTable, joiningTable, column,action = []) {
+  //   return new Promise((resolve) => {
+  //     const query = format(
+  //       "SELECT * FROM %I JOIN %I USING(%I) WHERE %I %s %L",
+  //       mainTable,
+  //       joiningTable,
+  //       column,
+  //       action[0],
+  //       action[1],
+  //       action[2]
+  //     );
+  //     _pool.get(this).query(query, (error, results) => {
+  //       resolve({ error: error, result: results });
+  //     });
+  //   });
+  // }
+
   //read data from joining three tables
   readThreeTable(tables = [], action = []) {
     return new Promise((resolve) => {

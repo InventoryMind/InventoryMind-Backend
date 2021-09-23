@@ -147,6 +147,20 @@ class Admin extends User{
         return new Promise((resolve)=>resolve({action:true}));
     }
 
+    async viewLaboratories(){
+        if (this._database.connectionError){
+            return new Promise((resolve)=>resolve({connectionError:true}));
+        }
+
+        const results=await this._database.readTwoTable('laboratory','building',["is_active","=",true]);
+        console.log(results);
+        if (results.error){
+            return new Promise ((resolve)=>resolve({action:false}));
+        }
+
+        return new Promise((resolve)=>resolve({action:true,result:results.result.rows}));
+    }
+
     async viewAssignedTechnicalOfficers(){
         if (this._database.connectionError){
             return new Promise((resolve)=>resolve({connectionError:true}));
