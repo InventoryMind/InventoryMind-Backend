@@ -204,7 +204,7 @@ exports.getUserDetails = async(req,res)=>{
 
     if (result.action){
         return res.status(200).json({
-            msg:result
+            msg:result.data
         });
     }
 

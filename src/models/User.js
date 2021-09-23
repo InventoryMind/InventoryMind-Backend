@@ -96,8 +96,15 @@ class User {
                 action:false
             });
         }
+        // let data={
+        //     userId:result.result.rows[0].user_id,
+        //     firstName:result.result.rows[0].first_name,
+        //     lastName:result.result.rows[0].last_name,
+        //     contactNo:result.result.rows[0].contact_no
+        // }
         let data=result.result.rows[0];
         data.password=undefined;
+        console.log(typeof data1)
         return new Promise((resolve)=>{
             resolve({action:true,data:data});
         });

@@ -41,7 +41,8 @@ exports.login =async (req,res)=>{
         title: "Status",
         status: "200",
         message: "User Loginned Succesfully",
-        data:data
+        data:data,
+        token:token
     });
 };
 
