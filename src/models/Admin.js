@@ -161,18 +161,39 @@ class Admin extends User{
         return new Promise((resolve)=>resolve({action:true,result:results.result.rows}));
     }
 
+    async viewUsers(user_type){
+        if (this._database.connectionError){
+            return new Promise((resolve)=>resolve({connectionError:true}));
+        }
+
+        const results=await this._database.readSingleTable(user_type,null,["is_active","=",true]);
+        console.log(results);
+        if (results.error){
+            return new Promise ((resolve)=>resolve({action:false}));
+        }
+        let data=results.result.rows;
+        data.forEach(element => {
+            element.password=undefined;
+        });
+        return new Promise((resolve)=>resolve({action:true,result:data}));
+    }
+
     async viewAssignedTechnicalOfficers(){
         if (this._database.connectionError){
             return new Promise((resolve)=>resolve({connectionError:true}));
         }
 
-        const results=await this._database.readThreeTable(['lecturer','assigned_t_o','laboratory']);
-        console.log(results);
+        const results=await this._database.readThreeTable(['lecturer','assigned_t_o','laboratory'],["is_active","=",true]);
+        // console.log(results);
         if (results.error){
             return new Promise ((resolve)=>resolve({action:false}));
         }
-
-        return new Promise((resolve)=>resolve({action:true,result:results.result.rows}));
+        let data=results.result.rows;
+        data.forEach(element => {
+            element.password=undefined;
+        });
+        console.log(data)
+        return new Promise((resolve)=>resolve({action:true,result:data}));
     }
 
     viewReports(){

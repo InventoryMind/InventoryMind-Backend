@@ -216,7 +216,28 @@ exports.getUserDetails = async(req,res)=>{
 exports.viewLaboratories = async(req,res)=>{
     const admin= new Admin({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
     const result=await admin.viewLaboratories();
-    console.log(req)
+    console.log(req.body)
+    if (result.connectionError){
+        return res.status(500).json({
+            msg:"connection error"
+        });
+    }
+
+    if (result.action){
+        return res.status(200).json({
+            msg:result.result
+        });
+    }
+
+    return res.status(201).json({
+        msg:"Failed"
+    });
+}
+
+exports.viewUsers = async(req,res)=>{
+    const admin= new Admin({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
+    const result=await admin.viewUsers(req.params.userType);
+    console.log(req.body)
     if (result.connectionError){
         return res.status(500).json({
             msg:"connection error"
