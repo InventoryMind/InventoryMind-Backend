@@ -30,8 +30,8 @@ class Admin extends User{
             return new Promise((resolve)=>resolve({validationError:validateData.error}));
         }
 
-        const result=await this._database.insert("laboratory",[id,name,building,floor,true]);
-        console.log(result);
+        const result=await this._database.insert("laboratory",null,[id,name,building,floor,true]);
+        console.log(validateData);
         if(result.error){
             return new Promise((resolve)=>resolve({action:false}));
         }
@@ -178,12 +178,28 @@ class Admin extends User{
         return new Promise((resolve)=>resolve({action:true,result:data}));
     }
 
+    async getBuildings(user_type){
+        if (this._database.connectionError){
+            return new Promise((resolve)=>resolve({connectionError:true}));
+        }
+
+        const results=await this._database.readSingleTable('building',null,["b_id",">",0]);
+        console.log(results);
+        if (results.error){
+            return new Promise ((resolve)=>resolve({action:false}));
+        }
+        let data=results.result.rows;
+        return new Promise((resolve)=>resolve({action:true,result:data}));
+    }
+
+
+
     async viewAssignedTechnicalOfficers(){
         if (this._database.connectionError){
             return new Promise((resolve)=>resolve({connectionError:true}));
         }
 
-        const results=await this._database.readThreeTable(['lecturer','assigned_t_o','laboratory'],["is_active","=",true]);
+        const results=await this._database.readThreeTable(['technical_officer','assigned_t_o','laboratory'],["is_active","=",true]);
         // console.log(results);
         if (results.error){
             return new Promise ((resolve)=>resolve({action:false}));
@@ -199,6 +215,27 @@ class Admin extends User{
     viewReports(){
 
     }
+
+    async addEquipType(type,brand){
+        if(this._database.connectionError){
+            return new Promise((resolve)=>resolve({connectionError:true}));
+        }
+        const res1=await this._database.readMax('equipment_type','type_id');
+        if (res1.error){
+            return new Promise((resolve)=>resolve({action:false}));
+        }
+        var typeId=res1.result.rows[0].max;
+        typeId=parseInt(typeId)+1;
+        const result=await this._database.insert('equipment_type',null,[typeId,type,brand]);
+        console.log(result);
+
+        if (result.error){
+            return new Promise((resolve)=>resolve({action:false}));
+        }
+
+        return new Promise ((resolve)=>resolve({action:true}));
+    }
+
 
 }
 

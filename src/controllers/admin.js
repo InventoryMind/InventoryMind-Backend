@@ -254,3 +254,51 @@ exports.viewUsers = async(req,res)=>{
         msg:"Failed"
     });
 }
+
+exports.getBuildings = async(req,res)=>{
+    const admin= new Admin({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
+    const result=await admin.getBuildings();
+    console.log(req.body)
+    if (result.connectionError){
+        return res.status(500).json({
+            msg:"connection error"
+        });
+    }
+
+    if (result.action){
+        return res.status(200).json({
+            msg:result.result
+        });
+    }
+
+    return res.status(201).json({
+        msg:"Failed"
+    });
+}
+
+exports.addEquipType=async (req,res)=>{
+    const admin=new Admin({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
+    const result = await admin.addEquipType(req.body.type,req.body.brand);
+    // console.log(result);
+    if (result.connectionError){
+        return res.status(500).json({
+            title:"Error",
+            status:"500",
+            message:"Internal Error"
+        });
+    }
+
+    if (result.action){
+        return res.status(200).json({
+            title:"Success",
+            status:"200",
+            message:"Type is addes"
+        });
+    }
+
+    return res.status(200).json({
+        title:"Failed",
+        status:"200",
+        message:"Type couldn't be added"
+    })
+}

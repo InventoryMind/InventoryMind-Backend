@@ -13,19 +13,19 @@ exports.addEquipment = async (req, res) => {
   );
 
   if (result.validationError) {
-    return res.json({
+    return res.status(400).json({
       msg: "validation error",
     });
   }
 
   if (result.connectionError) {
-    return res.json({
+    return res.status(500).json({
       msg: "Connection erroe",
     });
   }
 
   if (result.action) {
-    return res.json({
+    return res.status(200).json({
       msg: "Success",
     });
   }
@@ -114,6 +114,29 @@ exports.reportEquipCondition = async (req,res)=>{
       return res.json({
         msg: "Failed",
       });
+}
+
+exports.viewInventory = async (req,res)=>{
+  const TO=new TechnicalOffcier({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
+  const result= await TO.viewInventory();
+  console.log(result);
+     
+    if (result.connectionError) {
+      return res.json({
+        msg: "Connection error",
+      });
+    }
+  
+    if (result.action) {
+      return res.json({
+        msg: "Success",
+        data:result.data
+      });
+    }
+  
+    return res.json({
+      msg: "Failed",
+    });
 }
 
 exports.viewAvailableLabEquips = async (req,res)=>{

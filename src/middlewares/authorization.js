@@ -105,7 +105,7 @@ exports.isAlreadyLogin = (req, res, next) => {
       title: "Error",
       status: "400",
       message: "You have already logged in",
-      data: data
+      token:token
     });
   }
 };
