@@ -55,7 +55,7 @@ class TechnicalOffcier extends User {
         0,
         "NEW",
       ]);
-      // console.log(result1);
+      console.log(result1);
       if (!result1.error) {
         return new Promise((resolve) => resolve({ action: true }));
       }
@@ -165,6 +165,32 @@ class TechnicalOffcier extends User {
   }
 
   viewReports() {}
+
+  async viewInventory() {
+    if (this._database.connectionError) {
+      return new Promise((resolve) => resolve({ connectionError: true }));
+    }
+    // console.log(EqId);
+
+    const result = await this._database.readThreeTable(['equipment','equipment_type','assigned_t_o'],['t_o_id','=',this._u_id]);
+    // console.log(result);
+    var data1=result.result.rows;
+    var data=[]
+    let state=["Available","Requested","Temporarily Borrowed","Borrowed","Not Usable","Removed"];
+    data1.forEach(element => {
+      if (element.state!=5){
+            element.state=state[element.state]
+            data.push(element);
+        // console.log(element)
+      }
+    });
+    if (!result.error && result.result.rowCount != 0) {
+      return new Promise((resolve) =>
+        resolve({ action: true, data: data })
+      );
+    }
+    return new Promise((resolve) => resolve({ action: false }));
+  }
 
   async viewAvailableLabEquipment() {
     if (this._database.connectionError) {

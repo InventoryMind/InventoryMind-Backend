@@ -54,7 +54,7 @@ class Database {
           values
         );
       }
-
+      // console.log(query)
       _pool
         .get(this)
         .query(query, (error, results) =>
@@ -65,7 +65,7 @@ class Database {
   //Get max column value
   readMax(tableName,columnName){
     return new Promise((resolve)=>{
-      let query=format("SELECT MAX(%I) FROM %I",columnName,tableName);
+      let query=format("SELECT MAX(CAST(%I AS INTEGER)) FROM %I",columnName,tableName);
       _pool.get(this).query(query,(error,result)=>{
         resolve({error:error,result:result});
       });

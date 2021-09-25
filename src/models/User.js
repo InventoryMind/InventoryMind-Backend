@@ -47,7 +47,7 @@ class User {
             return new Promise((resolve)=> resolve({connectionError:true}));
         }
        
-
+        console.log(validateResult)
         var userData= await this._database.readSingleTable(this._userType,null,['email','=',this._email]);
         // console.log(userData.result);
         if (userData.error || !userData.result.rows[0]){
