@@ -40,8 +40,16 @@ class Admin extends User{
     }
 
     async removeLaboratory(labId){
+        const validateData=Joi.object(
+            {   id:Joi.string().max(10).pattern(new RegExp(/^\d+$/)).required(),
+             }).validate({
+                id:labId
+            });
         if (this._database.connectionError){
             return new Promise((resolve)=>resolve({connectionError:true}));
+        }
+        if(validateData.error){
+            return new Promise((resolve)=>resolve({validationError:validateData.error}));
         }
         console.log(labId);
         const result=await this._database.update("laboratory",["is_active","=",false,"lab_id","=",labId]);

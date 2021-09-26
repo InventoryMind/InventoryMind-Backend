@@ -57,7 +57,7 @@ class TechnicalOffcier extends User {
       ]);
       console.log(result1);
       if (!result1.error) {
-        return new Promise((resolve) => resolve({ action: true }));
+        return new Promise((resolve) => resolve({ action: true,eqId:equipId }));
       }
     }
     return new Promise((resolve) => resolve({ action: false }));

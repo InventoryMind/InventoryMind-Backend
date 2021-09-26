@@ -26,6 +26,7 @@ exports.addEquipment = async (req, res) => {
 
   if (result.action) {
     return res.status(200).json({
+      eqId:result.eqId,
       msg: "Success",
     });
   }
