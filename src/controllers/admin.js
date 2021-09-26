@@ -276,6 +276,48 @@ exports.getBuildings = async(req,res)=>{
     });
 }
 
+exports.getLabs = async(req,res)=>{
+    const admin= new Admin({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
+    const result=await admin.getLabs();
+    console.log(req.body)
+    if (result.connectionError){
+        return res.status(500).json({
+            msg:"connection error"
+        });
+    }
+
+    if (result.action){
+        return res.status(200).json({
+            msg:result.result
+        });
+    }
+
+    return res.status(201).json({
+        msg:"Failed"
+    });
+}
+
+exports.getTOs = async(req,res)=>{
+    const admin= new Admin({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
+    const result=await admin.getTOs();
+    console.log(req.body)
+    if (result.connectionError){
+        return res.status(500).json({
+            msg:"connection error"
+        });
+    }
+
+    if (result.action){
+        return res.status(200).json({
+            msg:result.result
+        });
+    }
+
+    return res.status(201).json({
+        msg:"Failed"
+    });
+}
+
 exports.addEquipType=async (req,res)=>{
     const admin=new Admin({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
     const result = await admin.addEquipType(req.body.type,req.body.brand);
@@ -302,3 +344,24 @@ exports.addEquipType=async (req,res)=>{
         message:"Type couldn't be added"
     })
 }
+
+exports.getDashboardData=async (req,res)=>{
+    const admin= new Admin({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
+    const result = await admin.getDashboardData();
+    // console.log(result);
+    if (result.connectionError){
+        return res.status(500).json({
+            msg:"connection error"
+        });
+    }
+  
+    if (result.action){
+        return res.status(200).json({
+            msg:result.data
+        });
+    }
+  
+    return res.status(401).json({
+        msg:"Failed"
+    })
+  }

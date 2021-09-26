@@ -14,4 +14,8 @@ router.get("/viewLab",authorization.tokenAuthorize,authorization.isAdminRole,adm
 router.get("/viewUsers/:userType",authorization.tokenAuthorize,authorization.isAdminRole,adminCotroller.viewUsers);
 router.get("/getBuildings",authorization.tokenAuthorize,authorization.isAdminRole,adminCotroller.getBuildings);
 router.post("/addEquipType",authorization.tokenAuthorize,authorization.isAdminRole,adminCotroller.addEquipType);
+router.get("/getTOs",authorization.tokenAuthorize,authorization.isAdminRole,adminCotroller.getTOs);
+router.get("/getLabs",authorization.tokenAuthorize,authorization.isAdminRole,adminCotroller.getLabs);
+router.get("/getDashboardData",authorization.tokenAuthorize,authorization.isAdminRole,adminCotroller.getDashboardData);
+
 module.exports =router;
