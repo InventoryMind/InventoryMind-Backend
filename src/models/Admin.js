@@ -178,7 +178,7 @@ class Admin extends User{
         return new Promise((resolve)=>resolve({action:true,result:data}));
     }
 
-    async getBuildings(user_type){
+    async getBuildings(){
         if (this._database.connectionError){
             return new Promise((resolve)=>resolve({connectionError:true}));
         }
@@ -192,6 +192,33 @@ class Admin extends User{
         return new Promise((resolve)=>resolve({action:true,result:data}));
     }
 
+    async getLabs(){
+        if (this._database.connectionError){
+            return new Promise((resolve)=>resolve({connectionError:true}));
+        }
+
+        const results=await this._database.readSingleTable('laboratory',null,["is_active","=",true]);
+        console.log(results);
+        if (results.error){
+            return new Promise ((resolve)=>resolve({action:false}));
+        }
+        let data=results.result.rows;
+        return new Promise((resolve)=>resolve({action:true,result:data}));
+    }
+
+    async getTOs(){
+        if (this._database.connectionError){
+            return new Promise((resolve)=>resolve({connectionError:true}));
+        }
+
+        const results=await this._database.readSingleTable('technical_officer',null,["is_active","=",true]);
+        console.log(results);
+        if (results.error){
+            return new Promise ((resolve)=>resolve({action:false}));
+        }
+        let data=results.result.rows;
+        return new Promise((resolve)=>resolve({action:true,result:data}));
+    }
 
 
     async viewAssignedTechnicalOfficers(){
@@ -236,6 +263,34 @@ class Admin extends User{
         return new Promise ((resolve)=>resolve({action:true}));
     }
 
+    async getDashboardData(){
+        if (this._database.connectionError){
+            return new Promise((resolve)=>{resolve({connectionError:true})});
+        }
+            const result1=await this._database.getCount("laboratory",null,["is_active","=",true]);
+            const result2=await this._database.getCount("lecturer",null,["is_active","=",true]);
+            const result3=await this._database.getCount("student",null,["is_active","=",true]);
+            const result4=await this._database.getCount("technical_officer",null,["is_active","=",true]);
+            console.log(result1);
+            if (result1.error || result2.error || result3.error || result4.error){
+                return new Promise((resolve)=>{action:false})
+            }
+            
+            const insert = function (arr, index, item ) {
+                arr.splice( index, 0, item );
+            };
+
+           const data={
+                laboratory:result1.result.rows[0],
+                lecturer:result2.result.rows[0],
+                student:result3.result.rows[0],
+                technicalOfficer:result4.result.rows[0],
+
+           }
+    
+            return new Promise((resolve)=>resolve({action:true,data:data}))
+        
+    }
 
 }
 
