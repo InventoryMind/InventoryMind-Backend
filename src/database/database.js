@@ -2,10 +2,8 @@ const { Pool,Client } = require("pg");
 const format = require("pg-format");
 
 const dotenv = require("dotenv");
-const e = require("express");
 const _pool = new WeakMap();
 const _connectionError = new WeakMap();
-const _getResults = new WeakMap();
 // const client = new Client(config.get("database_credentials"));
 dotenv.config();
 
@@ -55,20 +53,26 @@ class Database {
         );
       }
       // console.log(query)
-      _pool
+    try{  _pool
         .get(this)
         .query(query, (error, results) =>
           resolve({ error: error, result: results })
-        );
+        );}
+      finally{
+        _pool.get(this).release();
+      }
     });
   }
   //Get max column value
   readMax(tableName,columnName){
     return new Promise((resolve)=>{
       let query=format("SELECT MAX(CAST(%I AS INTEGER)) FROM %I",columnName,tableName);
-      _pool.get(this).query(query,(error,result)=>{
+    try{  _pool.get(this).query(query,(error,result)=>{
         resolve({error:error,result:result});
-      });
+      });}
+      finally{
+        _pool.get(this).release();
+      }
     }
     );
   }
@@ -95,11 +99,14 @@ class Database {
         );
       }
 
-      _pool
+      try{_pool
         .get(this)
         .query(query, (error, results) =>
           resolve({ error: error, result: results })
-        );
+        );}
+        finally{
+          _pool.get(this).release();
+        }
     });
   }
 
@@ -114,9 +121,12 @@ class Database {
         action[1],
         action[2]
       );
-      _pool.get(this).query(query, (error, results) => {
+     try{ _pool.get(this).query(query, (error, results) => {
         resolve({ error: error, result: results });
-      });
+      });}
+      finally{
+        _pool.get(this).release();
+      }
     });
   }
 
@@ -149,9 +159,12 @@ class Database {
         action[1],
         action[2]
       );
-      _pool.get(this).query(query, (error, results) => {
+     try {_pool.get(this).query(query, (error, results) => {
         resolve({ error: error, result: results });
-      });
+      });}
+      finally{
+        _pool.get(this).release();
+      }
     });
   }
 
@@ -168,10 +181,13 @@ class Database {
         action[4],
         action[5]
       );
-      _pool.get(this).query(query, (error, results) => {
+    try { _pool.get(this).query(query, (error, results) => {
         // console.log(results);
         resolve({ error: error, result: results });
-      });
+      });}
+      finally{
+        _pool.get(this).release();
+      }
     });
   }
 
@@ -212,10 +228,13 @@ class Database {
 
       }
       console.log(query);
-      _pool.get(this).query(query,(error,results)=>{
+     try{ _pool.get(this).query(query,(error,results)=>{
         // console.log(results)
         resolve({error:error,result:results});
-      });
+      });}
+      finally{
+        _pool.get(this).release();
+      }
     });
   }
   //Procedure for makeRequest
