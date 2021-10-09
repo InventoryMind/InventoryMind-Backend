@@ -234,7 +234,7 @@ class Admin extends User{
             return new Promise((resolve)=>resolve({connectionError:true}));
         }
 
-        const results=await this._database.readThreeTable(['technical_officer','assigned_t_o','laboratory'],["is_active","=",true]);
+        const results=await this._database.readThreeTableL(['technical_officer','assigned_t_o','laboratory'],["is_active","=",true]);
         // console.log(results);
         if (results.error){
             return new Promise ((resolve)=>resolve({action:false}));

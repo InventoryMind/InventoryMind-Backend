@@ -110,3 +110,118 @@ describe("removeLaboratory",()=>{
         expect(result).toHaveProperty("action",true);
     });
 });
+
+describe("addStaff",()=>{
+    it ("Should return validation error",async ()=>{
+        const result=await new Admin({email:"st@xyz.com",userType:"administrator"}).addStaff("","",",",",","");
+
+        expect(result).toHaveProperty("validationError");
+    });
+
+    it ("Should return validation error",async ()=>{
+        const result=await new Admin({email:"st@xyz.com",userType:"administrator"}).addStaff("1",null,",",",","");
+
+        expect(result).toHaveProperty("validationError");
+    });
+
+    it ("Should return failed",async ()=>{
+        Database.mockImplementation(()=>{
+            return{
+                insert:()=>{
+                    return Promise.resolve({error:true});
+                }
+            }
+        });
+
+        const result=await new Admin({email:"st@xyz.com",userType:"administrator"}).addStaff("1","a","b","a@x.com","0000000000","a");
+
+        expect(result).toHaveProperty("action",false);
+    });
+
+    it ("Should return success",async ()=>{
+        Database.mockImplementation(()=>{
+            return{
+                insert:()=>{
+                    return Promise.resolve({error:false,result:"Something"});
+                }
+            }
+        });
+
+        const result=await new Admin({email:"st@xyz.com",userType:"administrator"}).addStaff("1","a","b","a@x.com","0000000000","a");
+
+        expect(result).toHaveProperty("action",true);
+    });
+});
+
+describe("removeUser",()=>{
+    it("SHould return failed",async ()=>{
+        Database.mockImplementation(()=>{
+            return {
+                update:()=>{
+                    return Promise.resolve({error:true})
+                }
+            }
+        });
+    
+        const result=await new Admin({email:"st@xyz.com",userType:"administrator"}).removeUser("");
+    
+        expect(result).toHaveProperty("action",false);
+    });
+
+    it("Should return failed",async ()=>{
+        Database.mockImplementation(()=>{
+            return {
+                update:()=>{
+                    return Promise.resolve({error:false})
+                }
+            }
+        });
+    
+        const result=await new Admin({email:"st@xyz.com",userType:"administrator"}).removeUser("");
+    
+        expect(result).toHaveProperty("action",true);
+    })
+   
+});
+
+describe("assignTechnicalOfficer",()=>{
+    // it ("Should return validation error",async ()=>{
+    //     const result=await new Admin({email:"st@xyz.com",userType:"administrator"}).assignTechnicalOfficer();
+
+    //     expect(result).toHaveProperty("validationError");
+    // });
+
+    // it ("Should return validation error",async ()=>{
+    //     const result=await new Admin({email:"st@xyz.com",userType:"administrator"}).addStaff("1",null,",",",","");
+
+    //     expect(result).toHaveProperty("validationError");
+    // });
+
+    // it ("Should return failed",async ()=>{
+    //     Database.mockImplementation(()=>{
+    //         return{
+    //             insert:()=>{
+    //                 return Promise.resolve({error:true});
+    //             }
+    //         }
+    //     });
+
+    //     const result=await new Admin({email:"st@xyz.com",userType:"administrator"}).addStaff("1","a","b","a@x.com","0000000000","a");
+
+    //     expect(result).toHaveProperty("action",false);
+    // });
+
+    // it ("Should return success",async ()=>{
+    //     Database.mockImplementation(()=>{
+    //         return{
+    //             insert:()=>{
+    //                 return Promise.resolve({error:false,result:"Something"});
+    //             }
+    //         }
+    //     });
+
+    //     const result=await new Admin({email:"st@xyz.com",userType:"administrator"}).addStaff("1","a","b","a@x.com","0000000000","a");
+
+    //     expect(result).toHaveProperty("action",true);
+    // });
+});
