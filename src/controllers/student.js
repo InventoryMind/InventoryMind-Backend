@@ -109,6 +109,69 @@ exports.getDashboardDataM=async (req,res)=>{
     })
 }
 
+exports.viewRequest=async (req,res)=>{
+    const student= new Student({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
+    const result = await student.viewRequest(req.params.reqId);
+    // console.log(result);
+    if (result.connectionError){
+        return res.status(500).json({
+            msg:"connection error"
+        });
+    }
+
+    if (result.action){
+        return res.status(200).json({
+            msg:result.data
+        });
+    }
+
+    return res.status(401).json({
+        msg:"Failed"
+    })
+}
+
+exports.viewBorrowedHistory=async (req,res)=>{
+    const student= new Student({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
+    const result = await student.viewBorrowedHistory();
+    // console.log(result);
+    if (result.connectionError){
+        return res.status(500).json({
+            msg:"connection error"
+        });
+    }
+
+    if (result.action){
+        return res.status(200).json({
+            msg:result.data
+        });
+    }
+
+    return res.status(401).json({
+        msg:"Failed"
+    })
+}
+
+exports.viewBorrowDetails=async (req,res)=>{
+    const student= new Student({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
+    const result = await student.viewBorrowDetails(req.params.borrowId);
+    // console.log(result);
+    if (result.connectionError){
+        return res.status(500).json({
+            msg:"connection error"
+        });
+    }
+
+    if (result.action){
+        return res.status(200).json({
+            msg:result.data
+        });
+    }
+
+    return res.status(401).json({
+        msg:"Failed"
+    })
+}
+
 exports.getUserDetails = async(req,res)=>{
     const student= new Student({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
     const result=await student.getUserDetails();

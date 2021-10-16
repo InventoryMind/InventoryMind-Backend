@@ -11,31 +11,46 @@ dotenv.config();
 
 class Database {
   constructor() {
-    try {
+    // try {
       var dbconfig = {
         user: process.env.user,
         database: process.env.db,
         password: process.env.password,
         host: process.env.host,
         port: 5432,
-               ssl:{
-        rejectUnauthorized: false
-        }
+        //        ssl:{
+        // rejectUnauthorized: false
+        // }
       };
       _pool.set(this, new Pool(dbconfig));
-      _pool
-        .get(this)
-        .connect()
-        .then(() => console.log("DB is connected"))
-        .catch((e) => console.error(e.stack));
-      _connectionError.set(this, false);
-    } catch (ex) {
-      _connectionError.set(this, true);
-    }
+    //   _pool
+    //     .get(this)
+    //     .connect()
+    //     .then(() => console.log("DB is connected"))
+    //     .catch((e) => console.error(e.stack));
+    //   _connectionError.set(this, false);
+    // } catch (ex) {
+    //   _connectionError.set(this, true);
+    // }
   }
 
   get connectionError() {
     return _connectionError.get(this);
+  }
+
+  connect(){
+    return new Promise((resolve)=>{
+      try{
+        _pool.get(this).connect().then((client)=>{console.log("DB isconnected")
+        resolve(client)
+      }).catch((e)=>console.error(e.stack));
+        _connectionError.set(this,false);
+      }
+      catch{
+        _connectionError.set(this,true)
+      }
+    });
+    
   }
 
   //Insert new tuples into database
@@ -55,18 +70,26 @@ class Database {
         );
       }
       // console.log(query)
-      _pool
-        .get(this)
-        .query(query, (error, results) =>
+      const client=await this.connect();
+
+      client
+        .query(query, (error, results) =>{
+          client.release();
+          console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)      
           resolve({ error: error, result: results })
+    }
         );
     });
   }
   //Get max column value
   readMax(tableName,columnName){
-    return new Promise((resolve)=>{
+    return new Promise(async(resolve)=>{
       let query=format("SELECT MAX(CAST(%I AS INTEGER)) FROM %I",columnName,tableName);
-      _pool.get(this).query(query,(error,result)=>{
+      const client=await this.connect();
+
+      client.query(query,(error,result)=>{
+        client.release();
+        console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
         resolve({error:error,result:result});
       });
     }
@@ -74,7 +97,8 @@ class Database {
   }
   //read data from single table
   readSingleTable(tableName, columns, action) {
-    return new Promise((resolve) => {
+
+    return new Promise(async(resolve) => {
       var query;
       if (columns == null) {
         query = format(
@@ -94,19 +118,25 @@ class Database {
           action[2]
         );
       }
-
-      _pool
-        .get(this)
-        .query(query, (error, results) =>
+      const client=await this.connect();
+      client
+        .query(query, (error, results) =>{      
+          console.log("Before" +_pool.get(this).idleCount)    
+          client.release();
+          console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
           resolve({ error: error, result: results })
+      }
         );
+    
     });
   }
 
   //read data from joining two tables using join operators
-  readTwoTable(mainTable, joiningTable, action = []) {
-    return new Promise((resolve) => {
-      const query = format(
+  readTwoTable(mainTable, joiningTable, action = [],using) {
+    return new Promise(async (resolve) => {
+      let query;
+      if(!using){
+      query = format(
         "SELECT * FROM %I NATURAL JOIN %I WHERE %I %s %L",
         mainTable,
         joiningTable,
@@ -114,7 +144,23 @@ class Database {
         action[1],
         action[2]
       );
-      _pool.get(this).query(query, (error, results) => {
+      }else{
+        query = format(
+          "SELECT * FROM %I JOIN %I USING (%I) WHERE %I %s %L",
+          mainTable,
+          joiningTable,
+          using,
+          action[0],
+          action[1],
+          action[2]
+        );
+      }
+      console.log(query)
+      const client=await this.connect();
+
+     client.query(query, (error, results) => {
+      client.release();
+      console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
         resolve({ error: error, result: results });
       });
     });
@@ -139,7 +185,7 @@ class Database {
 
   //read data from joining three tables
   readThreeTable(tables = [], action = []) {
-    return new Promise((resolve) => {
+    return new Promise(async(resolve) => {
       const query = format(
         "SELECT DISTINCT * FROM (%I NATURAL JOIN %I) NATURAL JOIN %I WHERE %I %s %L",
         tables[0],
@@ -149,15 +195,38 @@ class Database {
         action[1],
         action[2]
       );
-      _pool.get(this).query(query, (error, results) => {
+      const client=await this.connect();
+      client.query(query, (error, results) => {
+        client.release();
+        console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
         resolve({ error: error, result: results });
       });
     });
   }
-
+  //three table left inner join
+  readThreeTableL(query) {
+    return new Promise(async(resolve) => {
+      // const query = format(
+      //   "SELECT DISTINCT * FROM (%I LEFT OUTER JOIN %I ON %I = %I) NATURAL LEFT OUTER JOIN %I NATURAL LEFT OUTER JOIN %I",
+      //   tables[0],
+      //   tables[1],
+      //   tables[2],
+      //   action[0],
+      //   action[1],
+      //   action[2]
+      // );
+      console.log(query);
+      const client=await this.connect();
+      client.query(query, (error, results) => {
+        client.release();
+        console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
+        resolve({ error: error, result: results });
+      });
+    });
+  }
   // //update a table
   update(tableName, action) {
-    return new Promise((resolve) => {
+    return new Promise(async (resolve) => {
       let query = format(
         "UPDATE %I SET %I %s %L WHERE %I %s %L",
         tableName,
@@ -168,8 +237,10 @@ class Database {
         action[4],
         action[5]
       );
-      _pool.get(this).query(query, (error, results) => {
-        // console.log(results);
+      const client=await this.connect();
+      client.query(query, (error, results) => {
+        client.release();
+        console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
         resolve({ error: error, result: results });
       });
     });
@@ -177,7 +248,7 @@ class Database {
 
   //delete tuples from a table
   delete(tableName, action) {
-    return new Promise((resolve) => {
+    return new Promise(async(resolve) => {
       let query = format(
         "DELETE FROM %I WHERE %I %s %L",
         tableName,
@@ -185,24 +256,29 @@ class Database {
         action[1],
         action[2]
       );
-      _pool.get(this).query(query, (error, results) => {
+      const client=await this.connect();
+
+      client.query(query, (error, results) => {
+        client.release();
+        console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
+
         resolve({ error: error, result: results });
       });
     });
   }
 
   //for call the stored procedures
-  call(name, args = []) {
-    return new Promise((resolve) => {
-      _pool.get(this).query("CALL %L((%L))", name, args, (error, results) => {
-        resolve({ error: error, result: results });
-      });
-    });
-  }
+  // call(name, args = []) {
+  //   return new Promise((resolve) => {
+  //     _pool.get(this).query("CALL %L((%L))", name, args, (error, results) => {
+  //       resolve({ error: error, result: results });
+  //     });
+  //   });
+  // }
 
 
   getCount(tableName,column,condition){
-    return new Promise((resolve)=>{
+    return new Promise(async(resolve)=>{
       let query;
       if (column!=null){
           query=format("SELECT %I,COUNT(%I) FROM %I WHERE %I %s %L GROUP BY %I",column,column,tableName,condition[0],condition[1],condition[2],column);
@@ -212,13 +288,52 @@ class Database {
 
       }
       console.log(query);
-      _pool.get(this).query(query,(error,results)=>{
-        // console.log(results)
+      const client=await this.connect();
+
+      client.query(query,(error,results)=>{
+        client.release();
+        console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
         resolve({error:error,result:results});
       });
     });
   }
   //Procedure for makeRequest
+  viewRequest(reqId){
+    return new Promise(async (resolve)=>{
+      const query=format("select distinct request_id,student_id,lecturer_id,date_of_borrowing,date_of_returning,reason,eq_id,type_id,type,brand from request natural join requested_equipments natural left outer join equipment natural left outer join equipment_type where request_id=%L",reqId)
+      const client=await this.connect();
+      client.query(query,(error,results)=>{
+        client.release();
+        console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
+        resolve({error:error,result:results});
+      });
+    })
+  }
+
+  viewTempBorrowed(borrowId){
+    return new Promise(async (resolve)=>{
+      const query=format("select * from temporary_borrowing natural join temporary_borrowed_equipments join equipment using (eq_id) join equipment_type using (type_id) where borrow_id = %L",borrowId)
+      const client=await this.connect();
+      client.query(query,(error,results)=>{
+        client.release();
+        console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
+        resolve({error:error,result:results});
+      });
+    })
+  }
+
+  viewNormalBorrowed(borrowId){
+    return new Promise(async (resolve)=>{
+      const query=format("select distinct * from normal_borrowing join request using (request_id) join requested_equipments using (request_id) join equipment using (eq_id) join equipment_type using (type_id) where borrow_id =%L",borrowId)
+      const client=await this.connect();
+      client.query(query,(error,results)=>{
+        client.release();
+        console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
+        resolve({error:error,result:results});
+      });
+    })
+  }
+
   async makeRequest(
     studentId,
     lecturerId,
@@ -233,7 +348,7 @@ class Database {
           client.query("ROLLBACK");
           resolve({ error: true });
       }
-      const client= await _pool.get(this).connect();
+      const client= await this.connect();
       try {
         await client.query("BEGIN");
         // console.log("1")
@@ -294,7 +409,7 @@ class Database {
             resolve({ error: true });
         }
       
-      const client= await _pool.get(this).connect();
+      const client= await this.connect();
       try {
         await client.query("BEGIN");
         // console.log("1")
