@@ -132,9 +132,11 @@ class Database {
   }
 
   //read data from joining two tables using join operators
-  readTwoTable(mainTable, joiningTable, action = []) {
+  readTwoTable(mainTable, joiningTable, action = [],using) {
     return new Promise(async (resolve) => {
-      const query = format(
+      let query;
+      if(!using){
+      query = format(
         "SELECT * FROM %I NATURAL JOIN %I WHERE %I %s %L",
         mainTable,
         joiningTable,
@@ -142,6 +144,18 @@ class Database {
         action[1],
         action[2]
       );
+      }else{
+        query = format(
+          "SELECT * FROM %I JOIN %I USING (%I) WHERE %I %s %L",
+          mainTable,
+          joiningTable,
+          using,
+          action[0],
+          action[1],
+          action[2]
+        );
+      }
+      console.log(query)
       const client=await this.connect();
 
      client.query(query, (error, results) => {
@@ -190,17 +204,18 @@ class Database {
     });
   }
   //three table left inner join
-  readThreeTableL(tables = [], action = []) {
+  readThreeTableL(query) {
     return new Promise(async(resolve) => {
-      const query = format(
-        "SELECT DISTINCT * FROM (%I NATURAL LEFT OUTER JOIN %I) NATURAL JOIN %I WHERE %I %s %L",
-        tables[0],
-        tables[1],
-        tables[2],
-        action[0],
-        action[1],
-        action[2]
-      );
+      // const query = format(
+      //   "SELECT DISTINCT * FROM (%I LEFT OUTER JOIN %I ON %I = %I) NATURAL LEFT OUTER JOIN %I NATURAL LEFT OUTER JOIN %I",
+      //   tables[0],
+      //   tables[1],
+      //   tables[2],
+      //   action[0],
+      //   action[1],
+      //   action[2]
+      // );
+      console.log(query);
       const client=await this.connect();
       client.query(query, (error, results) => {
         client.release();
@@ -283,6 +298,42 @@ class Database {
     });
   }
   //Procedure for makeRequest
+  viewRequest(reqId){
+    return new Promise(async (resolve)=>{
+      const query=format("select distinct request_id,student_id,lecturer_id,date_of_borrowing,date_of_returning,reason,eq_id,type_id,type,brand from request natural join requested_equipments natural left outer join equipment natural left outer join equipment_type where request_id=%L",reqId)
+      const client=await this.connect();
+      client.query(query,(error,results)=>{
+        client.release();
+        console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
+        resolve({error:error,result:results});
+      });
+    })
+  }
+
+  viewTempBorrowed(borrowId){
+    return new Promise(async (resolve)=>{
+      const query=format("select * from temporary_borrowing natural join temporary_borrowed_equipments join equipment using (eq_id) join equipment_type using (type_id) where borrow_id = %L",borrowId)
+      const client=await this.connect();
+      client.query(query,(error,results)=>{
+        client.release();
+        console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
+        resolve({error:error,result:results});
+      });
+    })
+  }
+
+  viewNormalBorrowed(borrowId){
+    return new Promise(async (resolve)=>{
+      const query=format("select distinct * from normal_borrowing join request using (request_id) join requested_equipments using (request_id) join equipment using (eq_id) join equipment_type using (type_id) where borrow_id =%L",borrowId)
+      const client=await this.connect();
+      client.query(query,(error,results)=>{
+        client.release();
+        console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
+        resolve({error:error,result:results});
+      });
+    })
+  }
+
   async makeRequest(
     studentId,
     lecturerId,

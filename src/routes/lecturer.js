@@ -8,4 +8,8 @@ router.post("/approve/:reqId",authorization.tokenAuthorize,authorization.isLectu
 router.post("/reject/:reqId",authorization.tokenAuthorize,authorization.isLecturerRole,lecturerController.reject);
 router.get("/getDashboardDataM",authorization.tokenAuthorize,authorization.isLecturerRole,lecturerController.getDashboardDataMob);
 router.get("/getUserDetails",authorization.tokenAuthorize,authorization.isLecturerRole,lecturerController.getUserDetails);
+router.get("/viewAllRequest",authorization.tokenAuthorize,authorization.isLecturerRole,lecturerController.viewAllRequests);
+router.get("/viewPendingRequest",authorization.tokenAuthorize,authorization.isLecturerRole,lecturerController.viewPendingRequest);
+router.get("/viewRequest/:reqId",authorization.tokenAuthorize,authorization.isLecturerRole,lecturerController.viewRequest);
+
 module.exports=router;
