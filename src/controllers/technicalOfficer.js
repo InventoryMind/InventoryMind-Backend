@@ -140,6 +140,29 @@ exports.viewInventory = async (req,res)=>{
     });
 }
 
+exports.viewBorrowedEquipments = async (req,res)=>{
+  const TO=new TechnicalOffcier({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
+  const result= await TO.viewBorrowedEquipments();
+  console.log(result);
+     
+    if (result.connectionError) {
+      return res.json({
+        msg: "Connection error",
+      });
+    }
+  
+    if (result.action) {
+      return res.json({
+        msg: "Success",
+        data:result.data
+      });
+    }
+  
+    return res.json({
+      msg: "Failed",
+    });
+}
+
 exports.viewAvailableLabEquips = async (req,res)=>{
     const TO=new TechnicalOffcier({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
     const result= await TO.viewAvailableLabEquipment();
@@ -226,4 +249,52 @@ exports.getUserDetails = async(req,res)=>{
   return res.status(201).json({
       msg:"Failed"
   });
+}
+
+exports.getBorrowDetails=async (req,res)=>{
+  const TO= new TechnicalOffcier({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
+  const result = await TO.getBorrowDetails(req.body.borrowId,req.body.type);
+  // console.log(result);
+  if (result.connectionError){
+      return res.status(500).json({
+          msg:"connection error"
+      });
+  }
+
+  if (result.action){
+      return res.status(200).json({
+          msg:result.data
+      });
+  }
+
+  return res.status(401).json({
+      msg:"Failed"
+  })
+}
+
+exports.acceptReturns = async (req,res)=>{
+  const TO=new TechnicalOffcier({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
+  const result= await TO.acceptReturns(req.body.borrowId,req.body.type);
+  console.log(result);
+  if (result.validationError) {
+      return res.json({
+        msg: "validation error",
+      });
+    }
+  
+    if (result.connectionError) {
+      return res.json({
+        msg: "Connection error",
+      });
+    }
+  
+    if (result.action) {
+      return res.json({
+        msg: "Success",
+      });
+    }
+  
+    return res.json({
+      msg: "Failed",
+    });
 }

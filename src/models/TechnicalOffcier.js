@@ -94,7 +94,43 @@ class TechnicalOffcier extends User {
     return new Promise((resolve) => resolve({ action: false }));
   }
 
-  acceptReturns() {}
+  async getBorrowDetails(borrowId,type){
+    if (this._database.connectionError) {
+      return new Promise((resolve) => resolve({ connectionError: true }));
+    }
+    let result;
+    if (type=='normal'){
+      result=await this._database.readThreeTableUsing(["normal_borrowing","request","request_id","requested_equipments","request_id"],["borrow_id","=",borrowId])
+    }
+    else{
+      result=await this._database.readTwoTable('temporary_borrowing','temporary_borrowed_equipments',['borrow_id','=',borrowId])
+    }
+
+    
+    if (!result.error && result.result.rowCount != 0) {
+      let data=result.result.rows
+      let eqIds=[];
+      data.forEach(element=>{
+        eqIds.push(element.eq_id)
+      })
+      return new Promise((resolve) => resolve({ action: true,data:eqIds }));
+    }
+    return new Promise((resolve) => resolve({ action: false }));
+
+  }
+
+  async acceptReturns(borrowId,type) {
+    if (this._database.connectionError) {
+      return new Promise((resolve) => resolve({ connectionError: true }));
+    }
+
+    const result= await this._database.acceptReturns(borrowId,type);
+
+    if (!result.error && result.result.rowCount != 0) {
+      return new Promise((resolve) => resolve({ action: true }));
+    }
+    return new Promise((resolve) => resolve({ action: false }));
+  }
 
   async reportCondition(eqId, condition) {
     const validateData = Joi.object({
@@ -185,6 +221,45 @@ class TechnicalOffcier extends User {
       }
     });
     if (!result.error && result.result.rowCount != 0) {
+      return new Promise((resolve) =>
+        resolve({ action: true, data: data })
+      );
+    }
+    return new Promise((resolve) => resolve({ action: false }));
+  }
+
+  async getLabId(){
+    const result=await this._database.readSingleTable("assigned_t_o",null,["t_o_id","=",this._u_id]);
+    if (result.error){
+      return new Promise((resolve)=>{
+        resolve(null)
+      })
+    }
+
+    let labId=result.result.rows[0].lab_id;
+    return new Promise((resolve)=>{
+      resolve(labId)
+    })
+  }
+
+  async viewBorrowedEquipments() {
+    if (this._database.connectionError) {
+      return new Promise((resolve) => resolve({ connectionError: true }));
+    }
+    const labId=await this.getLabId();
+    if (!labId){
+      return new Promise((resolve) => resolve({ action: false }));
+    }
+    console.log(labId);
+
+    const result = await this._database.readSingleTable(
+      "borrowed_items",
+      null,
+      ["lab_id", "=", labId]
+    );
+    console.log(result.result.rows);
+    if (!result.error && result.result.rowCount != 0) {
+      let data=result.result.rows;
       return new Promise((resolve) =>
         resolve({ action: true, data: data })
       );
