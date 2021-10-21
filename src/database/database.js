@@ -203,6 +203,28 @@ class Database {
       });
     });
   }
+
+  readThreeTableUsing(tables = [], action = []) {
+    return new Promise(async(resolve) => {
+      const query = format(
+        "SELECT DISTINCT * FROM %I JOIN %I USING (%I) JOIN %I USING (%I) WHERE %I %s %L",
+        tables[0],
+        tables[1],
+        tables[2],
+        tables[3],
+        tables[4],
+        action[0],
+        action[1],
+        action[2]
+      );
+      const client=await this.connect();
+      client.query(query, (error, results) => {
+        client.release();
+        console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
+        resolve({ error: error, result: results });
+      });
+    });
+  }
   //three table left inner join
   readThreeTableL(query) {
     return new Promise(async(resolve) => {
@@ -446,6 +468,63 @@ class Database {
               await client.query(query,(err,res)=>{if(err){rollback()}});
             });
             // console.log("commit");
+            await client
+              .query("COMMIT");
+            // console.log("COMMITED");
+            resolve({ result: true, error: false });
+          })
+      } catch (e) {rollback()}
+    }).catch((e)=>{rollback()});
+  }
+
+  async acceptReturns(borrowId,type){
+    return new Promise(async (resolve) => {
+      let rollback=()=>{
+          console.log("Rollbacked2");
+            client.query("ROLLBACK");
+            resolve({ error: true });
+        }
+      
+      const client= await this.connect();
+      try {
+        await client.query("BEGIN");
+        // console.log("1")
+
+        var query;
+        var query1;
+        if (type=="normal"){
+          query1=format("UPDATE normal_borrowing SET state=2 WHERE borrow_id = %L",borrowId)
+          query = format("SELECT * FROM normal_borrowing JOIN request USING (request_id) JOIN requested_equipments USING (request_id) WHERE borrow_id = %L",borrowId);
+        }
+        else{ 
+          query1=format("UPDATE temporary_borrowing SET state=2 WHERE borrow_id = %L",borrowId)
+          query = format("SELECT * FROM temporary_borrowing JOIN temporary_borrowed_equipments USING (borrow_id) WHERE borrow_id = %L",borrowId);
+        }
+        console.log(query);
+        await client.query(query1,(err,result)=>{
+          if (err)rollback();
+          console.log("updated borrowing table ");
+        });
+
+        const result = await client
+          .query(query, async (err, result) => {
+            console.log(result);
+            let data = result.rows;
+            let eqIds=[];
+            data.forEach(element=>{
+              eqIds.push(element.eq_id)
+            });
+
+            eqIds.forEach(async (eqId) => {
+              query = format(
+                "UPDATE equipment SET state=0 WHERE eq_id=%L",
+                eqId
+              );
+              console.log(query);
+              await client.query(query,(err,res)=>{if(err){
+                console.log(err);
+                rollback()}});
+            });
             await client
               .query("COMMIT");
             // console.log("COMMITED");

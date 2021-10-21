@@ -10,7 +10,11 @@ router.post("/transferEquipment",authorization.tokenAuthorize,authorization.isTe
 router.post("/reportCondition",authorization.tokenAuthorize,authorization.isTechnicalOfficerRole,TOCOntroller.reportEquipCondition);
 router.get("/viewInventory",authorization.tokenAuthorize,authorization.isTechnicalOfficerRole,TOCOntroller.viewInventory);
 router.get("/viewAvailableEquips",authorization.tokenAuthorize,authorization.isTechnicalOfficerRole,TOCOntroller.viewAvailableLabEquips);
+router.get("/viewBorrowedEquips",authorization.tokenAuthorize,authorization.isTechnicalOfficerRole,TOCOntroller.viewBorrowedEquipments);
 router.get("/getEquipTypes",authorization.tokenAuthorize,authorization.isTechnicalOfficerRole,TOCOntroller.getEquipTypes);
 router.get("/getDashboardDataM",authorization.tokenAuthorize,authorization.isTechnicalOfficerRole,TOCOntroller.getDashboardDataM);
 router.get("/getUserDetails",authorization.tokenAuthorize,authorization.isTechnicalOfficerRole,TOCOntroller.getUserDetails);
+router.post("/getBorrowDetails/",authorization.tokenAuthorize,authorization.isTechnicalOfficerRole,TOCOntroller.getBorrowDetails);
+router.post("/acceptReturn",authorization.tokenAuthorize,authorization.isTechnicalOfficerRole,TOCOntroller.acceptReturns);
+
 module.exports = router;
