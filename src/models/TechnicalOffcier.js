@@ -257,7 +257,7 @@ class TechnicalOffcier extends User {
       null,
       ["lab_id", "=", labId]
     );
-    console.log(result.result.rows);
+    console.log(result);
     if (!result.error && result.result.rowCount != 0) {
       let data=result.result.rows;
       return new Promise((resolve) =>
