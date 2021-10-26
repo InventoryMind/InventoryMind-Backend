@@ -14,7 +14,7 @@ class Lecturer extends User{
         });
 
         console.log(validateData);
-
+        console.log("approve")
         if (validateData.error){
             return new Promise((resolve)=>{resolve({validationError:validateData.error})});
         }
@@ -94,9 +94,10 @@ class Lecturer extends User{
             result = result.result.rows;
             // console.log(result)
             let data = [];
+            let state=["","Accepted","Rejected"]
             result.forEach((element) => {
               // console.log(element.date_of_borrowing.getFullYear());
-              console.log(element);
+              if (element.state!=0){console.log(element);
               
                
                   let y = element.date_of_borrowing.getFullYear();
@@ -107,8 +108,8 @@ class Lecturer extends User{
                     requestId: element.request_id,
                     student:element.student_id,
                     dateOfBorrowing: y + "/" + m + "/" + d,
-                    state:element.state
-                  });
+                    state:state[element.state]
+                  });}
                 
               
             });
@@ -119,25 +120,50 @@ class Lecturer extends User{
     }
 
     async viewPendingRequests(){
-        let res=await this.viewAllRequests();
-        if (res.connectionError){
+        if (this._database.connectionError) {
             return new Promise((resolve) => {
-                resolve({ connectionError: true });
-              });
-        }
-
-        if (!res.action){
+              resolve({ connectionError: true });
+            });
+          }
+      
+          var result = await this._database.readSingleTable("request", null, [
+            "lecturer_id",
+            "=",
+            this._u_id,
+          ]);
+          console.log(result)
+      
+          if (result.error) {
             return new Promise((resolve) => {
-                resolve({ action: false });
-              });
-        }
-
-        let data=res.data;
-        data=data.filter(element=>element.state==0)
-        console.log(data)
-        return new Promise((resolve) => {
-            resolve({ action: true, data: data });
+              resolve({ action: false });
+            });
+          }
+          result = result.result.rows;
+          // console.log(result)
+          let data = [];
+          let state=["","Accepted","Rejected"]
+          result.forEach((element) => {
+            // console.log(element.date_of_borrowing.getFullYear());
+            if (element.state==0){console.log(element);
+            
+             
+                let y = element.date_of_borrowing.getFullYear();
+                let m = element.date_of_borrowing.getMonth();
+                let d = element.date_of_borrowing.getDate();
+                m = parseInt(m) + 1;
+                data.push({
+                  requestId: element.request_id,
+                  student:element.student_id,
+                  dateOfBorrowing: y + "/" + m + "/" + d,
+                  state:state[element.state]
+                });}
+              
+            
           });
+      
+          return new Promise((resolve) => {
+            resolve({ action: true, data: data });
+          });  
     }
 
     async viewRequest(reqId) {
@@ -157,10 +183,10 @@ class Lecturer extends User{
         // console.log(result)
         let data=result.result.rows;
         let types={};
-        // console.log(types.keys())
+        console.log(data)
         data.forEach(element=>{
-            if (element.type_id in Object.keys(types)){
-                types[element.type_id][count]+=1
+            if ((Object.keys(types)).includes(element.type_id)){
+                types[element.type_id].count+=1
             }
             else{
                 types[element.type_id]={type:element.type,brand:element.brand,count:1}
@@ -190,7 +216,19 @@ class Lecturer extends User{
         res.type=undefined;
         res.brand=undefined;
         res.types=types;
-    
+        
+        let date=res.date_of_borrowing;
+    let y = date.getFullYear();
+    let m = date.getMonth();
+    let d = date.getDate();
+    m = parseInt(m) + 1;
+    res.date_of_borrowing=y + "/" + m + "/" + d;
+    date=res.date_of_returning
+    y =date.getFullYear();
+    m = date.getMonth();
+    d = date.getDate();
+    m = parseInt(m) + 1;
+    res.date_of_returning=y + "/" + m + "/" + d;
         
         return new Promise((resolve)=>{
             resolve({action:true,data:res})
