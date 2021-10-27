@@ -158,21 +158,63 @@ class Student extends User {
     return new Promise((resolve) => resolve({ action: true }));
   }
 
+  async viewAllRequest() {
+    if (this._database.connectionError) {
+      return new Promise((resolve) => {
+        resolve({ connectionError: true });
+      });
+    }
+
+    var result = await this._database.readSingleTable("request", null, [
+      "student_id",
+      "=",
+      this._u_id,
+    ]);
+    // console.log(result.result)
+
+    if (result.error) {
+      return new Promise((resolve) => {
+        resolve({ action: false });
+      });
+    }
+    result = result.result.rows;
+    // console.log(result)
+    let data = [];
+    let state=["Pending","Accepted","Rejected"];
+    result.forEach((element) => {
+      // console.log(element.date_of_borrowing.getFullYear());
+      console.log(element);
+          let y = element.date_of_borrowing.getFullYear();
+          let m = element.date_of_borrowing.getMonth();
+          let d = element.date_of_borrowing.getDate();
+          m = parseInt(m) + 1;
+          data.push({
+            requestId: element.request_id,
+            dateOfBorrowing: y + "/" + m + "/" + d,
+            state:state[element.state]
+          });
+    });
+
+    return new Promise((resolve) => {
+      resolve({ action: true, data: data });
+    });
+  }
+
   async viewRequest(reqId) {
     if (this._database.connectionError) {
         return new Promise((resolve) => {
           resolve({ connectionError: true });
         });
       }
-
+      console.log(reqId)
       const result=await this._database.viewRequest(reqId);
-
+      
     if(result.error){
         return new Promise((resolve)=>{
             resolve({action:false})
         })
     }
-    // console.log(result)
+    console.log(result)
     let data=result.result.rows;
     let types={};
     // console.log(types.keys())
@@ -187,8 +229,9 @@ class Student extends User {
     console.log(types)
     console.log(data[0])
     let res=data[0]
-
+  
     let lec=await this._database.readSingleTable("lecturer",null,["user_id","=",res.lecturer_id]);
+    console.log(lec)
     if(lec.error){
         return new Promise((resolve)=>{
             resolve({action:false})
@@ -196,14 +239,26 @@ class Student extends User {
     }
     lec=lec.result.rows[0];
     res.lecturer=lec.first_name+" "+lec.last_name;
-
+  
     res.eq_id=undefined;
     res.type_id=undefined;
     res.type=undefined;
     res.brand=undefined;
     res.types=types;
+    console.log(res.date_of_borrowing.getFullYear())
+    let date=res.date_of_borrowing;
+    let y = date.getFullYear();
+    let m = date.getMonth();
+    let d = date.getDate();
+    m = parseInt(m) + 1;
+    res.date_of_borrowing=y + "/" + m + "/" + d;
+    date=res.date_of_returning
+    y =date.getFullYear();
+    m = date.getMonth();
+    d = date.getDate();
+    m = parseInt(m) + 1;
+    res.date_of_returning=y + "/" + m + "/" + d;
 
-    
     return new Promise((resolve)=>{
         resolve({action:true,data:res})
     })
@@ -281,6 +336,7 @@ class Student extends User {
     result = result.result.rows;
     // console.log(result)
     let data = [];
+    let state=["Pending","Accepted","Rejected"];
     result.forEach((element) => {
       // console.log(element.date_of_borrowing.getFullYear());
       console.log(element);
@@ -293,6 +349,7 @@ class Student extends User {
           data.push({
             requestId: element.request_id,
             dateOfBorrowing: y + "/" + m + "/" + d,
+            state:state[element.state]
           });
         }
       }
@@ -429,6 +486,23 @@ class Student extends User {
     res.added_date=undefined;
     res.condition=undefined;
     res.types=types;
+
+    let y = res.date_of_borrowing.getFullYear();
+    let m = res.date_of_borrowing.getMonth();
+    let d = res.date_of_borrowing.getDate();
+    m = parseInt(m) + 1;
+    res.date_of_borrowing=y+"/"+m+"/"+d
+    if(type!="normal"){
+      d=parseInt(d)+1
+      res.date_of_returning=y+"/"+m+"/"+d
+    }
+    else{
+      y = res.date_of_returning.getFullYear();
+      m = res.date_of_returning.getMonth();
+      d = res.date_of_returning.getDate();
+      m = parseInt(m) + 1;
+      res.date_of_returning=y+"/"+m+"/"+d
+    }
 
     
     return new Promise((resolve)=>{

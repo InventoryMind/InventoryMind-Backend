@@ -217,6 +217,7 @@ class Database {
         action[1],
         action[2]
       );
+      console.log(query)
       const client=await this.connect();
       client.query(query, (error, results) => {
         client.release();
@@ -322,7 +323,7 @@ class Database {
   //Procedure for makeRequest
   viewRequest(reqId){
     return new Promise(async (resolve)=>{
-      const query=format("select distinct request_id,student_id,lecturer_id,date_of_borrowing,date_of_returning,reason,eq_id,type_id,type,brand from request natural join requested_equipments natural left outer join equipment natural left outer join equipment_type where request_id=%L",reqId)
+      const query=format("select distinct request_id,student_id,lecturer_id,date_of_borrowing,date_of_returning,reason,eq_id,type_id,type,brand from request join requested_equipments using (request_id) left outer join equipment using (eq_id) left outer join equipment_type using (type_id) where request_id=%L",reqId)
       const client=await this.connect();
       client.query(query,(error,results)=>{
         client.release();

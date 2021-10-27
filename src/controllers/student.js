@@ -109,6 +109,27 @@ exports.getDashboardDataM=async (req,res)=>{
     })
 }
 
+exports.viewAllRequest=async (req,res)=>{
+    const student= new Student({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
+    const result = await student.viewAllRequest();
+    // console.log(result);
+    if (result.connectionError){
+        return res.status(500).json({
+            msg:"connection error"
+        });
+    }
+
+    if (result.action){
+        return res.status(200).json({
+            msg:result.data
+        });
+    }
+
+    return res.status(401).json({
+        msg:"Failed"
+    })
+}
+
 exports.viewRequest=async (req,res)=>{
     const student= new Student({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
     const result = await student.viewRequest(req.params.reqId);
@@ -153,7 +174,7 @@ exports.viewBorrowedHistory=async (req,res)=>{
 
 exports.viewBorrowDetails=async (req,res)=>{
     const student= new Student({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
-    const result = await student.viewBorrowDetails(req.params.borrowId);
+    const result = await student.viewBorrowDetails(req.body.borrowId,req.body.type);
     // console.log(result);
     if (result.connectionError){
         return res.status(500).json({
