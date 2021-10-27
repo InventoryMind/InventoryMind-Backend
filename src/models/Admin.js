@@ -234,7 +234,7 @@ class Admin extends User{
             return new Promise((resolve)=>resolve({connectionError:true}));
         }
         const query="select distinct user_id,first_name,last_name,email,contact_no,lab_id,name as lab_name,b_name,floor from (technical_officer left outer join assigned_t_o on technical_officer.user_id=assigned_t_o.t_o_id) natural left outer join laboratory natural left outer join building"
-        const results=await this._database.readThreeTableL(query);
+        const results=await this._database.query(query);
         // console.log(results);
         if (results.error){
             return new Promise ((resolve)=>resolve({action:false}));

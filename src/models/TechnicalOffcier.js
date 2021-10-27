@@ -1,4 +1,5 @@
 const Joi = require("joi");
+const format = require("pg-format");
 const User = require("./User");
 
 class TechnicalOffcier extends User {
@@ -63,6 +64,26 @@ class TechnicalOffcier extends User {
     return new Promise((resolve) => resolve({ action: false }));
   }
 
+  async getLabs(){
+    const result=await this._database.readSingleTable("laboratory",null,["is_active","=",true]);
+
+    if (this._database.connectionError){
+      return new Promise((resolve)=>{
+        resolve({connectionError:true})
+      })
+    }
+
+    if(result.error){
+      return new Promise((resolve)=>{
+        resolve({action:false})
+      })
+    }
+    console.log(result)
+    return new Promise((resolve)=>{
+      resolve({action: true,data:result.result.rows});
+    })
+  }
+
   async removeEquipment(eqId) {
     const validateData = Joi.object({
       eqId: Joi.string().max(10).required(),
@@ -75,10 +96,18 @@ class TechnicalOffcier extends User {
         resolve({ validationError: validateData.error })
       );
     }
+
+    // console.log(EqId);
+    const result1=await this._database.readSingleTable("equipment",null,["eq_id","=",eqId]);
+    
     if (this._database.connectionError) {
       return new Promise((resolve) => resolve({ connectionError: true }));
     }
-    // console.log(EqId);
+
+    if (result1.error || result1.result.rowCount == 0) {
+      return new Promise((resolve) => resolve({ action: false,notFound:true }));
+    }
+
     const result = await this._database.update("equipment", [
       "state",
       "=",
@@ -181,9 +210,16 @@ class TechnicalOffcier extends User {
       );
     }
 
+    const result1=await this._database.readSingleTable("equipment",null,["eq_id","=",eqId]);
+    
     if (this._database.connectionError) {
       return new Promise((resolve) => resolve({ connectionError: true }));
     }
+
+    if (result1.error || result1.result.rowCount == 0) {
+      return new Promise((resolve) => resolve({ action: false,notFound:true }));
+    }
+
     // console.log(EqId);
     const result = await this._database.update("equipment", [
       "lab_id",
@@ -344,34 +380,131 @@ class TechnicalOffcier extends User {
 
     let data=result.result.rows
     console.log(data)
-    let data1=[];
-   
-    console.log(data1);
-    const insert = function (arr, index, item ) {
-        arr.splice( index, 0, item );
-    };
-    let state=["Available","Requested","Temp Borrowed","Borrowed","Not Usable","Removed"];
-    for (let i=0;i<6;i++){
-        if (data[i]==null){
-            insert(data,i,{
-                state:state[i],
-                count:0
-            });
-        }
-        else if (data[i].state!=i){
-            insert(data,i,{
-                state:state[i],
-                count:0
-            });
-        }
-        else{
-            data[i].state=state[data[i].state]
-        }
+   let data1={}
+    data.forEach(element=>{
+      if (element.state==0){
+      data1.available=element.count
+      }
+      else if (element.state==1){
+        data1.requested=element.count
+      }
+      else if (element.state==2){
+        data1.temporaryBorrowed=element.count
+      }
+      else if (element.state==3){
+        data1.normalBorrowed=element.count
+      }
+      else if (element.state==4){
+        data1.notUsable=element.count
+      }
+      else if (element.state==5){
+        data1.removed=element.count
+      }
+    })
+  
+    console.log(data1)
+
+    return new Promise((resolve)=>resolve({action:true,data:data1}));
+  }
+
+  async getUserStats() {
+    if (this._database.connectionError) {
+      return new Promise((resolve) => {
+        resolve({ connectionError: true });
+      });
     }
-    console.log(data)
+
+    let result = await this._database.getCount("student", null, [
+      "user_id",
+      "!=",
+      "",
+    ]);
+
+    if (result.error) {
+      return new Promise((resolve) => {
+        action: false;
+      });
+    }
+
+    let student=result.result.rows[0].count
+    
+    result = await this._database.getCount("lecturer", null, [
+      "user_id",
+      "!=",
+      "",
+    ]);
+
+    if (result.error) {
+      return new Promise((resolve) => {
+        action: false;
+      });
+    }
+
+    let lecturer=result.result.rows[0].count
+
+    result = await this._database.getCount("technical_officer", null, [
+      "user_id",
+      "!=",
+      "",
+    ]);
+
+    if (result.error) {
+      return new Promise((resolve) => {
+        action: false;
+      });
+    }
+
+    let techOff=result.result.rows[0].count
+
+    let data={lecturer:lecturer,student:student,technicalOffcier:techOff}
 
     return new Promise((resolve)=>resolve({action:true,data:data}));
   }
+
+  async getRequestStats() {
+    if (this._database.connectionError) {
+      return new Promise((resolve) => {
+        resolve({ connectionError: true });
+      });
+    }
+
+    const res=await this._database.readSingleTable('assigned_t_o',null,["t_o_id","=",this._u_id]);
+
+    if (res.error || res.result.rowCount==0){
+        return new Promise((resolve) => resolve({
+            action: false
+          }));
+    }
+    let labId=res.result.rows[0].lab_id;
+    let query=format("select DISTINCT(request_id),lab_id,request.state as state from request join requested_equipments using (request_id) join equipment using (eq_id) where lab_id=%L",labId);
+    let result = await this._database.query(query);
+    if (result.error) {
+      return new Promise((resolve) => {
+        action: false;
+      });
+    }
+
+    console.log(result);
+
+    let data=result.result.rows
+
+    let count={pending:0,accepted:0,rejected:0}
+
+    data.forEach(element=>{
+      if (element.state==0){
+        count.pending+=1;
+      }
+      else if(element.state==1){
+        count.accepted+=1;
+      }
+      else{
+        count.rejected+=1;
+      }
+    })
+
+    return new Promise((resolve)=>resolve({action:true,data:count}));
+  }
+
 }
 
 module.exports = TechnicalOffcier;

@@ -36,6 +36,69 @@ exports.addEquipment = async (req, res) => {
   });
 };
 
+exports.getLabs= async (req,res)=>{
+  const TO= new TechnicalOffcier({email:req.user.mail,userType:req.user.userType,userId:req.user.userId});
+  const result = await TO.getLabs();
+  
+    if (result.connectionError) {
+      return res.json({
+        msg: "Connection erroe",
+      });
+    }
+    
+    if (result.action) {
+      return res.json({
+        msg: result.data
+      });
+    }
+  
+    return res.json({
+      msg: "Failed",
+    });
+}
+
+exports.getUserStats= async (req,res)=>{
+  const TO= new TechnicalOffcier({email:req.user.mail,userType:req.user.userType,userId:req.user.userId});
+  const result = await TO.getUserStats();
+  
+    if (result.connectionError) {
+      return res.json({
+        msg: "Connection erroe",
+      });
+    }
+    
+    if (result.action) {
+      return res.json({
+        msg: result.data
+      });
+    }
+  
+    return res.json({
+      msg: "Failed",
+    });
+}
+
+exports.getRequestStats= async (req,res)=>{
+  const TO= new TechnicalOffcier({email:req.user.mail,userType:req.user.userType,userId:req.user.userId});
+  const result = await TO.getRequestStats();
+  
+    if (result.connectionError) {
+      return res.json({
+        msg: "Connection erroe",
+      });
+    }
+    
+    if (result.action) {
+      return res.json({
+        msg: result.data
+      });
+    }
+  
+    return res.json({
+      msg: "Failed",
+    });
+}
+
 exports.removeEquipment= async (req,res)=>{
     const TO= new TechnicalOffcier({email:req.user.mail,userType:req.user.userType,userId:req.user.userId});
     const result = await TO.removeEquipment(req.params.eqId);
@@ -51,7 +114,13 @@ exports.removeEquipment= async (req,res)=>{
           msg: "Connection erroe",
         });
       }
-    
+      
+      if (result.notFound){
+        return res.json({
+          msg:"Eq Not Found",
+          notInLab:true
+        })
+      }
       if (result.action) {
         return res.json({
           msg: "Success",
@@ -78,7 +147,14 @@ exports.transferEquipment = async (req,res)=>{
           msg: "Connection error",
         });
       }
-    
+      
+      if (result.notFound){
+        return res.json({
+          msg:'Equipment not found',
+          notInLab:true
+        })
+      }
+
       if (result.action) {
         return res.json({
           msg: "Success",

@@ -204,9 +204,26 @@ class Database {
     });
   }
 
-  readThreeTableUsing(tables = [], action = []) {
+  readThreeTableUsing(tables = [], action = [],column) {
     return new Promise(async(resolve) => {
-      const query = format(
+      let query;
+      if (column){
+        query = format(
+          "SELECT DISTINCT(%I),%I FROM %I JOIN %I USING (%I) JOIN %I USING (%I) WHERE %I %s %L",
+          column[0],
+          column.slice(1),
+          tables[0],
+          tables[1],
+          tables[2],
+          tables[3],
+          tables[4],
+          action[0],
+          action[1],
+          action[2]
+        );
+      }
+     else{ 
+       query = format(
         "SELECT DISTINCT * FROM %I JOIN %I USING (%I) JOIN %I USING (%I) WHERE %I %s %L",
         tables[0],
         tables[1],
@@ -216,18 +233,19 @@ class Database {
         action[0],
         action[1],
         action[2]
-      );
+      );}
       console.log(query)
       const client=await this.connect();
       client.query(query, (error, results) => {
         client.release();
+        console.log(error)
         console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
         resolve({ error: error, result: results });
       });
     });
   }
   //three table left inner join
-  readThreeTableL(query) {
+  query(query) {
     return new Promise(async(resolve) => {
       // const query = format(
       //   "SELECT DISTINCT * FROM (%I LEFT OUTER JOIN %I ON %I = %I) NATURAL LEFT OUTER JOIN %I NATURAL LEFT OUTER JOIN %I",
