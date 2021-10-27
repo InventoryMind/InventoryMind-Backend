@@ -40,9 +40,10 @@ exports.addStaff =async (req,res)=>{
 }
 
 exports.removeUser=async (req,res)=>{
+    console.log(req.body)
+
     const admin=new Admin({email:req.user.email,userType:req.user.user_type,userId:req.user.userId});
     const results=await admin.removeUser(req.body.userType,req.body.userId);
-
     if (results.connectionError){
         return res.status(500).json({  
             title: "Error",

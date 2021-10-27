@@ -5,6 +5,9 @@ const TOCOntroller=require('../controllers/technicalOfficer');
 const router=express.Router();
 
 router.post("/addEquipment",authorization.tokenAuthorize,authorization.isTechnicalOfficerRole,TOCOntroller.addEquipment);
+router.get("/getLabs",authorization.tokenAuthorize,authorization.isTechnicalOfficerRole,TOCOntroller.getLabs);
+router.get("/getUserStats",authorization.tokenAuthorize,authorization.isTechnicalOfficerRole,TOCOntroller.getUserStats);
+router.get("/getRequestStats",authorization.tokenAuthorize,authorization.isTechnicalOfficerRole,TOCOntroller.getRequestStats);
 router.post("/removeEquipment/:eqId",authorization.tokenAuthorize,authorization.isTechnicalOfficerRole,TOCOntroller.removeEquipment);
 router.post("/transferEquipment",authorization.tokenAuthorize,authorization.isTechnicalOfficerRole,TOCOntroller.transferEquipment);
 router.post("/reportCondition",authorization.tokenAuthorize,authorization.isTechnicalOfficerRole,TOCOntroller.reportEquipCondition);
