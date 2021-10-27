@@ -1,12 +1,13 @@
 const nodemailer = require("nodemailer");
-const config = require("config");
 const _transporter = new WeakMap();
+const dotenv = require("dotenv");
+dotenv.config();
 
 class Email {
   constructor() {
     _transporter.set(
       this,
-      nodemailer.createTransport(config.get("email_transporter_credentials"))
+      nodemailer.createTransport(JSON.parse(process.env.email_transporter_credentials))
     );
   }
 
@@ -14,8 +15,8 @@ class Email {
     return new Promise((resolve) => {
       _transporter.get(this).sendMail(
         {
-          from: `"Emission Test Center" <${
-            config.get("email_transporter_credentials").auth.user
+          from: `"Inventory Mind" <${
+            JSON.parse(process.env.email_transporter_credentials).auth.user
           }>`,
           to: to,
           subject: subject,
