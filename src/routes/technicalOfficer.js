@@ -9,6 +9,7 @@ router.get("/getLabs",authorization.tokenAuthorize,authorization.isTechnicalOffi
 router.get("/getUserStats",authorization.tokenAuthorize,authorization.isTechnicalOfficerRole,TOCOntroller.getUserStats);
 router.get("/getRequestStats",authorization.tokenAuthorize,authorization.isTechnicalOfficerRole,TOCOntroller.getRequestStats);
 router.post("/removeEquipment/:eqId",authorization.tokenAuthorize,authorization.isTechnicalOfficerRole,TOCOntroller.removeEquipment);
+router.post("/markAsNotUsable/:eqId",authorization.tokenAuthorize,authorization.isTechnicalOfficerRole,TOCOntroller.markAsNotUsable);
 router.post("/transferEquipment",authorization.tokenAuthorize,authorization.isTechnicalOfficerRole,TOCOntroller.transferEquipment);
 router.post("/reportCondition",authorization.tokenAuthorize,authorization.isTechnicalOfficerRole,TOCOntroller.reportEquipCondition);
 router.get("/viewInventory",authorization.tokenAuthorize,authorization.isTechnicalOfficerRole,TOCOntroller.viewInventory);
