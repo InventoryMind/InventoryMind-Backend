@@ -162,6 +162,45 @@ class TechnicalOffcier extends User {
     return new Promise((resolve) => resolve({ action: false }));
   }
 
+  async markAsAvailable(eqId) {
+    const validateData = Joi.object({
+      eqId: Joi.string().max(10).required(),
+    }).validate({
+      eqId: eqId,
+    });
+
+    if (validateData.error) {
+      return new Promise((resolve) =>
+        resolve({ validationError: validateData.error })
+      );
+    }
+
+    // console.log(EqId);
+    const result1=await this._database.readSingleTable("equipment",null,["eq_id","=",eqId]);
+    
+    if (this._database.connectionError) {
+      return new Promise((resolve) => resolve({ connectionError: true }));
+    }
+
+    if (result1.error || result1.result.rowCount == 0) {
+      return new Promise((resolve) => resolve({ action: false,notFound:true }));
+    }
+
+    const result = await this._database.update("equipment", [
+      "state",
+      "=",
+      0,
+      "eq_id",
+      "=",
+      eqId,
+    ]);
+    // console.log(result);
+    if (!result.error && result.result.rowCount != 0) {
+      return new Promise((resolve) => resolve({ action: true }));
+    }
+    return new Promise((resolve) => resolve({ action: false }));
+  }
+
   async getBorrowDetails(borrowId,type){
     if (this._database.connectionError) {
       return new Promise((resolve) => resolve({ connectionError: true }));
