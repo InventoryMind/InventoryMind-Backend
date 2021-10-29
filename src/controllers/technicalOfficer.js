@@ -133,6 +133,39 @@ exports.removeEquipment= async (req,res)=>{
       });
 }
 
+exports.markAsNotUsable= async (req,res)=>{
+  const TO= new TechnicalOffcier({email:req.user.mail,userType:req.user.userType,userId:req.user.userId});
+  const result = await TO.markAsNotUsable(req.params.eqId);
+  // console.log(req.params.eqId);
+  if (result.validationError) {
+      return res.json({
+        msg: "validation error",
+      });
+    }
+  
+    if (result.connectionError) {
+      return res.json({
+        msg: "Connection erroe",
+      });
+    }
+    
+    if (result.notFound){
+      return res.json({
+        msg:"Eq Not Found",
+        notInLab:true
+      })
+    }
+    if (result.action) {
+      return res.json({
+        msg: "Success",
+      });
+    }
+  
+    return res.json({
+      msg: "Failed",
+    });
+}
+
 exports.transferEquipment = async (req,res)=>{
     const TO=new TechnicalOffcier({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
     const result= await TO.transferEquipment(req.body.eqId,req.body.labId);
