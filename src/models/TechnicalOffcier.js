@@ -380,26 +380,27 @@ class TechnicalOffcier extends User {
 
     let data=result.result.rows
     console.log(data)
-   let data1={available:0,requested:0,temporaryBorrowed:0,normalBorrowed:0,notUsable:0,removed:0}
+   let data1=[{state:"Available",count:0},{state:"Requested",count:0},{state:"Temporary Borrowed",count:0},{state:"Normal Borrowed",count:0},{state:"Not Usable",count:0},{state:"Removed",count:0}]
     data.forEach(element=>{
-      if (element.state==0){
-      data1.available=element.count
-      }
-      else if (element.state==1){
-        data1.requested=element.count
-      }
-      else if (element.state==2){
-        data1.temporaryBorrowed=element.count
-      }
-      else if (element.state==3){
-        data1.normalBorrowed=element.count
-      }
-      else if (element.state==4){
-        data1.notUsable=element.count
-      }
-      else if (element.state==5){
-        data1.removed=element.count
-      }
+      data1[element.state].count=element.count;
+      // if (element.state==0){
+      // data1[0].count=element.count
+      // }
+      // else if (element.state==1){
+      //   data1.requested=element.count
+      // }
+      // else if (element.state==2){
+      //   data1.temporaryBorrowed=element.count
+      // }
+      // else if (element.state==3){
+      //   data1.normalBorrowed=element.count
+      // }
+      // else if (element.state==4){
+      //   data1.notUsable=element.count
+      // }
+      // else if (element.state==5){
+      //   data1.removed=element.count
+      // }
     })
   
     console.log(data1)
