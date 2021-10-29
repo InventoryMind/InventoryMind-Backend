@@ -380,7 +380,7 @@ class TechnicalOffcier extends User {
 
     let data=result.result.rows
     console.log(data)
-   let data1={}
+   let data1={available:0,requested:0,temporaryBorrowed:0,normalBorrowed:0,notUsable:0,removed:0}
     data.forEach(element=>{
       if (element.state==0){
       data1.available=element.count

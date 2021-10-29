@@ -1,4 +1,5 @@
 const TechnicalOffcier = require("../models/TechnicalOffcier");
+const Email = require("../utils/Email");
 
 exports.addEquipment = async (req, res) => {
   const to = new TechnicalOffcier({
