@@ -132,7 +132,7 @@ exports.addLaboratory=async (req,res)=>{
         });
     }
 
-    return res.status(200).json({
+    return res.status(400).json({
         title: "Failed",
         status: "200",
         message: "Try Again Later",
@@ -159,7 +159,7 @@ exports.removeLaboratory=async (req,res)=>{
         });
     }
 
-    return res.status(200).json({
+    return res.status(400).json({
         title:"Failed",
         status:"200",
         message:"Laboratory couldn't be deleted"
@@ -171,9 +171,9 @@ exports.viewAssignedTO = async (req,res)=>{
     const result=await admin.viewAssignedTechnicalOfficers();
    
     if (result.connectionError){
-        return res.status(400).json({
+        return res.status(500).json({
             title:"Error",
-            status:"400",
+            status:"500",
             message:"Internal Error"
         });
     }
@@ -186,7 +186,7 @@ exports.viewAssignedTO = async (req,res)=>{
         });
     }
 
-    return res.status(200).json({
+    return res.status(400).json({
         title:"Failed",
         status:"200",
         message:"Try again Later"
@@ -199,17 +199,20 @@ exports.getUserDetails = async(req,res)=>{
     // console.log(req.cookie)
     if (result.connectionError){
         return res.status(500).json({
+            title:"Error",
             msg:"connection error"
         });
     }
 
     if (result.action){
         return res.status(200).json({
+            title:"Success",
             msg:result.data
         });
     }
 
-    return res.status(201).json({
+    return res.status(400).json({
+        title:"Failed",
         msg:"Failed"
     });
 }
@@ -220,17 +223,20 @@ exports.viewLaboratories = async(req,res)=>{
     console.log(req.body)
     if (result.connectionError){
         return res.status(500).json({
+            title:"Error",
             msg:"connection error"
         });
     }
 
     if (result.action){
         return res.status(200).json({
+            title:"Success",
             msg:result.result
         });
     }
 
-    return res.status(201).json({
+    return res.status(400).json({
+        title:"Failed",
         msg:"Failed"
     });
 }
@@ -241,17 +247,20 @@ exports.viewUsers = async(req,res)=>{
     console.log(req.body)
     if (result.connectionError){
         return res.status(500).json({
+            title:"Error",
             msg:"connection error"
         });
     }
 
     if (result.action){
         return res.status(200).json({
+            title:"Success",
             msg:result.result
         });
     }
 
-    return res.status(201).json({
+    return res.status(400).json({
+        title:"Failed",
         msg:"Failed"
     });
 }
@@ -262,17 +271,20 @@ exports.getBuildings = async(req,res)=>{
     console.log(req.body)
     if (result.connectionError){
         return res.status(500).json({
+            title:"Error",
             msg:"connection error"
         });
     }
 
     if (result.action){
         return res.status(200).json({
+            title:"Success",
             msg:result.result
         });
     }
 
-    return res.status(201).json({
+    return res.status(400).json({
+        title:"Failed",
         msg:"Failed"
     });
 }
@@ -283,17 +295,20 @@ exports.getLabs = async(req,res)=>{
     console.log(req.body)
     if (result.connectionError){
         return res.status(500).json({
+            title:"Error",
             msg:"connection error"
         });
     }
 
     if (result.action){
         return res.status(200).json({
+            title:"Success",
             msg:result.result
         });
     }
 
-    return res.status(201).json({
+    return res.status(400).json({
+        title:"Failed",
         msg:"Failed"
     });
 }
@@ -304,17 +319,20 @@ exports.getTOs = async(req,res)=>{
     console.log(req.body)
     if (result.connectionError){
         return res.status(500).json({
+            title:"Error",
             msg:"connection error"
         });
     }
 
     if (result.action){
         return res.status(200).json({
+            title:"Success",
             msg:result.result
         });
     }
 
-    return res.status(201).json({
+    return res.status(400).json({
+        title:"Failed",
         msg:"Failed"
     });
 }
@@ -339,7 +357,7 @@ exports.addEquipType=async (req,res)=>{
         });
     }
 
-    return res.status(200).json({
+    return res.status(400).json({
         title:"Failed",
         status:"200",
         message:"Type couldn't be added"
@@ -352,17 +370,20 @@ exports.getDashboardData=async (req,res)=>{
     // console.log(result);
     if (result.connectionError){
         return res.status(500).json({
+            title:"Error",
             msg:"connection error"
         });
     }
   
     if (result.action){
         return res.status(200).json({
+            title:"Success",
             msg:result.data
         });
     }
   
-    return res.status(401).json({
+    return res.status(400).json({
+        title:"Failed",
         msg:"Failed"
     })
   }

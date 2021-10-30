@@ -27,7 +27,7 @@ exports.register=async (req,res)=>{
         });
     }
 
-    return res.status(201).json({
+    return res.status(400).json({
         msg:"Failed"
     });
 }
@@ -54,7 +54,7 @@ exports.makeBorrowRequest=async (req,res)=>{
         });
     }
 
-    return res.status(401).json({
+    return res.status(400).json({
         msg:"Failed"
     })
 }
@@ -82,7 +82,7 @@ exports.borrowTemporarily=async (req,res)=>{
         });
     }
 
-    return res.status(401).json({
+    return res.status(400).json({
         msg:"Failed"
     })
 }
@@ -104,7 +104,7 @@ exports.getDashboardDataM=async (req,res)=>{
         });
     }
 
-    return res.status(401).json({
+    return res.status(400).json({
         msg:"Failed"
     })
 }
@@ -125,7 +125,7 @@ exports.viewAllRequest=async (req,res)=>{
         });
     }
 
-    return res.status(401).json({
+    return res.status(400).json({
         msg:"Failed"
     })
 }
@@ -146,7 +146,7 @@ exports.viewRequest=async (req,res)=>{
         });
     }
 
-    return res.status(401).json({
+    return res.status(400).json({
         msg:"Failed"
     })
 }
@@ -167,7 +167,7 @@ exports.viewBorrowedHistory=async (req,res)=>{
         });
     }
 
-    return res.status(401).json({
+    return res.status(400).json({
         msg:"Failed"
     })
 }
@@ -188,7 +188,7 @@ exports.viewBorrowDetails=async (req,res)=>{
         });
     }
 
-    return res.status(401).json({
+    return res.status(400).json({
         msg:"Failed"
     })
 }
@@ -209,7 +209,7 @@ exports.getUserDetails = async(req,res)=>{
         });
     }
 
-    return res.status(201).json({
+    return res.status(400).json({
         msg:"Failed"
     });
 }
