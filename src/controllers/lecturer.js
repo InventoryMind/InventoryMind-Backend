@@ -22,7 +22,7 @@ exports.approve = async(req,res)=>{
         });
     }
 
-    return res.status(201).json({
+    return res.status(400).json({
         msg:"Failed"
     });
 }
@@ -49,7 +49,7 @@ exports.reject = async(req,res)=>{
         });
     }
 
-    return res.status(201).json({
+    return res.status(400).json({
         msg:"Failed"
     });
 }
@@ -70,7 +70,7 @@ exports.getDashboardDataMob = async(req,res)=>{
         });
     }
 
-    return res.status(201).json({
+    return res.status(400).json({
         msg:"Failed"
     });
 }
@@ -91,7 +91,7 @@ exports.getUserDetails = async(req,res)=>{
         });
     }
 
-    return res.status(201).json({
+    return res.status(400).json({
         msg:"Failed"
     });
 }
@@ -112,7 +112,7 @@ exports.viewAllRequests=async (req,res)=>{
         });
     }
 
-    return res.status(401).json({
+    return res.status(400).json({
         msg:"Failed"
     })
 }
@@ -133,7 +133,7 @@ exports.viewPendingRequest=async (req,res)=>{
         });
     }
 
-    return res.status(401).json({
+    return res.status(400).json({
         msg:"Failed"
     })
 }
@@ -154,7 +154,7 @@ exports.viewRequest=async (req,res)=>{
         });
     }
 
-    return res.status(401).json({
+    return res.status(400).json({
         msg:"Failed"
     })
 }

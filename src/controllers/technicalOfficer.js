@@ -32,7 +32,7 @@ exports.addEquipment = async (req, res) => {
     });
   }
 
-  return res.json({
+  return res.status(400).json({
     msg: "Failed",
   });
 };
@@ -42,18 +42,19 @@ exports.getLabs= async (req,res)=>{
   const result = await TO.getLabs();
   
     if (result.connectionError) {
-      return res.json({
+      return res.status(500).json({
         msg: "Connection erroe",
       });
     }
     
     if (result.action) {
-      return res.json({
+      return res.status(200).json({
+        title:"Success",
         msg: result.data
       });
     }
   
-    return res.json({
+    return res.status(400).json({
       msg: "Failed",
     });
 }
@@ -63,18 +64,18 @@ exports.getUserStats= async (req,res)=>{
   const result = await TO.getUserStats();
   
     if (result.connectionError) {
-      return res.json({
+      return res.status(500).json({
         msg: "Connection erroe",
       });
     }
     
     if (result.action) {
-      return res.json({
+      return res.status(200).json({
         msg: result.data
       });
     }
   
-    return res.json({
+    return res.status(400).json({
       msg: "Failed",
     });
 }
@@ -84,18 +85,18 @@ exports.getRequestStats= async (req,res)=>{
   const result = await TO.getRequestStats();
   
     if (result.connectionError) {
-      return res.json({
+      return res.status(500).json({
         msg: "Connection erroe",
       });
     }
     
     if (result.action) {
-      return res.json({
+      return res.status(200).json({
         msg: result.data
       });
     }
   
-    return res.json({
+    return res.status(400).json({
       msg: "Failed",
     });
 }
@@ -105,30 +106,30 @@ exports.removeEquipment= async (req,res)=>{
     const result = await TO.removeEquipment(req.params.eqId);
     // console.log(req.params.eqId);
     if (result.validationError) {
-        return res.json({
+        return res.status(400).json({
           msg: "validation error",
         });
       }
     
       if (result.connectionError) {
-        return res.json({
+        return res.status(500).json({
           msg: "Connection erroe",
         });
       }
       
       if (result.notFound){
-        return res.json({
+        return res.status(404).json({
           msg:"Eq Not Found",
           notInLab:true
         })
       }
       if (result.action) {
-        return res.json({
+        return res.status(200).json({
           msg: "Success",
         });
       }
     
-      return res.json({
+      return res.status(400).json({
         msg: "Failed",
       });
 }
@@ -138,30 +139,30 @@ exports.markAsNotUsable= async (req,res)=>{
   const result = await TO.markAsNotUsable(req.params.eqId);
   // console.log(req.params.eqId);
   if (result.validationError) {
-      return res.json({
+      return res.status(400).json({
         msg: "validation error",
       });
     }
   
     if (result.connectionError) {
-      return res.json({
+      return res.status(500).json({
         msg: "Connection erroe",
       });
     }
     
     if (result.notFound){
-      return res.json({
+      return res.status(404).json({
         msg:"Eq Not Found",
         notInLab:true
       })
     }
     if (result.action) {
-      return res.json({
+      return res.status(200).json({
         msg: "Success",
       });
     }
   
-    return res.json({
+    return res.status(400).json({
       msg: "Failed",
     });
 }
@@ -171,30 +172,30 @@ exports.markAsAvailable= async (req,res)=>{
   const result = await TO.markAsAvailable(req.params.eqId);
   // console.log(req.params.eqId);
   if (result.validationError) {
-      return res.json({
+      return res.status(400).json({
         msg: "validation error",
       });
     }
   
     if (result.connectionError) {
-      return res.json({
+      return res.status(500).json({
         msg: "Connection erroe",
       });
     }
     
     if (result.notFound){
-      return res.json({
+      return res.status(404).json({
         msg:"Eq Not Found",
         notInLab:true
       })
     }
     if (result.action) {
-      return res.json({
+      return res.status(200).json({
         msg: "Success",
       });
     }
   
-    return res.json({
+    return res.status(400).json({
       msg: "Failed",
     });
 }
@@ -204,31 +205,31 @@ exports.transferEquipment = async (req,res)=>{
     const result= await TO.transferEquipment(req.body.eqId,req.body.labId);
 
     if (result.validationError) {
-        return res.json({
+        return res.status(400).json({
           msg: "validation error",
         });
       }
     
       if (result.connectionError) {
-        return res.json({
+        return res.status(500).json({
           msg: "Connection error",
         });
       }
       
       if (result.notFound){
-        return res.json({
+        return res.status(404).json({
           msg:'Equipment not found',
           notInLab:true
         })
       }
 
       if (result.action) {
-        return res.json({
+        return res.status(200).json({
           msg: "Success",
         });
       }
     
-      return res.json({
+      return res.status(400).json({
         msg: "Failed",
       });
 }
@@ -238,24 +239,24 @@ exports.reportEquipCondition = async (req,res)=>{
     const result= await TO.reportCondition(req.body.eqId,req.body.condition);
     console.log(result);
     if (result.validationError) {
-        return res.json({
+        return res.status(400).json({
           msg: "validation error",
         });
       }
     
       if (result.connectionError) {
-        return res.json({
+        return res.status(500).json({
           msg: "Connection error",
         });
       }
     
       if (result.action) {
-        return res.json({
+        return res.status(200).json({
           msg: "Success",
         });
       }
     
-      return res.json({
+      return res.status(400).json({
         msg: "Failed",
       });
 }
@@ -266,19 +267,19 @@ exports.viewInventory = async (req,res)=>{
   console.log(result);
      
     if (result.connectionError) {
-      return res.json({
+      return res.status(500).json({
         msg: "Connection error",
       });
     }
   
     if (result.action) {
-      return res.json({
+      return res.status(200).json({
         msg: "Success",
         data:result.data
       });
     }
   
-    return res.json({
+    return res.status(400).json({
       msg: "Failed",
     });
 }
@@ -289,19 +290,19 @@ exports.viewBorrowedEquipments = async (req,res)=>{
   console.log(result);
      
     if (result.connectionError) {
-      return res.json({
+      return res.status(500).json({
         msg: "Connection error",
       });
     }
   
     if (result.action) {
-      return res.json({
+      return res.status(200).json({
         msg: "Success",
         data:result.data
       });
     }
   
-    return res.json({
+    return res.status(400).json({
       msg: "Failed",
     });
 }
@@ -312,19 +313,19 @@ exports.viewAvailableLabEquips = async (req,res)=>{
     console.log(result);
        
       if (result.connectionError) {
-        return res.json({
+        return res.status(500).json({
           msg: "Connection error",
         });
       }
     
       if (result.action) {
-        return res.json({
+        return res.status(200).json({
           msg: "Success",
           data:result.data
         });
       }
     
-      return res.json({
+      return res.status(400).json({
         msg: "Failed",
       });
 }
@@ -335,19 +336,19 @@ exports.getEquipTypes = async (req,res)=>{
     // console.log(result);
        
       if (result.connectionError) {
-        return res.json({
+        return res.status(400).json({
           msg: "Connection error",
         });
       }
     
       if (result.action) {
-        return res.json({
+        return res.status(200).json({
           msg: "Success",
           data:result.data
         });
       }
     
-      return res.json({
+      return res.status(400).json({
         msg: "Failed",
       });
 }
@@ -368,7 +369,7 @@ exports.getDashboardDataM=async (req,res)=>{
       });
   }
 
-  return res.status(401).json({
+  return res.status(400).json({
       msg:"Failed"
   })
 }
@@ -389,7 +390,7 @@ exports.getUserDetails = async(req,res)=>{
       });
   }
 
-  return res.status(201).json({
+  return res.status(400).json({
       msg:"Failed"
   });
 }
@@ -410,7 +411,7 @@ exports.getBorrowDetails=async (req,res)=>{
       });
   }
 
-  return res.status(401).json({
+  return res.status(400).json({
       msg:"Failed"
   })
 }
@@ -420,24 +421,24 @@ exports.acceptReturns = async (req,res)=>{
   const result= await TO.acceptReturns(req.body.borrowId,req.body.type);
   console.log(result);
   if (result.validationError) {
-      return res.json({
+      return res.status(400).json({
         msg: "validation error",
       });
     }
   
     if (result.connectionError) {
-      return res.json({
+      return res.status(500).json({
         msg: "Connection error",
       });
     }
   
     if (result.action) {
-      return res.json({
+      return res.status(200).json({
         msg: "Success",
       });
     }
   
-    return res.json({
+    return res.status(400).json({
       msg: "Failed",
     });
 }
