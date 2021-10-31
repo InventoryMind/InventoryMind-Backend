@@ -226,7 +226,7 @@ class Lecturer extends User{
     
           const result=await this._database.viewRequest(reqId);
     
-        if(result.error){
+        if(result.error || result.result.rowCount==0){
             return new Promise((resolve)=>{
                 resolve({action:false})
             })
@@ -246,11 +246,7 @@ class Lecturer extends User{
         console.log(types)
         console.log(data[0])
         let res=data[0]
-        if (!res){
-            return new Promise((resolve)=>{
-                resolve({action:true,data:"No equipments found"})
-            })
-        }
+      
         let lec=await this._database.readSingleTable("lecturer",null,["user_id","=",this._u_id]);
         if(lec.error){
             return new Promise((resolve)=>{
