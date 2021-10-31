@@ -390,40 +390,50 @@ class Student extends User {
     console.log(temp_borrow)
     console.log(normal_borrow)
     let data = [];
+    let state=["Borrowed","Delayed","Returned","Cancelled"]
     temp_borrow.forEach((element) => {
       // console.log(element.date_of_borrowing.getFullYear());
       // console.log(element);
-      if (element.state == 0) {
-        if (element.state == 0) {
-          let y = element.date_of_borrowing.getFullYear();
-          let m = element.date_of_borrowing.getMonth();
-          let d = element.date_of_borrowing.getDate();
-          m = parseInt(m) + 1;
+          let by = element.date_of_borrowing.getFullYear();
+          let bm = element.date_of_borrowing.getMonth();
+          let bd = element.date_of_borrowing.getDate();
+          let retDate=new Date(element.date_of_borrowing);
+          retDate.setDate(retDate.getDate()+1);
+          let ry = retDate.getFullYear();
+          let rm=retDate.getMonth();
+          let rd=retDate.getDate();
+          bm=parseInt(bm)+1;
+          rm = parseInt(rm) + 1;
           data.push({
             requestId: element.borrow_id,
-            dateOfBorrowing: y + "/" + m + "/" + d,
-            type:"Temporary Borrowed"
+            dateOfBorrowing: by + "/" + bm + "/" + bd,
+            dateOfReturning: ry+"/"+rm+"/"+rd,
+            type:"Temporary Borrowed",
+            state:state[element.state]
           });
-        }
-      }
+        
+      
     });
 
     normal_borrow.forEach((element) => {
       // console.log(element.date_of_borrowing.getFullYear());
       // console.log(element);
-      if (element.state == 0) {
-        if (element.state == 0) {
-          let y = element.date_of_borrowing.getFullYear();
-          let m = element.date_of_borrowing.getMonth();
-          let d = element.date_of_borrowing.getDate();
-          m = parseInt(m) + 1;
+          let by = element.date_of_borrowing.getFullYear();
+          let bm = element.date_of_borrowing.getMonth();
+          let bd = element.date_of_borrowing.getDate();
+          bm = parseInt(bm) + 1;
+          let ry = element.date_of_returning.getFullYear();
+          let rm = element.date_of_returning.getMonth();
+          let rd = element.date_of_returning.getDate();
+          rm = parseInt(rm) + 1;
           data.push({
-            requestId: borrow.request_id,
-            dateOfBorrowing: y + "/" + m + "/" + d,
-            type:"Normal Borrowed"
+            requestId: element.request_id,
+            dateOfBorrowing: by + "/" + bm + "/" + bd,
+            dateOfReturning: ry+"/"+rm+"/"+rd,
+            type:"Normal Borrowed",
+            state:state[element.state]
           });
-        }
-      }
+        
     });
 
     return new Promise((resolve) => {
