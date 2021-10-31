@@ -2,6 +2,7 @@ const User = require("./User");
 const Joi = require("joi").extend(require("@joi/date"));
 const bcrypt = require("bcrypt");
 const e = require("express");
+const Email=require('../utils/Email');
 
 class Student extends User {
   constructor(data) {
@@ -55,6 +56,9 @@ class Student extends User {
     if (result.error) {
       return new Promise((resolve) => resolve({ action: false }));
     }
+    let emailSender=new Email();
+    emailSender.send(email,"Registration Successfull","You are successfully registered as a student to InventoryMind.");
+
     return new Promise((resolve) => resolve({ action: true }));
   }
 
@@ -208,8 +212,9 @@ class Student extends User {
       }
       console.log(reqId)
       const result=await this._database.viewRequest(reqId);
-      
-    if(result.error){
+      console.log(result)
+
+    if(result.error || result.result.rowCount==0){
         return new Promise((resolve)=>{
             resolve({action:false})
         })
@@ -479,7 +484,7 @@ class Student extends User {
       result=await this._database.viewTempBorrowed(borrow_id);
     }
 
-    if (result.error) {
+    if (result.error || result.result.rowCount==0) {
       return new Promise((resolve) => {
         resolve({ action: false });
       });
