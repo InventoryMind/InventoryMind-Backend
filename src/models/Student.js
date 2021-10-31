@@ -332,7 +332,7 @@ class Student extends User {
       "=",
       this._u_id,
     ],"request_id");
-    // console.log(result2)
+    console.log(result2)
 
     if (result1.error || result2.error) {
       return new Promise((resolve) => {
