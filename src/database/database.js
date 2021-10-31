@@ -155,7 +155,7 @@ class Database {
           action[2]
         );
       }
-      console.log(query)
+      // console.log(query)
       const client=await this.connect();
 
      client.query(query, (error, results) => {
