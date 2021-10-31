@@ -246,11 +246,7 @@ class Lecturer extends User{
         console.log(types)
         console.log(data[0])
         let res=data[0]
-        if (!res){
-            return new Promise((resolve)=>{
-                resolve({action:true,data:"No equipments found"})
-            })
-        }
+      
         let lec=await this._database.readSingleTable("lecturer",null,["user_id","=",this._u_id]);
         if(lec.error){
             return new Promise((resolve)=>{
