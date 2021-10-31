@@ -210,7 +210,17 @@ class Lecturer extends User{
         console.log(res)
 
         res.lecturer=lec.first_name+" "+lec.last_name;
-    
+
+        let stud=await this._database.readSingleTable("student",null,["user_id","=",res.student_id]);
+        if(stud.error){
+            return new Promise((resolve)=>{
+                resolve({action:false})
+            })
+        }
+        stud=stud.result.rows[0];
+        
+        res.student=stud.first_name+" "+stud.last_name;
+
         res.eq_id=undefined;
         res.type_id=undefined;
         res.type=undefined;
