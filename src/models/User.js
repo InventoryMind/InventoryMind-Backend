@@ -79,7 +79,7 @@ class User {
             }
         }));
     }
-
+    
     async getUserDetails(){
         if (this._database.connectionError){
             return new Promise((resolve)=>{
