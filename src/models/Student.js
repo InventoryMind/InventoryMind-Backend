@@ -321,39 +321,44 @@ class Student extends User {
       });
     }
 
-    var result = await this._database.readSingleTable("request", null, [
+    var result1 = await this._database.readSingleTable("temporary_borrowing", null, [
       "student_id",
       "=",
       this._u_id,
     ]);
-    // console.log(result.result)
 
-    if (result.error) {
+    var result2 = await this._database.readTwoTable("normal_borrowing","request",[
+      "student_id",
+      "=",
+      this._u_id,
+    ],"request_id");
+    // console.log(result2)
+
+    if (result1.error || result2.error) {
       return new Promise((resolve) => {
         resolve({ action: false });
       });
     }
-    result = result.result.rows;
-    // console.log(result)
-    let data = [];
-    let state=["Pending","Accepted","Rejected"];
-    result.forEach((element) => {
-      // console.log(element.date_of_borrowing.getFullYear());
-      console.log(element);
-      if (element.state == 0) {
-        if (element.state == 0) {
-          let y = element.date_of_borrowing.getFullYear();
-          let m = element.date_of_borrowing.getMonth();
-          let d = element.date_of_borrowing.getDate();
-          m = parseInt(m) + 1;
-          data.push({
-            requestId: element.request_id,
-            dateOfBorrowing: y + "/" + m + "/" + d,
-            state:state[element.state]
-          });
-        }
+    let temp_borrow= result1.result.rows;
+    let normal_borrow=result2.result.rows;
+    // console.log(temp_borrow)
+    // console.log(normal_borrow)
+    let temp_borrow1=[];
+    let normal_borrow1=[];
+    temp_borrow.forEach(element=>{
+      if (element.state==0){
+        temp_borrow1.push(element);
       }
     });
+    normal_borrow.forEach(element=>{
+      if (element.state==0){
+        normal_borrow1.push(element);
+      }
+    });
+
+    let data1 =this.formatTempBorrows(temp_borrow1);
+    let data2=this.formatNormalBorrows(normal_borrow1);
+    let data=[...data1,...data2];
 
     return new Promise((resolve) => {
       resolve({ action: true, data: data });
@@ -378,7 +383,7 @@ class Student extends User {
       "=",
       this._u_id,
     ],"request_id");
-    console.log(result2)
+    // console.log(result2)
 
     if (result1.error || result2.error) {
       return new Promise((resolve) => {
@@ -387,10 +392,22 @@ class Student extends User {
     }
     let temp_borrow= result1.result.rows;
     let normal_borrow=result2.result.rows;
-    console.log(temp_borrow)
-    console.log(normal_borrow)
-    let data = [];
-    let state=["Borrowed","Delayed","Returned","Cancelled"]
+    // console.log(temp_borrow)
+    // console.log(normal_borrow)
+    
+
+    let data1 =this.formatTempBorrows(temp_borrow);
+    let data2=this.formatNormalBorrows(normal_borrow);
+    let data=[...data1,...data2];
+
+    return new Promise((resolve) => {
+      resolve({ action: true, data: data });
+    });
+  }
+
+  formatTempBorrows(temp_borrow){
+  let state=["Borrowed","Delayed","Returned","Cancelled"]
+  let data=[]
     temp_borrow.forEach((element) => {
       // console.log(element.date_of_borrowing.getFullYear());
       // console.log(element);
@@ -411,36 +428,35 @@ class Student extends User {
             type:"Temporary Borrowed",
             state:state[element.state]
           });
-        
-      
     });
-
-    normal_borrow.forEach((element) => {
-      // console.log(element.date_of_borrowing.getFullYear());
-      // console.log(element);
-          let by = element.date_of_borrowing.getFullYear();
-          let bm = element.date_of_borrowing.getMonth();
-          let bd = element.date_of_borrowing.getDate();
-          bm = parseInt(bm) + 1;
-          let ry = element.date_of_returning.getFullYear();
-          let rm = element.date_of_returning.getMonth();
-          let rd = element.date_of_returning.getDate();
-          rm = parseInt(rm) + 1;
-          data.push({
-            requestId: element.request_id,
-            dateOfBorrowing: by + "/" + bm + "/" + bd,
-            dateOfReturning: ry+"/"+rm+"/"+rd,
-            type:"Normal Borrowed",
-            state:state[element.state]
-          });
-        
-    });
-
-    return new Promise((resolve) => {
-      resolve({ action: true, data: data });
-    });
+    return data;
   }
 
+ formatNormalBorrows(normal_borrow){
+  let state=["Borrowed","Delayed","Returned","Cancelled"]
+  let data=[]
+  normal_borrow.forEach((element) => {
+    // console.log(element.date_of_borrowing.getFullYear());
+    // console.log(element);
+        let by = element.date_of_borrowing.getFullYear();
+        let bm = element.date_of_borrowing.getMonth();
+        let bd = element.date_of_borrowing.getDate();
+        bm = parseInt(bm) + 1;
+        let ry = element.date_of_returning.getFullYear();
+        let rm = element.date_of_returning.getMonth();
+        let rd = element.date_of_returning.getDate();
+        rm = parseInt(rm) + 1;
+        data.push({
+          requestId: element.request_id,
+          dateOfBorrowing: by + "/" + bm + "/" + bd,
+          dateOfReturning: ry+"/"+rm+"/"+rd,
+          type:"Normal Borrowed",
+          state:state[element.state]
+        });
+      
+  });
+  return data;
+}
   async viewBorrowDetails(borrow_id,type){
     if (this._database.connectionError) {
       return new Promise((resolve) => {
