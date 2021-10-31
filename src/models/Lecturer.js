@@ -1,5 +1,6 @@
 const User = require("./User");
 const Joi=require('joi');
+const { viewAllRequest } = require("../controllers/student");
 
 class Lecturer extends User{
     constructor(data){
@@ -117,6 +118,56 @@ class Lecturer extends User{
             return new Promise((resolve) => {
               resolve({ action: true, data: data });
             });  
+    }
+
+    async viewAcceptedRequest(){
+        let all=await this.viewAllRequests();
+
+        if (all.connectionError){
+            return new Promise((resolve)=>{
+                resolve({connectionError:true});
+            })
+        }
+
+        if (!all.action){
+            return new Promise((resolve)=>{
+                resolve({action:false});
+            });
+        }
+        all=all.data;
+        let accepted=all.filter(element=>element.state=="Accepted");
+
+        return new Promise((resolve)=>{
+            resolve({
+                action:true,
+                data:accepted
+            })
+        })
+    }
+
+    async viewRejectedRequest(){
+        let all=await this.viewAllRequests();
+
+        if (all.connectionError){
+            return new Promise((resolve)=>{
+                resolve({connectionError:true});
+            })
+        }
+
+        if (!all.action){
+            return new Promise((resolve)=>{
+                resolve({action:false});
+            });
+        }
+        all=all.data;
+        let rejected=all.filter(element=>element.state=="Rejected");
+
+        return new Promise((resolve)=>{
+            resolve({
+                action:true,
+                data:rejected
+            })
+        })
     }
 
     async viewPendingRequests(){
