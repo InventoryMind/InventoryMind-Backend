@@ -226,7 +226,7 @@ class Lecturer extends User{
     
           const result=await this._database.viewRequest(reqId);
     
-        if(result.error){
+        if(result.error || result.result.rowCount==0){
             return new Promise((resolve)=>{
                 resolve({action:false})
             })
