@@ -3,6 +3,8 @@ const Joi = require("joi");
 const User = require("./User");
 const bcrypt=require('bcrypt');
 const { Pool } = require("pg");
+const Email= require('../utils/Email');
+const generator = require('generate-password');
 
 class Admin extends User{
     constructor(data){
@@ -85,13 +87,17 @@ class Admin extends User{
         if(this._database.connectionError){
             return new Promise((resolve)=>resolve({connectionError:true}));
         }
-        let password=firstName+'@'+userId;
+        // let password=firstName+'@'+userId;
+        var password = generator.generate({
+            length: 15,
+            numbers: true
+        });
          //encrypt the password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
-        password = hashedPassword;
+        // password = hashedPassword;
 
-        const values=[userId,firstName,lastName,email,password,contactNo,true];
+        const values=[userId,firstName,lastName,email,hashedPassword,contactNo,true];
         // console.log(values);
         //console.log([staffType,[userId,firstName,lastName,email,password,contactNo,true]]);
         const result=await this._database.insert(staffType,null,values);
@@ -100,6 +106,9 @@ class Admin extends User{
         if (result.error){
             return new Promise((resolve)=>resolve({action:false}))
         }
+        // console.log(password)
+        let emailSender=new Email();
+        emailSender.send(email,"Registration Successfull","You are successfully registered as a "+staffType+" to InventoryMind.\nUsername: "+email+" \nPassword: "+password+"\nPlease login to the system using this credintials and change your password.");
 
         return new Promise((resolve)=>resolve({action:true}));
 
