@@ -450,3 +450,66 @@ exports.getDashboardData=async (req,res)=>{
         msg:"Failed"
     })
   }
+
+  exports.getEquipStats=async (req,res)=>{
+    const admin= new Admin({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
+    const result = await admin.getEquipStats(req.params.labId);
+    // console.log(result);
+    if (result.connectionError){
+        return res.status(500).json({
+            msg:"connection error"
+        });
+    }
+  
+    if (result.action){
+        return res.status(200).json({
+            msg:result.data
+        });
+    }
+  
+    return res.status(400).json({
+        msg:"Failed"
+    })
+  }
+
+  exports.getRequestStats=async (req,res)=>{
+    const admin= new Admin({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
+    const result = await admin.getRequestStats(req.params.labId);
+    // console.log(result);
+    if (result.connectionError){
+        return res.status(500).json({
+            msg:"connection error"
+        });
+    }
+  
+    if (result.action){
+        return res.status(200).json({
+            msg:result.data
+        });
+    }
+  
+    return res.status(400).json({
+        msg:"Failed"
+    })
+  }
+
+  exports.getUserStats=async (req,res)=>{
+    const admin= new Admin({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
+    const result = await admin.getUserStats(req.params.labId);
+    // console.log(result);
+    if (result.connectionError){
+        return res.status(500).json({
+            msg:"connection error"
+        });
+    }
+  
+    if (result.action){
+        return res.status(200).json({
+            msg:result.data
+        });
+    }
+  
+    return res.status(400).json({
+        msg:"Failed"
+    })
+  }

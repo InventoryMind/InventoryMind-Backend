@@ -258,9 +258,6 @@ class Admin extends User{
         return new Promise((resolve)=>resolve({action:true,result:data}));
     }
 
-    viewReports(){
-
-    }
 
     async addEquipType(type,brand){
         if(this._database.connectionError){
@@ -396,7 +393,7 @@ class Admin extends User{
     
         let techOff=result.result.rows[0].count
     
-        let data={lecturer:lecturer,student:student,technicalOffcier:techOff}
+        let data={lecturer:lecturer,student:student,technicalOfficer:techOff}
     
         return new Promise((resolve)=>resolve({action:true,data:data}));
       }
@@ -439,6 +436,128 @@ class Admin extends User{
     
         return new Promise((resolve)=>resolve({action:true,data:data1}));
       }
+
+    //   async getUserStats() {
+    //     if (this._database.connectionError) {
+    //       return new Promise((resolve) => {
+    //         resolve({ connectionError: true });
+    //       });
+    //     }
+    
+    //     let result = await this._database.getCount("student", null, [
+    //       "user_id",
+    //       "!=",
+    //       "",
+    //     ]);
+    
+    //     if (result.error || result.result.rowCount==0) {
+    //       return new Promise((resolve) => resolve({
+    //         action: false
+    //       }));
+    //     }
+    
+    //     let student=result.result.rows[0].count
+        
+    //     result = await this._database.getCount("lecturer", null, [
+    //       "user_id",
+    //       "!=",
+    //       "",
+    //     ]);
+    
+    //     if (result.error || result.result.rowCount==0) {
+    //       return new Promise((resolve) => resolve({
+    //         action: false
+    //       }));
+    //     }
+    
+    //     let lecturer=result.result.rows[0].count
+    
+    //     result = await this._database.getCount("technical_officer", null, [
+    //       "user_id",
+    //       "!=",
+    //       "",
+    //     ]);
+    
+    //     if (result.error || result.result.rowCount==0) {
+    //       return new Promise((resolve) =>resolve({
+    //         action: false
+    //       }));
+    //     }
+    
+    //     let techOff=result.result.rows[0].count
+    
+    //     let data={lecturer:lecturer,student:student,technicalOfficer:techOff}
+    
+    //     return new Promise((resolve)=>resolve({action:true,data:data}));
+    //   }
+
+    //   async getRequestStats(labId) {
+    //     if (this._database.connectionError) {
+    //       return new Promise((resolve) => {
+    //         resolve({ connectionError: true });
+    //       });
+    //     }
+    
+    //     let query=format("select DISTINCT(request_id),lab_id,request.state as state from request join requested_equipments using (request_id) join equipment using (eq_id) where lab_id=%L",labId);
+    //     let result = await this._database.query(query);
+    //     if (result.error) {
+    //       return new Promise((resolve) => {
+    //         action: false;
+    //       });
+    //     }
+    
+    //     console.log(result);
+    
+    //     let data=result.result.rows
+    
+    //     let count={pending:0,accepted:0,rejected:0}
+    
+    //     data.forEach(element=>{
+    //       if (element.state==0){
+    //         count.pending+=1;
+    //       }
+    //       else if(element.state==1){
+    //         count.accepted+=1;
+    //       }
+    //       else{
+    //         count.rejected+=1;
+    //       }
+    //     })
+    
+    //     return new Promise((resolve)=>resolve({action:true,data:count}));
+    //   }
+
+    //   async getEquipStats(labId) {
+    //     if (this._database.connectionError) {
+    //       return new Promise((resolve) => {
+    //         resolve({ connectionError: true });
+    //       });
+    //     }
+    
+    //     const result = await this._database.getCount("equipment", "state", [
+    //       "lab_id",
+    //       "=",
+    //       labId,
+    //     ]);
+    
+    //     if (result.error) {
+    //       return new Promise((resolve) => {
+    //         action: false;
+    //       });
+    //     }
+    
+    //     let data=result.result.rows
+    //     console.log(data)
+    //    let data1=[{state:"Available",count:0},{state:"Requested",count:0},{state:"Temporary Borrowed",count:0},{state:"Normal Borrowed",count:0},{state:"Not Usable",count:0},{state:"Removed",count:0}]
+    //     data.forEach(element=>{
+    //       data1[element.state].count=element.count;
+    //     })
+      
+    //     console.log(data1)
+    
+    //     return new Promise((resolve)=>resolve({action:true,data:data1}));
+    //   }
+
 }
 
 module.exports = Admin;
