@@ -541,6 +541,46 @@ class Student extends User {
     })
 
   }
+
+  async getLabs(){
+    if (this._database.connectionError){
+        return new Promise((resolve)=>resolve({connectionError:true}));
+    }
+
+    const results=await this._database.readSingleTable('laboratory',null,["is_active","=",true]);
+    console.log(results);
+    if (results.error){
+        return new Promise ((resolve)=>resolve({action:false}));
+    }
+    let data=results.result.rows;
+    data.forEach(element=>{
+      element.is_active=undefined;
+      element.b_id=undefined;
+      
+    })
+    return new Promise((resolve)=>resolve({action:true,result:data}));
+}
+
+async getLecturers(){
+  if (this._database.connectionError){
+      return new Promise((resolve)=>resolve({connectionError:true}));
+  }
+
+  const results=await this._database.readSingleTable('lecturer',null,["is_active","=",true]);
+  console.log(results);
+  if (results.error){
+      return new Promise ((resolve)=>resolve({action:false}));
+  }
+  let data=results.result.rows;
+  data.forEach(element=>{
+    element.password=undefined;
+    element.email=undefined;
+    element.is_active=undefined;
+    element.contact_no=undefined
+  })
+  return new Promise((resolve)=>resolve({action:true,result:data}));
+}
+
 }
 
 module.exports = Student;

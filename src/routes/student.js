@@ -13,6 +13,8 @@ router.get('/viewAllRequest',authorization.tokenAuthorize,authorization.isStuden
 router.get('/viewRequest/:reqId',authorization.tokenAuthorize,authorization.isStudentRole,StudentController.viewRequest);
 router.get('/viewBorrowedHistory',authorization.tokenAuthorize,authorization.isStudentRole,StudentController.viewBorrowedHistory);
 router.post('/viewBorrow',authorization.tokenAuthorize,authorization.isStudentRole,StudentController.viewBorrowDetails);
+router.get('/getLecturerList',authorization.tokenAuthorize,authorization.isStudentRole,StudentController.getLecturers);
+router.get('/getLabList',authorization.tokenAuthorize,authorization.isStudentRole,StudentController.getLabs);
 
 
 module.exports=router;

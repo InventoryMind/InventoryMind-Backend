@@ -192,10 +192,10 @@ class Lecturer extends User{
           result = result.result.rows;
           // console.log(result)
           let data = [];
-          let state=["","Accepted","Rejected"]
           result.forEach((element) => {
             // console.log(element.date_of_borrowing.getFullYear());
-            if (element.state==0){console.log(element);
+            if (element.state==0){
+                // console.log(element);
             
              
                 let y = element.date_of_borrowing.getFullYear();
@@ -206,12 +206,12 @@ class Lecturer extends User{
                   requestId: element.request_id,
                   student:element.student_id,
                   dateOfBorrowing: y + "/" + m + "/" + d,
-                  state:state[element.state]
+                  state:"Pending"
                 });}
               
             
           });
-      
+          console.log(result)
           return new Promise((resolve) => {
             resolve({ action: true, data: data });
           });  

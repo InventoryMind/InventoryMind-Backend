@@ -213,3 +213,51 @@ exports.getUserDetails = async(req,res)=>{
         msg:"Failed"
     });
 }
+
+exports.getLabs = async(req,res)=>{
+    const student= new Student({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
+    const result=await student.getLabs();
+    console.log(req.body)
+    if (result.connectionError){
+        return res.status(500).json({
+            title:"Error",
+            msg:"connection error"
+        });
+    }
+
+    if (result.action){
+        return res.status(200).json({
+            title:"Success",
+            msg:result.result
+        });
+    }
+
+    return res.status(400).json({
+        title:"Failed",
+        msg:"Failed"
+    });
+}
+
+exports.getLecturers = async(req,res)=>{
+    const student= new Student({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
+    const result=await student.getLecturers();
+    console.log(req.body)
+    if (result.connectionError){
+        return res.status(500).json({
+            title:"Error",
+            msg:"connection error"
+        });
+    }
+
+    if (result.action){
+        return res.status(200).json({
+            title:"Success",
+            msg:result.result
+        });
+    }
+
+    return res.status(400).json({
+        title:"Failed",
+        msg:"Failed"
+    });
+}
