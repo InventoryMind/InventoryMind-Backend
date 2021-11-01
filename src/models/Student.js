@@ -427,7 +427,7 @@ class Student extends User {
           bm=parseInt(bm)+1;
           rm = parseInt(rm) + 1;
           data.push({
-            requestId: element.borrow_id,
+            borrowId: element.borrow_id,
             dateOfBorrowing: by + "/" + bm + "/" + bd,
             dateOfReturning: ry+"/"+rm+"/"+rd,
             type:"Temporary Borrowed",
@@ -452,6 +452,7 @@ class Student extends User {
         let rd = element.date_of_returning.getDate();
         rm = parseInt(rm) + 1;
         data.push({
+          borrowId:element.borrow_id,
           requestId: element.request_id,
           dateOfBorrowing: by + "/" + bm + "/" + bd,
           dateOfReturning: ry+"/"+rm+"/"+rd,
