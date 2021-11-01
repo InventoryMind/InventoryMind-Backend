@@ -2,6 +2,8 @@ const dotenv=require('dotenv');
 const bcrypt=require('bcrypt');
 const Joi=require('joi');
 const Database= require('../database/database');
+const generator = require('generate-password');
+const Email = require('../utils/Email');
 
 dotenv.config();
 
@@ -80,6 +82,74 @@ class User {
         }));
     }
     
+    async forgotPassword(){
+        var code = generator.generate({
+            length: 6,
+            numbers: true
+        });
+        var time=new Date();
+        time=time.getTime();
+        const result=await this._database.insert("verification_code",["email","verification_code"],[this._email,code])
+        if (this._database.connectionError){
+            return new Promise((resolve)=>{
+                resolve({connectionError:true})
+            })
+        }
+        console.log(result)
+        if (result.error){
+            return new Promise((resolve)=>{
+                resolve({action:false})
+            })
+        }
+        const emailSender=new Email();
+        emailSender.send(this._email,"Password reset verifiation code.","Your verification code to reset the password is "+code+" . Use it to reset your password.");
+        return new Promise((resolve)=>{
+            resolve({action:true})
+        })
+    }
+
+    async resetPassword(verificationCode,newPassword){
+        const result=await this._database.readSingleTable("verification_code",null,["email","=",this._email]);
+        if (result.error || result.rowCount==0){
+            return new Promise((resolve)=>{
+                resolve({action:false});
+            })
+        }
+        
+        let codes=result.result.rows;
+        let code = codes[0];
+        codes.forEach(element => {
+            if (element.id>code.id){
+                code=element
+            }
+        });
+         console.log(verificationCode+" "+code.verification_code)
+        if (verificationCode==code.verification_code){
+
+            const result1=await this._database.update("verification_code",["is_used","=",true,"id","=",code.id])
+            console.log(result1)
+            if (result1.error){
+                return new Promise((resolve)=>{
+                    resolve({action:false})
+                })
+            }
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(newPassword, salt);
+            const result2=await this._database.update(this._userType,["password","=",hashedPassword,"email","=",this._email])
+            if (result2.error){
+                return new Promise((resolve)=>{
+                    resolve({action:false})
+                })
+            }
+            return new Promise((resolve)=>{
+                resolve({action:true})
+            })
+        }
+        return new Promise((resolve)=>{
+            resolve({action:false,invalidVC:true})
+        })
+    }
+
     async getUserDetails(){
         if (this._database.connectionError){
             return new Promise((resolve)=>{
