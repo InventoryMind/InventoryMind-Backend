@@ -314,8 +314,6 @@ class TechnicalOffcier extends User {
     return new Promise((resolve) => resolve({ action: false }));
   }
 
-  viewReports() {}
-
   async viewInventory() {
     if (this._database.connectionError) {
       return new Promise((resolve) => resolve({ connectionError: true }));
@@ -461,24 +459,6 @@ class TechnicalOffcier extends User {
    let data1=[{state:"Available",count:0},{state:"Requested",count:0},{state:"Temporary Borrowed",count:0},{state:"Normal Borrowed",count:0},{state:"Not Usable",count:0},{state:"Removed",count:0}]
     data.forEach(element=>{
       data1[element.state].count=element.count;
-      // if (element.state==0){
-      // data1[0].count=element.count
-      // }
-      // else if (element.state==1){
-      //   data1.requested=element.count
-      // }
-      // else if (element.state==2){
-      //   data1.temporaryBorrowed=element.count
-      // }
-      // else if (element.state==3){
-      //   data1.normalBorrowed=element.count
-      // }
-      // else if (element.state==4){
-      //   data1.notUsable=element.count
-      // }
-      // else if (element.state==5){
-      //   data1.removed=element.count
-      // }
     })
   
     console.log(data1)
@@ -499,10 +479,10 @@ class TechnicalOffcier extends User {
       "",
     ]);
 
-    if (result.error) {
-      return new Promise((resolve) => {
-        action: false;
-      });
+    if (result.error || result.result.rowCount==0) {
+      return new Promise((resolve) => resolve({
+        action: false
+      }));
     }
 
     let student=result.result.rows[0].count
@@ -513,10 +493,10 @@ class TechnicalOffcier extends User {
       "",
     ]);
 
-    if (result.error) {
-      return new Promise((resolve) => {
-        action: false;
-      });
+    if (result.error || result.result.rowCount==0) {
+      return new Promise((resolve) => resolve({
+        action: false
+      }));
     }
 
     let lecturer=result.result.rows[0].count
@@ -527,10 +507,10 @@ class TechnicalOffcier extends User {
       "",
     ]);
 
-    if (result.error) {
-      return new Promise((resolve) => {
-        action: false;
-      });
+    if (result.error || result.result.rowCount==0) {
+      return new Promise((resolve) =>resolve({
+        action: false
+      }));
     }
 
     let techOff=result.result.rows[0].count

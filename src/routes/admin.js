@@ -17,5 +17,10 @@ router.post("/addEquipType",authorization.tokenAuthorize,authorization.isAdminRo
 router.get("/getTOs",authorization.tokenAuthorize,authorization.isAdminRole,adminCotroller.getTOs);
 router.get("/getLabs",authorization.tokenAuthorize,authorization.isAdminRole,adminCotroller.getLabs);
 router.get("/getDashboardData",authorization.tokenAuthorize,authorization.isAdminRole,adminCotroller.getDashboardData);
+router.get("/getRequestStats",authorization.tokenAuthorize,authorization.isAdminRole,adminCotroller.getRequestStats);
+router.get("/getUserStats",authorization.tokenAuthorize,authorization.isAdminRole,adminCotroller.getUserStats);
+router.get("/getEquipStats",authorization.tokenAuthorize,authorization.isAdminRole,adminCotroller.getEquipStats);
+
+
 
 module.exports =router;

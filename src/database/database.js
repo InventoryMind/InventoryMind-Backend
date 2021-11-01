@@ -63,13 +63,13 @@ class Database {
         query = format("INSERT INTO %I VALUES (%L)", tableName, values);
       } else {
         query = format(
-          "INSERT INTO %I((%I)) VALUES (%L)",
+          "INSERT INTO %I (%I) VALUES (%L)",
           tableName,
           columns,
           values
         );
       }
-      // console.log(query)
+      console.log(query)
       const client=await this.connect();
 
       client

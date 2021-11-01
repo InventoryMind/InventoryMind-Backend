@@ -1,4 +1,5 @@
 const jwt = require ('jsonwebtoken');
+const Admin = require('../models/Admin');
 
 const User=require('../models/User');
 
@@ -44,6 +45,79 @@ exports.login =async (req,res)=>{
         token:token
     });
 };
+
+exports.forgotPassword =async (req,res)=>{
+    const user=new User({email:req.body.email,userType:req.body.userType});
+    const result=await user.forgotPassword();
+
+    if (result.connectionError){
+        return res.status(500).json({
+            title: "Error",
+            status: "500",
+            message: "Internal Server Error",
+          });      
+    }
+
+    if (result.action){
+        const cookieOption={
+            expires: new Date(Date.now() + 10*60*1000),
+            httpOnly: true
+        };
+    
+        const payload=JSON.parse(JSON.stringify({email:req.body.email,userType:req.body.userType}));
+        const token = jwt.sign(payload,process.env.jwtPrivateKey,{expiresIn:"1h"});
+        let data={email:payload.email,userType:payload.userType};
+       return res.cookie("reset-token",token,cookieOption).status(200).json({
+            title: "Status",
+            status: "200",
+            message: "Verification code sent to your email",
+        });
+    }
+        return res.status(400).json({
+            title: "Error",
+            status: "400",
+            message: "Try again later",
+          });
+}
+
+    exports.resetPassword =async (req,res)=>{
+        const user=new User({email:req.user.email,userType:req.user.userType});
+        const result=await user.resetPassword(req.body.verificationCode,req.body.newPassword);
+    
+        if (result.connectionError){
+            return res.status(500).json({
+                title: "Error",
+                status: "500",
+                message: "Internal Server Error",
+              });      
+        }
+        console.log(result)
+        if (result.action){
+            const cookieOption = {
+                expires:new Date(Date.now() - 24*60*60*1000),
+                httpOnly : true
+            };
+            return res.cookie('reset-token',"",cookieOption).status(200).json({
+                title:"Success",
+                status:200,
+                message:"Password changed successfully"
+            });
+        }
+        
+        if (result.invalidVC){
+            return res.status(400).json({
+                title: "Error",
+                status: "400",
+                message: "Invalid Verification Code",
+              });
+        }
+        return res.status(400).json({
+            title: "Error",
+            status: "400",
+            message: "Try again later",
+          });
+      
+    }
 
 exports.logout=(req,res)=>{
     const cookieOption = {

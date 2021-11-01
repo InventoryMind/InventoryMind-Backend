@@ -25,6 +25,29 @@ exports.tokenAuthorize = (req, res, next) => {
   }
 };
 
+exports.resetTokenAuthorize = (req, res, next) => {
+  const token = req.cookies["reset-token"];
+  if (!token)
+    return res.status(401).json({
+      title: "Error",
+      status: "401",
+      message: "Access Denied. No token provided",
+    });
+
+  try {
+    const payload = jwt.verify(token, process.env.jwtPrivateKey);
+    req.user = payload;
+    // console.log(req.user["user_type"]);
+    next();
+  } catch (ex) {
+    res.status(400).json({
+      title: "Error",
+      status: "400",
+      message: "Invalid token",
+    });
+  }
+};
+
 exports.isGuestUser = (req, res, next) => {
   const token = req.cookies["auth-token"];
   if (!token) {
