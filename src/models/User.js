@@ -87,9 +87,20 @@ class User {
             length: 6,
             numbers: true
         });
-        var time=new Date();
-        time=time.getTime();
-        const result=await this._database.insert("verification_code",["email","verification_code"],[this._email,code])
+        const check=await this._database.readSingleTable(this._userType,null,["email","=",this._email]);
+
+        if (check.error){
+            return new Promise((resolve)=>{
+                resolve({action:false})
+            })
+        }
+        // console.log(check)
+        if (check.result.rowCount==0){
+            return new Promise((resolve)=>{
+                resolve({noAcc:true})
+            })
+        }
+        const result=await this._database.insert("verification_code",["email","verification_code","user_type"],[this._email,code,this._userType])
         if (this._database.connectionError){
             return new Promise((resolve)=>{
                 resolve({connectionError:true})
@@ -123,7 +134,8 @@ class User {
                 code=element
             }
         });
-         console.log(verificationCode+" "+code.verification_code)
+        console.log(verificationCode+" "+code.verification_code)
+        if (code.is_used==true)code.verification_code=""
         if (verificationCode==code.verification_code){
 
             const result1=await this._database.update("verification_code",["is_used","=",true,"id","=",code.id])

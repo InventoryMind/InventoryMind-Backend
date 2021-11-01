@@ -58,6 +58,14 @@ exports.forgotPassword =async (req,res)=>{
           });      
     }
 
+    if (result.noAcc){
+        return res.status(400).json({
+            title: "Invalid Email",
+            status: "400",
+            message: "No user found with this email address",
+          });      
+    }
+
     if (result.action){
         const cookieOption={
             expires: new Date(Date.now() + 10*60*1000),
