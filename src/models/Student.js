@@ -473,13 +473,16 @@ class Student extends User {
     let lec;
     if(type=="normal"){
       result=await this._database.viewNormalBorrowed(borrow_id);
-      lec=await this._database.readSingleTable("lecturer",null,["user_id","=",res.lecturer_id]);
+      let lecId=result.result.rows[0].lecturer_id;
+      lec=await this._database.readSingleTable("lecturer",null,["user_id","=",lecId]);
       if(lec.error){
           return new Promise((resolve)=>{
               resolve({action:false})
           })
       }
+      console.log(lec)
       lec=lec.result.rows[0];
+      
     }
     else{
       result=await this._database.viewTempBorrowed(borrow_id);
