@@ -372,6 +372,11 @@ class TechnicalOffcier extends User {
     console.log(result);
     if (!result.error && result.result.rowCount != 0) {
       let data=result.result.rows;
+      data.forEach((element)=>{
+        element.date_of_borrowing=new Date(element.date_of_borrowing).toLocaleString().split(',')[0]
+        element.date_of_returning=new Date(element.date_of_returning).toLocaleString().split(',')[0]
+
+      })
       return new Promise((resolve) =>
         resolve({ action: true, data: data })
       );
@@ -515,7 +520,7 @@ class TechnicalOffcier extends User {
 
     let techOff=result.result.rows[0].count
 
-    let data={lecturer:lecturer,student:student,technicalOffcier:techOff}
+    let data={lecturer:lecturer,student:student,technicalOfficer:techOff}
 
     return new Promise((resolve)=>resolve({action:true,data:data}));
   }

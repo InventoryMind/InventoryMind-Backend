@@ -20,6 +20,9 @@ router.get("/getDashboardData",authorization.tokenAuthorize,authorization.isAdmi
 router.get("/getRequestStats",authorization.tokenAuthorize,authorization.isAdminRole,adminCotroller.getRequestStats);
 router.get("/getUserStats",authorization.tokenAuthorize,authorization.isAdminRole,adminCotroller.getUserStats);
 router.get("/getEquipStats",authorization.tokenAuthorize,authorization.isAdminRole,adminCotroller.getEquipStats);
+// router.get("/getRequestStats/:labId",authorization.tokenAuthorize,authorization.isTechnicalOfficerRole,adminCotroller.getRequestStats);
+// router.get("/getEquipStats/:labId",authorization.tokenAuthorize,authorization.isTechnicalOfficerRole,adminCotroller.getEquipStats);
+// router.get("/getUserStats",authorization.tokenAuthorize,authorization.isTechnicalOfficerRole,adminCotroller.getUserStats);
 
 
 
