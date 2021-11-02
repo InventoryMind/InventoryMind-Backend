@@ -20,9 +20,9 @@ exports.register=async (req,res)=>{
             message:"Internal Error"
         });
     }
-
+    console.log(result)
     if (result.action){
-        res.status(200).json({
+        return res.status(200).json({
             msg:"Success"
         });
     }
