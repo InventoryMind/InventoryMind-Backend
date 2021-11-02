@@ -120,6 +120,7 @@ class User {
     }
 
     async resetPassword(verificationCode,newPassword){
+        console.log("afa")
         const result=await this._database.readSingleTable("verification_code",null,["email","=",this._email]);
         if (result.error || result.rowCount==0){
             return new Promise((resolve)=>{
@@ -145,6 +146,7 @@ class User {
                     resolve({action:false})
                 })
             }
+            console.log(newPassword)
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(newPassword, salt);
             const result2=await this._database.update(this._userType,["password","=",hashedPassword,"email","=",this._email])

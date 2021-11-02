@@ -49,7 +49,6 @@ exports.login =async (req,res)=>{
 exports.forgotPassword =async (req,res)=>{
     const user=new User({email:req.body.email,userType:req.body.userType});
     const result=await user.forgotPassword();
-
     if (result.connectionError){
         return res.status(500).json({
             title: "Error",
@@ -71,11 +70,43 @@ exports.forgotPassword =async (req,res)=>{
             expires: new Date(Date.now() + 10*60*1000),
             httpOnly: true
         };
-    
+        console.log("action true")
         const payload=JSON.parse(JSON.stringify({email:req.body.email,userType:req.body.userType}));
         const token = jwt.sign(payload,process.env.jwtPrivateKey,{expiresIn:"1h"});
-        let data={email:payload.email,userType:payload.userType};
        return res.cookie("reset-token",token,cookieOption).status(200).json({
+            title: "Status",
+            status: "200",
+            message: "Verification code sent to your email",
+        });
+    }
+        return res.status(400).json({
+            title: "Error",
+            status: "400",
+            message: "Try again later",
+          });
+}
+
+exports.resendForgotPassword =async (req,res)=>{
+    const user=new User({email:req.user.email,userType:req.user.userType});
+    const result=await user.forgotPassword();
+    if (result.connectionError){
+        return res.status(500).json({
+            title: "Error",
+            status: "500",
+            message: "Internal Server Error",
+          });      
+    }
+
+    if (result.noAcc){
+        return res.status(400).json({
+            title: "Invalid Email",
+            status: "400",
+            message: "No user found with this email address",
+          });      
+    }
+
+    if (result.action){
+       return res.status(200).json({
             title: "Status",
             status: "200",
             message: "Verification code sent to your email",
@@ -91,7 +122,7 @@ exports.forgotPassword =async (req,res)=>{
     exports.resetPassword =async (req,res)=>{
         const user=new User({email:req.user.email,userType:req.user.userType});
         const result=await user.resetPassword(req.body.verificationCode,req.body.newPassword);
-    
+        // console.log(req.body)
         if (result.connectionError){
             return res.status(500).json({
                 title: "Error",
