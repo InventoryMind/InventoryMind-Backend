@@ -109,8 +109,8 @@ class Admin extends User{
             return new Promise((resolve)=>resolve({action:false}))
         }
         // console.log(password)
-        let emailSender=new Email();
-        emailSender.send(email,"Registration Successfull","You are successfully registered as a "+staffType+" to InventoryMind.\nUsername: "+email+" \nPassword: "+password+"\nPlease login to the system using this credintials and change your password.");
+        let emailSender=await new Email();
+        await emailSender.send(email,"Registration Successfull","You are successfully registered as a "+staffType+" to InventoryMind.\nUsername: "+email+" \nPassword: "+password+"\nPlease login to the system using this credintials and change your password.");
 
         return new Promise((resolve)=>resolve({action:true}));
 
