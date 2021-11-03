@@ -115,7 +115,7 @@ class Student extends User {
   async borrowTemporarily(reason, eqIds) {
     const validateData = Joi.object({
       reason: Joi.string().max(30).required(),
-      eqIds: Joi.array().items(Joi.max(20)).required(),
+      eqIds: Joi.array().items(Joi.string().max(20)).required(),
     }).validate({
       reason: reason,
       eqIds: eval(eqIds).map(i=>i.toString()),
