@@ -83,7 +83,8 @@ exports.borrowTemporarily=async (req,res)=>{
     }
 
     return res.status(400).json({
-        msg:"Failed"
+        msg:result.msg ? result.msg :"Failed",
+        data:result.data
     })
 }
 
