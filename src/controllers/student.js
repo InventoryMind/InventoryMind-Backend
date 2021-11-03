@@ -63,7 +63,8 @@ exports.makeBorrowRequest=async (req,res)=>{
 exports.borrowTemporarily=async (req,res)=>{
     const student= new Student({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
     const result = await student.borrowTemporarily(req.body.reason,req.body.eqIds);
-    console.log(result);
+    console.log(req.body);
+    console.log(req.body.eqIds);
     if (result.validationError){
         return res.status(400).json({
             msg:"Validaiton error"
