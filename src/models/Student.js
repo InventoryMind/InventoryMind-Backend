@@ -69,6 +69,7 @@ class Student extends User {
     reason,
     eqIds
   ) {
+    eqIds=eval(eqIds).map(i=>i.toString())
     const validateData = Joi.object({
       lecturerId: Joi.string().max(10).required(),
       dateOfBorrowing: Joi.date().format("DD/MM/YYYY").required(),
