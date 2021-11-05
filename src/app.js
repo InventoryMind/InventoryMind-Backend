@@ -12,7 +12,7 @@ const adminRouter=require("./routes/admin");
 const studentRouter = require('./routes/student');
 const TORouter=require("./routes/technicalOfficer");
 const lecturerRouter=require('./routes/lecturer')
-const Email=require('../utils/Email');
+const Email=require('./utils/Email');
 
 server.use(express.json())
 server.use(express.urlencoded({extended:true}));
