@@ -5,6 +5,7 @@ dotenv.config();
 
 class Email {
   constructor() {
+    console.log(JSON.parse(process.env.email_transporter_credentials));
     _transporter.set(
       this,
       nodemailer.createTransport(JSON.parse(process.env.email_transporter_credentials))
