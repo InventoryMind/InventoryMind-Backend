@@ -12,6 +12,7 @@ const adminRouter=require("./routes/admin");
 const studentRouter = require('./routes/student');
 const TORouter=require("./routes/technicalOfficer");
 const lecturerRouter=require('./routes/lecturer')
+const Email=require('../utils/Email');
 
 server.use(express.json())
 server.use(express.urlencoded({extended:true}));
@@ -35,9 +36,11 @@ server.use("/lecturer",lecturerRouter);
 //     scheduled: true,
 //     timezone: "Asia/Colombo"
 //   });
+let email=new Email();
 cron.schedule('* */1 * * *', () => {
     console.log("affaef");
     console.log(new Date().toLocaleString());
+    email.send('sthuva98@gmail.com',"hi","fgeg");
   });
 
 server.listen(port, () => {
