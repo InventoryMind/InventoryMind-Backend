@@ -24,6 +24,8 @@ class Email {
           html: HtmlContent,
         },
         (err, info) => {
+          console.log(err);
+          console.log(info);
           if (err) resolve({ err });
           resolve({ info });
         }
