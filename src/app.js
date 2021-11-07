@@ -40,7 +40,7 @@ let email=new Email();
 cron.schedule('* */1 * * *', () => {
     console.log("affaef");
     console.log(new Date().toLocaleString());
-    //email.send('sthuva98@gmail.com',"hi","fgeg");
+    email.send('sthuva98@gmail.com',"hi","fgeg");
   });
 
 server.listen(port, () => {
