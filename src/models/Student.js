@@ -2,7 +2,7 @@ const User = require("./User");
 const Joi = require("joi").extend(require("@joi/date"));
 const bcrypt = require("bcrypt");
 const e = require("express");
-const Email=require('../utils/Email');
+const Email = require("../utils/Email");
 
 class Student extends User {
   constructor(data) {
@@ -34,17 +34,18 @@ class Student extends User {
       return new Promise((resolve) => resolve({ connectionError: true }));
     }
     let password = firstName + "@" + userId;
+
     //encrypt the password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-    password = hashedPassword;
+    // password = hashedPassword;
 
     const values = [
       userId,
       firstName,
       lastName,
       email,
-      password,
+      hashedPassword,
       contactNo,
       true,
     ];
@@ -56,8 +57,12 @@ class Student extends User {
     if (result.error) {
       return new Promise((resolve) => resolve({ action: false }));
     }
-    let emailSender=new Email();
-    emailSender.send(email,"Registration Successfull","You are successfully registered as a student to InventoryMind.");
+    let emailSender = new Email();
+    emailSender.send(
+      email,
+      "Registration Successfull",
+      "You are successfully registered as a student to InventoryMind.\nUserName"+email+"\nPassword: "+password
+    );
 
     return new Promise((resolve) => resolve({ action: true }));
   }
@@ -69,7 +74,7 @@ class Student extends User {
     reason,
     eqIds
   ) {
-    eqIds=eval(eqIds).map(i=>i.toString())
+    if (eqIds) eqIds = eval(eqIds).map((i) => i.toString());
     const validateData = Joi.object({
       lecturerId: Joi.string().max(10).required(),
       dateOfBorrowing: Joi.date().format("DD/MM/YYYY").required(),
@@ -114,7 +119,7 @@ class Student extends User {
   }
 
   async borrowTemporarily(reason, eqIds) {
-    eqIds=eval(eqIds).map(i=>i.toString())
+    eqIds = eval(eqIds).map((i) => i.toString());
     const validateData = Joi.object({
       reason: Joi.string().max(30).required(),
       eqIds: Joi.array().items(Joi.string().max(20)).required(),
@@ -186,19 +191,19 @@ class Student extends User {
     result = result.result.rows;
     // console.log(result)
     let data = [];
-    let state=["Pending","Accepted","Rejected"];
+    let state = ["Pending", "Accepted", "Rejected"];
     result.forEach((element) => {
       // console.log(element.date_of_borrowing.getFullYear());
       console.log(element);
-          let y = element.date_of_borrowing.getFullYear();
-          let m = element.date_of_borrowing.getMonth();
-          let d = element.date_of_borrowing.getDate();
-          m = parseInt(m) + 1;
-          data.push({
-            requestId: element.request_id,
-            dateOfBorrowing: y + "/" + m + "/" + d,
-            state:state[element.state]
-          });
+      let y = element.date_of_borrowing.getFullYear();
+      let m = element.date_of_borrowing.getMonth();
+      let d = element.date_of_borrowing.getDate();
+      m = parseInt(m) + 1;
+      data.push({
+        requestId: element.request_id,
+        dateOfBorrowing: y + "/" + m + "/" + d,
+        state: state[element.state],
+      });
     });
 
     return new Promise((resolve) => {
@@ -208,69 +213,75 @@ class Student extends User {
 
   async viewRequest(reqId) {
     if (this._database.connectionError) {
-        return new Promise((resolve) => {
-          resolve({ connectionError: true });
-        });
-      }
-      console.log(reqId)
-      const result=await this._database.viewRequest(reqId);
-      console.log(result)
+      return new Promise((resolve) => {
+        resolve({ connectionError: true });
+      });
+    }
+    console.log(reqId);
+    const result = await this._database.viewRequest(reqId);
+    console.log(result);
 
-    if(result.error || result.result.rowCount==0){
-        return new Promise((resolve)=>{
-            resolve({action:false})
-        })
+    if (result.error || result.result.rowCount == 0) {
+      return new Promise((resolve) => {
+        resolve({ action: false });
+      });
     }
-    console.log(result)
-    let data=result.result.rows;
-    let types={};
+    console.log(result);
+    let data = result.result.rows;
+    let types = {};
     // console.log(types.keys())
-    data.forEach(element=>{
-        if (element.type_id in Object.keys(types)){
-            types[element.type_id][count]+=1
-        }
-        else{
-            types[element.type_id]={type:element.type,brand:element.brand,count:1}
-        }
+    data.forEach((element) => {
+      if (element.type_id in Object.keys(types)) {
+        types[element.type_id][count] += 1;
+      } else {
+        types[element.type_id] = {
+          type: element.type,
+          brand: element.brand,
+          count: 1,
+        };
+      }
     });
-    console.log(types)
-    console.log(data[0])
-    let res=data[0]
-  
-    let lec=await this._database.readSingleTable("lecturer",null,["user_id","=",res.lecturer_id]);
-    console.log(lec)
-    if(lec.error){
-        return new Promise((resolve)=>{
-            resolve({action:false})
-        })
+    console.log(types);
+    console.log(data[0]);
+    let res = data[0];
+
+    let lec = await this._database.readSingleTable("lecturer", null, [
+      "user_id",
+      "=",
+      res.lecturer_id,
+    ]);
+    console.log(lec);
+    if (lec.error) {
+      return new Promise((resolve) => {
+        resolve({ action: false });
+      });
     }
-    lec=lec.result.rows[0];
-    res.lecturer=lec.first_name+" "+lec.last_name;
-  
-    res.eq_id=undefined;
-    res.type_id=undefined;
-    res.type=undefined;
-    res.brand=undefined;
-    res.types=types;
-    console.log(res.date_of_borrowing.getFullYear())
-    let date=res.date_of_borrowing;
+    lec = lec.result.rows[0];
+    res.lecturer = lec.first_name + " " + lec.last_name;
+
+    res.eq_id = undefined;
+    res.type_id = undefined;
+    res.type = undefined;
+    res.brand = undefined;
+    res.types = types;
+    console.log(res.date_of_borrowing.getFullYear());
+    let date = res.date_of_borrowing;
     let y = date.getFullYear();
     let m = date.getMonth();
     let d = date.getDate();
     m = parseInt(m) + 1;
-    res.date_of_borrowing=y + "/" + m + "/" + d;
-    date=res.date_of_returning
-    y =date.getFullYear();
+    res.date_of_borrowing = y + "/" + m + "/" + d;
+    date = res.date_of_returning;
+    y = date.getFullYear();
     m = date.getMonth();
     d = date.getDate();
     m = parseInt(m) + 1;
-    res.date_of_returning=y + "/" + m + "/" + d;
+    res.date_of_returning = y + "/" + m + "/" + d;
 
-    return new Promise((resolve)=>{
-        resolve({action:true,data:res})
-    })
-
-}
+    return new Promise((resolve) => {
+      resolve({ action: true, data: res });
+    });
+  }
 
   async checkItemAvailability(eqIds) {
     // console.log("check called")
@@ -328,44 +339,45 @@ class Student extends User {
       });
     }
 
-    var result1 = await this._database.readSingleTable("temporary_borrowing", null, [
-      "student_id",
-      "=",
-      this._u_id,
-    ]);
+    var result1 = await this._database.readSingleTable(
+      "temporary_borrowing",
+      null,
+      ["student_id", "=", this._u_id]
+    );
 
-    var result2 = await this._database.readTwoTable("normal_borrowing","request",[
-      "student_id",
-      "=",
-      this._u_id,
-    ],"request_id");
-    console.log(result2)
+    var result2 = await this._database.readTwoTable(
+      "normal_borrowing",
+      "request",
+      ["student_id", "=", this._u_id],
+      "request_id"
+    );
+    console.log(result2);
 
     if (result1.error || result2.error) {
       return new Promise((resolve) => {
         resolve({ action: false });
       });
     }
-    let temp_borrow= result1.result.rows;
-    let normal_borrow=result2.result.rows;
+    let temp_borrow = result1.result.rows;
+    let normal_borrow = result2.result.rows;
     // console.log(temp_borrow)
     // console.log(normal_borrow)
-    let temp_borrow1=[];
-    let normal_borrow1=[];
-    temp_borrow.forEach(element=>{
-      if (element.state==0){
+    let temp_borrow1 = [];
+    let normal_borrow1 = [];
+    temp_borrow.forEach((element) => {
+      if (element.state == 0) {
         temp_borrow1.push(element);
       }
     });
-    normal_borrow.forEach(element=>{
-      if (element.state==0){
+    normal_borrow.forEach((element) => {
+      if (element.state == 0) {
         normal_borrow1.push(element);
       }
     });
 
-    let data1 =this.formatTempBorrows(temp_borrow1);
-    let data2=this.formatNormalBorrows(normal_borrow1);
-    let data=[...data1,...data2];
+    let data1 = this.formatTempBorrows(temp_borrow1);
+    let data2 = this.formatNormalBorrows(normal_borrow1);
+    let data = [...data1, ...data2];
 
     return new Promise((resolve) => {
       resolve({ action: true, data: data });
@@ -379,17 +391,18 @@ class Student extends User {
       });
     }
 
-    var result1 = await this._database.readSingleTable("temporary_borrowing", null, [
-      "student_id",
-      "=",
-      this._u_id,
-    ]);
+    var result1 = await this._database.readSingleTable(
+      "temporary_borrowing",
+      null,
+      ["student_id", "=", this._u_id]
+    );
 
-    var result2 = await this._database.readTwoTable("normal_borrowing","request",[
-      "student_id",
-      "=",
-      this._u_id,
-    ],"request_id");
+    var result2 = await this._database.readTwoTable(
+      "normal_borrowing",
+      "request",
+      ["student_id", "=", this._u_id],
+      "request_id"
+    );
     // console.log(result2)
 
     if (result1.error || result2.error) {
@@ -397,75 +410,73 @@ class Student extends User {
         resolve({ action: false });
       });
     }
-    let temp_borrow= result1.result.rows;
-    let normal_borrow=result2.result.rows;
+    let temp_borrow = result1.result.rows;
+    let normal_borrow = result2.result.rows;
     // console.log(temp_borrow)
     // console.log(normal_borrow)
-    
 
-    let data1 =this.formatTempBorrows(temp_borrow);
-    let data2=this.formatNormalBorrows(normal_borrow);
-    let data=[...data1,...data2];
+    let data1 = this.formatTempBorrows(temp_borrow);
+    let data2 = this.formatNormalBorrows(normal_borrow);
+    let data = [...data1, ...data2];
 
     return new Promise((resolve) => {
       resolve({ action: true, data: data });
     });
   }
 
-  formatTempBorrows(temp_borrow){
-  let state=["Borrowed","Delayed","Returned","Cancelled"]
-  let data=[]
+  formatTempBorrows(temp_borrow) {
+    let state = ["Borrowed", "Delayed", "Returned", "Cancelled"];
+    let data = [];
     temp_borrow.forEach((element) => {
       // console.log(element.date_of_borrowing.getFullYear());
       // console.log(element);
-          let by = element.date_of_borrowing.getFullYear();
-          let bm = element.date_of_borrowing.getMonth();
-          let bd = element.date_of_borrowing.getDate();
-          let retDate=new Date(element.date_of_borrowing);
-          retDate.setDate(retDate.getDate()+1);
-          let ry = retDate.getFullYear();
-          let rm=retDate.getMonth();
-          let rd=retDate.getDate();
-          bm=parseInt(bm)+1;
-          rm = parseInt(rm) + 1;
-          data.push({
-            borrowId: element.borrow_id,
-            dateOfBorrowing: by + "/" + bm + "/" + bd,
-            dateOfReturning: ry+"/"+rm+"/"+rd,
-            type:"Temporary Borrowed",
-            state:state[element.state]
-          });
+      let by = element.date_of_borrowing.getFullYear();
+      let bm = element.date_of_borrowing.getMonth();
+      let bd = element.date_of_borrowing.getDate();
+      let retDate = new Date(element.date_of_borrowing);
+      retDate.setDate(retDate.getDate() + 1);
+      let ry = retDate.getFullYear();
+      let rm = retDate.getMonth();
+      let rd = retDate.getDate();
+      bm = parseInt(bm) + 1;
+      rm = parseInt(rm) + 1;
+      data.push({
+        borrowId: element.borrow_id,
+        dateOfBorrowing: by + "/" + bm + "/" + bd,
+        dateOfReturning: ry + "/" + rm + "/" + rd,
+        type: "Temporary Borrowed",
+        state: state[element.state],
+      });
     });
     return data;
   }
 
- formatNormalBorrows(normal_borrow){
-  let state=["Borrowed","Delayed","Returned","Cancelled"]
-  let data=[]
-  normal_borrow.forEach((element) => {
-    // console.log(element.date_of_borrowing.getFullYear());
-    // console.log(element);
-        let by = element.date_of_borrowing.getFullYear();
-        let bm = element.date_of_borrowing.getMonth();
-        let bd = element.date_of_borrowing.getDate();
-        bm = parseInt(bm) + 1;
-        let ry = element.date_of_returning.getFullYear();
-        let rm = element.date_of_returning.getMonth();
-        let rd = element.date_of_returning.getDate();
-        rm = parseInt(rm) + 1;
-        data.push({
-          borrowId:element.borrow_id,
-          requestId: element.request_id,
-          dateOfBorrowing: by + "/" + bm + "/" + bd,
-          dateOfReturning: ry+"/"+rm+"/"+rd,
-          type:"Normal Borrowed",
-          state:state[element.state]
-        });
-      
-  });
-  return data;
-}
-  async viewBorrowDetails(borrow_id,type){
+  formatNormalBorrows(normal_borrow) {
+    let state = ["Borrowed", "Delayed", "Returned", "Cancelled"];
+    let data = [];
+    normal_borrow.forEach((element) => {
+      // console.log(element.date_of_borrowing.getFullYear());
+      // console.log(element);
+      let by = element.date_of_borrowing.getFullYear();
+      let bm = element.date_of_borrowing.getMonth();
+      let bd = element.date_of_borrowing.getDate();
+      bm = parseInt(bm) + 1;
+      let ry = element.date_of_returning.getFullYear();
+      let rm = element.date_of_returning.getMonth();
+      let rd = element.date_of_returning.getDate();
+      rm = parseInt(rm) + 1;
+      data.push({
+        borrowId: element.borrow_id,
+        requestId: element.request_id,
+        dateOfBorrowing: by + "/" + bm + "/" + bd,
+        dateOfReturning: ry + "/" + rm + "/" + rd,
+        type: "Normal Borrowed",
+        state: state[element.state],
+      });
+    });
+    return data;
+  }
+  async viewBorrowDetails(borrow_id, type) {
     if (this._database.connectionError) {
       return new Promise((resolve) => {
         resolve({ connectionError: true });
@@ -473,120 +484,128 @@ class Student extends User {
     }
     let result;
     let lec;
-    if(type=="normal"){
-      result=await this._database.viewNormalBorrowed(borrow_id);
-      let lecId=result.result.rows[0].lecturer_id;
-      lec=await this._database.readSingleTable("lecturer",null,["user_id","=",lecId]);
-      if(lec.error){
-          return new Promise((resolve)=>{
-              resolve({action:false})
-          })
+    if (type == "normal") {
+      result = await this._database.viewNormalBorrowed(borrow_id);
+      if(result.error)return new Promise((resolve)=>resolve({action:false}))
+      let lecId = result.result.rows[0].lecturer_id;
+      lec = await this._database.readSingleTable("lecturer", null, [
+        "user_id",
+        "=",
+        lecId,
+      ]);
+      if (lec.error) {
+        return new Promise((resolve) => {
+          resolve({ action: false });
+        });
       }
-      console.log(lec)
-      lec=lec.result.rows[0];
-      
-    }
-    else{
-      result=await this._database.viewTempBorrowed(borrow_id);
+      console.log(lec);
+      lec = lec.result.rows[0];
+    } else {
+      result = await this._database.viewTempBorrowed(borrow_id);
     }
 
-    if (result.error || result.result.rowCount==0) {
+    if (result.error || result.result.rowCount == 0) {
       return new Promise((resolve) => {
         resolve({ action: false });
       });
     }
 
-    let data=result.result.rows;
-    let types={};
+    let data = result.result.rows;
+    let types = {};
     // console.log(types.keys())
-    data.forEach(element=>{
-        if (element.type_id in Object.keys(types)){
-            types[element.type_id][count]+=1
-        }
-        else{
-            types[element.type_id]={type:element.type,brand:element.brand,count:1}
-        }
+    data.forEach((element) => {
+      if (element.type_id in Object.keys(types)) {
+        types[element.type_id][count] += 1;
+      } else {
+        types[element.type_id] = {
+          type: element.type,
+          brand: element.brand,
+          count: 1,
+        };
+      }
     });
-    console.log(types)
-    console.log(data[0])
-    let res=data[0]
+    console.log(types);
+    console.log(data[0]);
+    let res = data[0];
 
-
-    if(type=="normal")res.lecturer=lec.first_name+" "+lec.last_name;
-    res.eq_id=undefined;
-    res.type_id=undefined;
-    res.type=undefined;
-    res.brand=undefined;
-    res.state=undefined;
-    res.lab_id=undefined;
-    res.name=undefined;
-    res.added_date=undefined;
-    res.condition=undefined;
-    res.types=types;
+    if (type == "normal") res.lecturer = lec.first_name + " " + lec.last_name;
+    res.eq_id = undefined;
+    res.type_id = undefined;
+    res.type = undefined;
+    res.brand = undefined;
+    res.state = undefined;
+    res.lab_id = undefined;
+    res.name = undefined;
+    res.added_date = undefined;
+    res.condition = undefined;
+    res.types = types;
 
     let y = res.date_of_borrowing.getFullYear();
     let m = res.date_of_borrowing.getMonth();
     let d = res.date_of_borrowing.getDate();
     m = parseInt(m) + 1;
-    res.date_of_borrowing=y+"/"+m+"/"+d
-    if(type!="normal"){
-      d=parseInt(d)+1
-      res.date_of_returning=y+"/"+m+"/"+d
-    }
-    else{
+    res.date_of_borrowing = y + "/" + m + "/" + d;
+    if (type != "normal") {
+      d = parseInt(d) + 1;
+      res.date_of_returning = y + "/" + m + "/" + d;
+    } else {
       y = res.date_of_returning.getFullYear();
       m = res.date_of_returning.getMonth();
       d = res.date_of_returning.getDate();
       m = parseInt(m) + 1;
-      res.date_of_returning=y+"/"+m+"/"+d
+      res.date_of_returning = y + "/" + m + "/" + d;
     }
 
-    
-    return new Promise((resolve)=>{
-        resolve({action:true,data:res})
-    })
-
+    return new Promise((resolve) => {
+      resolve({ action: true, data: res });
+    });
   }
 
-  async getLabs(){
-    if (this._database.connectionError){
-        return new Promise((resolve)=>resolve({connectionError:true}));
+  async getLabs() {
+    if (this._database.connectionError) {
+      return new Promise((resolve) => resolve({ connectionError: true }));
     }
 
-    const results=await this._database.readSingleTable('laboratory',null,["is_active","=",true]);
+    const results = await this._database.readSingleTable("laboratory", null, [
+      "is_active",
+      "=",
+      true,
+    ]);
     console.log(results);
-    if (results.error){
-        return new Promise ((resolve)=>resolve({action:false}));
+    if (results.error) {
+      return new Promise((resolve) => resolve({ action: false }));
     }
-    let data=results.result.rows;
-    data.forEach(element=>{
-      element.is_active=undefined;
-      element.b_id=undefined;
-      
-    })
-    return new Promise((resolve)=>resolve({action:true,result:data}));
-}
-
-async getLecturers(){
-  if (this._database.connectionError){
-      return new Promise((resolve)=>resolve({connectionError:true}));
+    let data = results.result.rows;
+    data.forEach((element) => {
+      element.is_active = undefined;
+      element.b_id = undefined;
+    });
+    return new Promise((resolve) => resolve({ action: true, result: data }));
   }
 
-  const results=await this._database.readSingleTable('lecturer',null,["is_active","=",true]);
-  console.log(results);
-  if (results.error){
-      return new Promise ((resolve)=>resolve({action:false}));
-  }
-  let data=results.result.rows;
-  data.forEach(element=>{
-    element.password=undefined;
-    element.email=undefined;
-    element.is_active=undefined;
-    element.contact_no=undefined
-  })
-  return new Promise((resolve)=>resolve({action:true,result:data}));
-}
+  async getLecturers() {
+    if (this._database.connectionError) {
+      return new Promise((resolve) => resolve({ connectionError: true }));
+    }
 
+    const results = await this._database.readSingleTable("lecturer", null, [
+      "is_active",
+      "=",
+      true,
+    ]);
+    console.log(results);
+    if (results.error) {
+      return new Promise((resolve) => resolve({ action: false }));
+    }
+    let data = results.result.rows;
+    data.forEach((element) => {
+      element.password = undefined;
+      element.email = undefined;
+      element.is_active = undefined;
+      element.contact_no = undefined;
+    });
+    return new Promise((resolve) => resolve({ action: true, result: data }));
+  }
 }
 
 module.exports = Student;
