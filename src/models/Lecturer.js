@@ -9,7 +9,7 @@ class Lecturer extends User{
 
     async approve(reqId){
         const validateData=Joi.object({
-            reqId:Joi.string().required()
+            reqId:Joi.string().pattern(/^[0-9]+$/).required()
         }).validate({
             reqId:reqId
         });
@@ -42,7 +42,7 @@ class Lecturer extends User{
 
     async reject(reqId){
         const validateData=Joi.object({
-            reqId:Joi.string().required()
+            reqId:Joi.string().pattern(/^[0-9]+$/).required()
         }).validate({
             reqId:reqId
         });
@@ -293,9 +293,6 @@ class Lecturer extends User{
     
     }
 
-    viewRequestHistory(){
-
-    }
 
     async getDashboardDataMob(){
         if (this._database.connectionError){
@@ -304,7 +301,7 @@ class Lecturer extends User{
             const result=await this._database.getCount("request","state",["lecturer_id","=",this._u_id]);
 
             if (result.error){
-                return new Promise((resolve)=>{action:false})
+                return new Promise((resolve)=>resolve({action:false}))
             }
             
             const insert = function (arr, index, item ) {

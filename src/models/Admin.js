@@ -139,10 +139,10 @@ class Admin extends User{
             labId:labId,
             T_OId:T_OId
         });
-
-        if (validateData.validationError){
+        console.log(validateData)
+        if (validateData.error){
             return new Promise((resolve)=>{
-                validationError:validateData.error
+                resolve({validationError:validateData.error})
             });
         }
 
@@ -289,7 +289,7 @@ class Admin extends User{
             const result4=await this._database.getCount("technical_officer",null,["is_active","=",true]);
             console.log(result1);
             if (result1.error || result2.error || result3.error || result4.error){
-                return new Promise((resolve)=>{action:false})
+                return new Promise((resolve)=>resolve({action:false}))
             }
             
             const insert = function (arr, index, item ) {
@@ -421,7 +421,7 @@ class Admin extends User{
     
         if (result.error) {
           return new Promise((resolve) => {
-            action: false;
+            resolve({action: false});
           });
         }
     
