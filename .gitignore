@@ -2,3 +2,4 @@
 /.vscode
 /config/development.json
 .env
+/coverage

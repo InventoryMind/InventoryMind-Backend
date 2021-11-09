@@ -33,9 +33,10 @@ class TechnicalOffcier extends User {
     );
     // console.log(result);
 
-    if (labId.rowCount != 0) {
+    if (labId.result || !labId.error) {
       var equipId = await this._database.readMax("equipment", "eq_id");
       // console.log("New type");
+      if(equipId.error)return new Promise((resolve)=>resolve({action:false}))
       equipId = equipId.result.rows[0].max;
       equipId = parseInt(equipId) + 1;
       labId = labId.result.rows[0].lab_id;
@@ -117,7 +118,7 @@ class TechnicalOffcier extends User {
       eqId,
     ]);
     // console.log(result);
-    if (!result.error && result.result.rowCount != 0) {
+    if (!result.error) {
       return new Promise((resolve) => resolve({ action: true }));
     }
     return new Promise((resolve) => resolve({ action: false }));
@@ -156,7 +157,7 @@ class TechnicalOffcier extends User {
       eqId,
     ]);
     // console.log(result);
-    if (!result.error && result.result.rowCount != 0) {
+    if (!result.error) {
       return new Promise((resolve) => resolve({ action: true }));
     }
     return new Promise((resolve) => resolve({ action: false }));
@@ -195,7 +196,7 @@ class TechnicalOffcier extends User {
       eqId,
     ]);
     // console.log(result);
-    if (!result.error && result.result.rowCount != 0) {
+    if (!result.error) {
       return new Promise((resolve) => resolve({ action: true }));
     }
     return new Promise((resolve) => resolve({ action: false }));
@@ -214,7 +215,7 @@ class TechnicalOffcier extends User {
     }
 
     
-    if (!result.error && result.result.rowCount != 0) {
+    if (!result.error) {
       let data=result.result.rows
       let eqIds=[];
       data.forEach(element=>{
@@ -233,7 +234,7 @@ class TechnicalOffcier extends User {
 
     const result= await this._database.acceptReturns(borrowId,type);
 
-    if (!result.error && result.result.rowCount != 0) {
+    if (!result.error) {
       return new Promise((resolve) => resolve({ action: true }));
     }
     return new Promise((resolve) => resolve({ action: false }));
@@ -267,7 +268,7 @@ class TechnicalOffcier extends User {
       eqId,
     ]);
     // console.log(result);
-    if (!result.error && result.result.rowCount != 0) {
+    if (!result.error) {
       return new Promise((resolve) => resolve({ action: true }));
     }
     return new Promise((resolve) => resolve({ action: false }));
@@ -308,7 +309,7 @@ class TechnicalOffcier extends User {
       eqId,
     ]);
     // console.log(result);
-    if (!result.error && result.result.rowCount != 0) {
+    if (!result.error) {
       return new Promise((resolve) => resolve({ action: true }));
     }
     return new Promise((resolve) => resolve({ action: false }));
@@ -322,6 +323,9 @@ class TechnicalOffcier extends User {
 
     const result = await this._database.readThreeTable(['equipment','equipment_type','assigned_t_o'],['t_o_id','=',this._u_id]);
     // console.log(result);
+    if (result.error) {
+      return new Promise((resolve) => resolve({ action: false }));
+    }
     var data1=result.result.rows;
     var data=[]
     let state=["Available","Requested","Temporarily Borrowed","Borrowed","Not Usable","Removed"];
@@ -332,12 +336,10 @@ class TechnicalOffcier extends User {
         // console.log(element)
       }
     });
-    if (!result.error && result.result.rowCount != 0) {
       return new Promise((resolve) =>
         resolve({ action: true, data: data })
       );
-    }
-    return new Promise((resolve) => resolve({ action: false }));
+ 
   }
 
   async getLabId(){
@@ -370,7 +372,7 @@ class TechnicalOffcier extends User {
       ["lab_id", "=", labId]
     );
     console.log(result);
-    if (!result.error && result.result.rowCount != 0) {
+    if (!result.error) {
       let data=result.result.rows;
       data.forEach((element)=>{
         element.date_of_borrowing=new Date(element.date_of_borrowing).toLocaleString().split(',')[0]
@@ -413,7 +415,8 @@ class TechnicalOffcier extends User {
       ">",
       0,
     ]);
-    var count = result.result.rowCount;
+    if (!result.error){
+      var count = result.result.rowCount;
     // console.log(result);
     if (count != 0) {
       result = result.result.rows;
@@ -426,7 +429,7 @@ class TechnicalOffcier extends User {
       }
       console.log(eqTypes[0]);
       return new Promise((resolve) => resolve({ action: true, data: eqTypes }));
-    }
+    }}
     return new Promise((resolve) => {
       resolve({ action: false });
     });
@@ -455,7 +458,7 @@ class TechnicalOffcier extends User {
 
     if (result.error) {
       return new Promise((resolve) => {
-        action: false;
+        resolve({action: false})
       });
     }
 
@@ -544,7 +547,7 @@ class TechnicalOffcier extends User {
     let result = await this._database.query(query);
     if (result.error) {
       return new Promise((resolve) => {
-        action: false;
+        resolve({action: false})
       });
     }
 

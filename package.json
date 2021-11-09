@@ -2,6 +2,9 @@
   "name": "dbtry",
   "version": "1.0.0",
   "description": "",
+  "jest":{
+    "coverageReporters": ["clover", "json", "lcov", ["text", {"skipFull": true}]]
+  },
   "predeploy": "npm install",
   "main": "src/index.js",
   "scripts": {
