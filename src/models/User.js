@@ -177,15 +177,10 @@ class User {
 
         if (result.error || result.result.rowCount==0){
             return new Promise((resolve)=>{
-                action:false
+                resolve({action:false})
             });
         }
-        // let data={
-        //     userId:result.result.rows[0].user_id,
-        //     firstName:result.result.rows[0].first_name,
-        //     lastName:result.result.rows[0].last_name,
-        //     contactNo:result.result.rows[0].contact_no
-        // }
+   
         let data=result.result.rows[0];
         data.password=undefined;
         console.log(typeof data1)
