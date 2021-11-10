@@ -70,7 +70,9 @@ exports.forgotPassword =async (req,res)=>{
     if (result.action){
         const cookieOption={
             expires: new Date(Date.now() + 10*60*1000),
-            httpOnly: true
+            httpOnly: true,
+            sameSite:'None',
+            secure:true
         };
         console.log("action true")
         const payload=JSON.parse(JSON.stringify({email:req.body.email,userType:req.body.userType}));
@@ -136,7 +138,9 @@ exports.resendForgotPassword =async (req,res)=>{
         if (result.action){
             const cookieOption = {
                 expires:new Date(Date.now() - 24*60*60*1000),
-                httpOnly : true
+                httpOnly : true,
+                sameSite:'None',
+                secure:true
             };
             return res.cookie('reset-token',"",cookieOption).status(200).json({
                 title:"Success",
