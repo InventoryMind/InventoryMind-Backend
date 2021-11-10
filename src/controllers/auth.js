@@ -32,7 +32,9 @@ exports.login =async (req,res)=>{
 
     const cookieOption={
         expires: new Date(Date.now() + 24*60*60*1000),
-        httpOnly: true
+        httpOnly: true,
+        sameSite:'None',
+        secure:true
     };
 
     const payload=JSON.parse(JSON.stringify(result.tokenData));
