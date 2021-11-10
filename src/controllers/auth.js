@@ -163,7 +163,9 @@ exports.resendForgotPassword =async (req,res)=>{
 exports.logout=(req,res)=>{
     const cookieOption = {
         expires:new Date(Date.now() - 24*60*60*1000),
-        httpOnly : true
+        httpOnly : true,
+         sameSite:'None',
+        secure:true
     };
     res.cookie('auth-token',"",cookieOption).status(200).json({
         title:"Log out",
