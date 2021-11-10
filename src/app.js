@@ -17,7 +17,7 @@ const Email=require('./utils/Email');
 server.use(express.json())
 server.use(express.urlencoded({extended:true}));
 server.use(cookieParser());
-server.use(cors({origin: "618ab56af9b5f80007f81917--frosty-wiles-cfd534.netlify.app", credentials: true}));
+server.use(cors({origin: "618b36e61c64fa00070a1ef6--frosty-wiles-cfd534.netlify.app", credentials: true}));
 //server.use(cors());
 
 server.get('/', (req, res) => {
