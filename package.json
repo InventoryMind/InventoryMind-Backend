@@ -2,8 +2,18 @@
   "name": "dbtry",
   "version": "1.0.0",
   "description": "",
-  "jest":{
-    "coverageReporters": ["clover", "json", "lcov", ["text", {"skipFull": true}]]
+  "jest": {
+    "coverageReporters": [
+      "clover",
+      "json",
+      "lcov",
+      [
+        "text",
+        {
+          "skipFull": true
+        }
+      ]
+    ]
   },
   "predeploy": "npm install",
   "main": "src/index.js",
@@ -18,7 +28,8 @@
   "license": "ISC",
   "devDependencies": {
     "jest": "^27.2.2",
-    "nodemon": "^2.0.12"
+    "nodemon": "^2.0.12",
+    "supertest": "^6.1.6"
   },
   "dependencies": {
     "@joi/date": "^2.1.0",

@@ -23,7 +23,7 @@ class Student extends User {
       email: email,
       contactNo: contactNo,
     });
-    console.log(validateData);
+    // console.log(validateData);
     if (validateData.error) {
       return new Promise((resolve) =>
         resolve({ validationError: validateData.error })
@@ -52,7 +52,7 @@ class Student extends User {
     // console.log(values);
     //console.log([staffType,[userId,firstName,lastName,email,password,contactNo,true]]);
     const result = await this._database.insert("student", null, values);
-    console.log(result);
+    // console.log(result);
 
     if (result.error) {
       return new Promise((resolve) => resolve({ action: false }));
@@ -109,7 +109,7 @@ class Student extends User {
       reason,
       eqIds
     );
-    console.log(result);
+    // console.log(result);
 
     if (result.error) {
       return new Promise((resolve) => resolve({ action: false }));
@@ -160,7 +160,7 @@ class Student extends User {
       reason,
       eqIds
     );
-    console.log(result);
+    // console.log(result);
 
     if (result.error) {
       return new Promise((resolve) => resolve({ action: false }));
@@ -194,7 +194,7 @@ class Student extends User {
     let state = ["Pending", "Accepted", "Rejected"];
     result.forEach((element) => {
       // console.log(element.date_of_borrowing.getFullYear());
-      console.log(element);
+      // console.log(element);
       let y = element.date_of_borrowing.getFullYear();
       let m = element.date_of_borrowing.getMonth();
       let d = element.date_of_borrowing.getDate();
@@ -217,16 +217,16 @@ class Student extends User {
         resolve({ connectionError: true });
       });
     }
-    console.log(reqId);
+    // console.log(reqId);
     const result = await this._database.viewRequest(reqId);
-    console.log(result);
+    // console.log(result);
 
     if (result.error || result.result.rowCount == 0) {
       return new Promise((resolve) => {
         resolve({ action: false });
       });
     }
-    console.log(result);
+    // console.log(result);
     let data = result.result.rows;
     let types = {};
     // console.log(types.keys())
@@ -241,8 +241,8 @@ class Student extends User {
         };
       }
     });
-    console.log(types);
-    console.log(data[0]);
+    // console.log(types);
+    // console.log(data[0]);
     let res = data[0];
 
     let lec = await this._database.readSingleTable("lecturer", null, [
@@ -250,7 +250,7 @@ class Student extends User {
       "=",
       res.lecturer_id,
     ]);
-    console.log(lec);
+    // console.log(lec);
     if (lec.error) {
       return new Promise((resolve) => {
         resolve({ action: false });
@@ -264,7 +264,7 @@ class Student extends User {
     res.type = undefined;
     res.brand = undefined;
     res.types = types;
-    console.log(res.date_of_borrowing.getFullYear());
+    // console.log(res.date_of_borrowing.getFullYear());
     let date = res.date_of_borrowing;
     let y = date.getFullYear();
     let m = date.getMonth();
@@ -346,12 +346,12 @@ class Student extends User {
     );
 
     var result2 = await this._database.readTwoTable(
-      "normal_borrowing",
       "request",
+      "normal_borrowing",
       ["student_id", "=", this._u_id],
       "request_id"
     );
-    console.log(result2);
+    // console.log(result2);
 
     if (result1.error || result2.error) {
       return new Promise((resolve) => {
@@ -498,7 +498,7 @@ class Student extends User {
           resolve({ action: false });
         });
       }
-      console.log(lec);
+      // console.log(lec);
       lec = lec.result.rows[0];
     } else {
       result = await this._database.viewTempBorrowed(borrow_id);
@@ -524,8 +524,8 @@ class Student extends User {
         };
       }
     });
-    console.log(types);
-    console.log(data[0]);
+    // console.log(types);
+    // console.log(data[0]);
     let res = data[0];
 
     if (type == "normal") res.lecturer = lec.first_name + " " + lec.last_name;
@@ -571,7 +571,7 @@ class Student extends User {
       "=",
       true,
     ]);
-    console.log(results);
+    // console.log(results);
     if (results.error) {
       return new Promise((resolve) => resolve({ action: false }));
     }
@@ -593,7 +593,7 @@ class Student extends User {
       "=",
       true,
     ]);
-    console.log(results);
+    // console.log(results);
     if (results.error) {
       return new Promise((resolve) => resolve({ action: false }));
     }

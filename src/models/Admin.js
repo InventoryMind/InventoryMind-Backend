@@ -35,7 +35,7 @@ class Admin extends User{
         }
 
         const result=await this._database.insert("laboratory",null,[id,name,building,floor,true]);
-        console.log(validateData);
+        // console.log(validateData);
         if(result.error){
             return new Promise((resolve)=>resolve({action:false}));
         }
@@ -55,9 +55,9 @@ class Admin extends User{
         if(validateData.error){
             return new Promise((resolve)=>resolve({validationError:validateData.error}));
         }
-        console.log(labId);
+        // console.log(labId);
         const result=await this._database.update("laboratory",["is_active","=",false,"lab_id","=",labId]);
-        console.log(result);
+        // console.log(result);
         if (!result.error){
             return new Promise((resolve)=>resolve({action:true}));
         }
@@ -65,7 +65,7 @@ class Admin extends User{
     }
 
     async addStaff(userId,firstName,lastName,email,contactNo,staffType){
-        console.log("before valid ");
+        // console.log("before valid ");
         const validateData=Joi.object(
             {   userId:Joi.string().max(10).required(),
                 firstName:Joi.string().max(20).required(),
@@ -103,7 +103,7 @@ class Admin extends User{
         // console.log(values);
         //console.log([staffType,[userId,firstName,lastName,email,password,contactNo,true]]);
         const result=await this._database.insert(staffType,null,values);
-        console.log(result);
+        // console.log(result);
 
         if (result.error){
             return new Promise((resolve)=>resolve({action:false}))
@@ -122,7 +122,7 @@ class Admin extends User{
         }
 
         const result=await this._database.update(userType,["is_active","=",false,"user_id","=",userId]);
-        console.log(result);
+        // console.log(result);
 
         if (result.error){
             return new Promise((resolve)=>resolve({action:false}));
@@ -139,7 +139,7 @@ class Admin extends User{
             labId:labId,
             T_OId:T_OId
         });
-        console.log(validateData)
+        // console.log(validateData)
         if (validateData.error){
             return new Promise((resolve)=>{
                 resolve({validationError:validateData.error})
@@ -152,7 +152,7 @@ class Admin extends User{
 
         const result=await this._database.insert("assigned_t_o",null,[T_OId,labId]);
 
-        console.log(result);
+        // console.log(result);
 
         if(result.error){
             if(result.error.code==23505){var message="Already assigned"}
@@ -172,7 +172,7 @@ class Admin extends User{
         }
 
         const results=await this._database.readTwoTable('laboratory','building',["is_active","=",true]);
-        console.log(results);
+        // console.log(results);
         if (results.error){
             return new Promise ((resolve)=>resolve({action:false}));
         }
@@ -186,7 +186,7 @@ class Admin extends User{
         }
 
         const results=await this._database.readSingleTable(user_type,null,["is_active","=",true]);
-        console.log(results);
+        // console.log(results);
         if (results.error){
             return new Promise ((resolve)=>resolve({action:false}));
         }
@@ -203,7 +203,7 @@ class Admin extends User{
         }
 
         const results=await this._database.readSingleTable('building',null,["b_id",">",0]);
-        console.log(results);
+        // console.log(results);
         if (results.error){
             return new Promise ((resolve)=>resolve({action:false}));
         }
@@ -217,7 +217,7 @@ class Admin extends User{
         }
 
         const results=await this._database.readSingleTable('laboratory',null,["is_active","=",true]);
-        console.log(results);
+        // console.log(results);
         if (results.error){
             return new Promise ((resolve)=>resolve({action:false}));
         }
@@ -231,7 +231,7 @@ class Admin extends User{
         }
 
         const results=await this._database.readSingleTable('technical_officer',null,["is_active","=",true]);
-        console.log(results);
+        // console.log(results);
         if (results.error){
             return new Promise ((resolve)=>resolve({action:false}));
         }
@@ -254,7 +254,7 @@ class Admin extends User{
         data.forEach(element => {
             element.password=undefined;
         });
-        console.log(data)
+        // console.log(data)
         return new Promise((resolve)=>resolve({action:true,result:data}));
     }
 
@@ -270,7 +270,7 @@ class Admin extends User{
         var typeId=res1.result.rows[0].max;
         typeId=parseInt(typeId)+1;
         const result=await this._database.insert('equipment_type',null,[typeId,type,brand]);
-        console.log(result);
+        // console.log(result);
 
         if (result.error){
             return new Promise((resolve)=>resolve({action:false}));
@@ -287,7 +287,7 @@ class Admin extends User{
             const result2=await this._database.getCount("lecturer",null,["is_active","=",true]);
             const result3=await this._database.getCount("student",null,["is_active","=",true]);
             const result4=await this._database.getCount("technical_officer",null,["is_active","=",true]);
-            console.log(result1);
+            // console.log(result1);
             if (result1.error || result2.error || result3.error || result4.error){
                 return new Promise((resolve)=>resolve({action:false}))
             }
@@ -323,7 +323,7 @@ class Admin extends User{
           }));
         }
     
-        console.log(result);
+        // console.log(result);
     
         let data=result.result.rows
     
@@ -405,18 +405,18 @@ class Admin extends User{
           });
         }
     
-        const res=await this._database.readSingleTable('assigned_t_o',null,["t_o_id","!=",""]);
+        // const res=await this._database.readSingleTable('assigned_t_o',null,["t_o_id","!=",""]);
     
-        if (res.error || res.result.rowCount==0){
-            return new Promise((resolve) => resolve({
-                action: false
-              }));
-        }
-        let labId=res.result.rows[0].lab_id;
+        // if (res.error || res.result.rowCount==0){
+        //     return new Promise((resolve) => resolve({
+        //         action: false
+        //       }));
+        // }
+        // let labId=res.result.rows[0].lab_id;
         const result = await this._database.getCount("equipment", "state", [
-          "lab_id",
-          "=",
-          labId,
+          "eq_id",
+          "!=",
+          "",
         ]);
     
         if (result.error) {
@@ -426,13 +426,13 @@ class Admin extends User{
         }
     
         let data=result.result.rows
-        console.log(data)
+        // console.log(data)
        let data1=[{state:"Available",count:0},{state:"Requested",count:0},{state:"Temporary Borrowed",count:0},{state:"Normal Borrowed",count:0},{state:"Not Usable",count:0},{state:"Removed",count:0}]
         data.forEach(element=>{
           data1[element.state].count=element.count;
         })
       
-        console.log(data1)
+        // console.log(data1)
     
         return new Promise((resolve)=>resolve({action:true,data:data1}));
       }

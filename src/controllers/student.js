@@ -20,7 +20,7 @@ exports.register=async (req,res)=>{
             message:"Internal Error"
         });
     }
-    console.log(result)
+    // console.log(result)
     if (result.action){
         return res.status(200).json({
             msg:"Success"
@@ -63,7 +63,7 @@ exports.makeBorrowRequest=async (req,res)=>{
 exports.borrowTemporarily=async (req,res)=>{
     const student= new Student({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
     const result = await student.borrowTemporarily(req.body.reason,req.body.eqIds);
-    console.log(result);
+    // console.log(result);
     if (result.validationError){
         return res.status(400).json({
             msg:"Validaiton error"
@@ -218,7 +218,7 @@ exports.getUserDetails = async(req,res)=>{
 exports.getLabs = async(req,res)=>{
     const student= new Student({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
     const result=await student.getLabs();
-    console.log(req.body)
+    // console.log(req.body)
     if (result.connectionError){
         return res.status(500).json({
             title:"Error",
@@ -242,7 +242,7 @@ exports.getLabs = async(req,res)=>{
 exports.getLecturers = async(req,res)=>{
     const student= new Student({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
     const result=await student.getLecturers();
-    console.log(req.body)
+    // console.log(req.body)
     if (result.connectionError){
         return res.status(500).json({
             title:"Error",

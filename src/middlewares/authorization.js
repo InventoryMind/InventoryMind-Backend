@@ -55,7 +55,7 @@ exports.isGuestUser = (req, res, next) => {
   } else {
     try {
       const payload = jwt.verify(token, process.env.jwtPrivateKey);
-      console.log(payload);
+      // console.log(payload);
       req.user = payload;
       res.json(req.user);
     } catch (ex) {

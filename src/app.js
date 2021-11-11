@@ -35,11 +35,13 @@ server.use("/lecturer",lecturerRouter);
 //     scheduled: true,
 //     timezone: "Asia/Colombo"
 //   });
-cron.schedule('* */1 * * *', () => {
-    console.log("affaef");
-    console.log(new Date().toLocaleString());
-  });
+// cron.schedule('* */1 * * *', () => {
+//     console.log("affaef");
+//     console.log(new Date().toLocaleString());
+//   });
 
-server.listen(port, () => {
+const app=server.listen(port, () => {
     console.log(`\n=== Server listening on port ${port} ===\n`)
 })
+
+module.exports=app;

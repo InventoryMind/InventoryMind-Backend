@@ -237,7 +237,7 @@ exports.transferEquipment = async (req,res)=>{
 exports.reportEquipCondition = async (req,res)=>{
     const TO=new TechnicalOffcier({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
     const result= await TO.reportCondition(req.body.eqId,req.body.condition);
-    console.log(result);
+    // console.log(result);
     if (result.validationError) {
         return res.status(400).json({
           msg: "validation error",
@@ -264,7 +264,7 @@ exports.reportEquipCondition = async (req,res)=>{
 exports.viewInventory = async (req,res)=>{
   const TO=new TechnicalOffcier({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
   const result= await TO.viewInventory();
-  console.log(result);
+  // console.log(result);
      
     if (result.connectionError) {
       return res.status(500).json({
@@ -287,7 +287,7 @@ exports.viewInventory = async (req,res)=>{
 exports.viewBorrowedEquipments = async (req,res)=>{
   const TO=new TechnicalOffcier({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
   const result= await TO.viewBorrowedEquipments();
-  console.log(result);
+  // console.log(result);
      
     if (result.connectionError) {
       return res.status(500).json({
@@ -310,7 +310,7 @@ exports.viewBorrowedEquipments = async (req,res)=>{
 exports.viewAvailableLabEquips = async (req,res)=>{
     const TO=new TechnicalOffcier({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
     const result= await TO.viewAvailableLabEquipment();
-    console.log(result);
+    // console.log(result);
        
       if (result.connectionError) {
         return res.status(500).json({
@@ -419,7 +419,7 @@ exports.getBorrowDetails=async (req,res)=>{
 exports.acceptReturns = async (req,res)=>{
   const TO=new TechnicalOffcier({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
   const result= await TO.acceptReturns(req.body.borrowId,req.body.type);
-  console.log(result);
+  // console.log(result);
   if (result.validationError) {
       return res.status(400).json({
         msg: "validation error",
