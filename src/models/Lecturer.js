@@ -14,8 +14,8 @@ class Lecturer extends User{
             reqId:reqId
         });
 
-        console.log(validateData);
-        console.log("approve")
+        // console.log(validateData);
+        // console.log("approve")
         if (validateData.error){
             return new Promise((resolve)=>{resolve({validationError:validateData.error})});
         }
@@ -25,7 +25,7 @@ class Lecturer extends User{
         }
 
         const result= await this._database.update("request",["state","=",1,"request_id","=",reqId]);
-        console.log(result);
+        // console.log(result);
 
         if (!result.error && result.result.rowCount!=0){
             return new Promise((resolve)=>{
@@ -47,7 +47,7 @@ class Lecturer extends User{
             reqId:reqId
         });
 
-        console.log(validateData);
+        // console.log(validateData);
 
         if (validateData.error){
             return new Promise((resolve)=>{resolve({validationError:validateData.error})});
@@ -58,7 +58,7 @@ class Lecturer extends User{
         }
 
         const result= await this._database.update("request",["state","=",2,"request_id","=",reqId]);
-        console.log(result);
+        // console.log(result);
 
         if (!result.error && result.result.rowCount!=0){
             return new Promise((resolve)=>{
@@ -85,7 +85,7 @@ class Lecturer extends User{
               "=",
               this._u_id,
             ]);
-            console.log(result)
+            // console.log(result)
         
             if (result.error) {
               return new Promise((resolve) => {
@@ -98,7 +98,8 @@ class Lecturer extends User{
             let state=["","Accepted","Rejected"]
             result.forEach((element) => {
               // console.log(element.date_of_borrowing.getFullYear());
-              if (element.state!=0){console.log(element);
+              if (element.state!=0){
+                //   console.log(element);
               
                
                   let y = element.date_of_borrowing.getFullYear();
@@ -182,7 +183,7 @@ class Lecturer extends User{
             "=",
             this._u_id,
           ]);
-          console.log(result)
+        //   console.log(result)
       
           if (result.error) {
             return new Promise((resolve) => {
@@ -211,7 +212,7 @@ class Lecturer extends User{
               
             
           });
-          console.log(result)
+        //   console.log(result)
           return new Promise((resolve) => {
             resolve({ action: true, data: data });
           });  
@@ -234,7 +235,7 @@ class Lecturer extends User{
         // console.log(result)
         let data=result.result.rows;
         let types={};
-        console.log(data)
+        // console.log(data)
         data.forEach(element=>{
             if ((Object.keys(types)).includes(element.type_id)){
                 types[element.type_id].count+=1
@@ -243,8 +244,8 @@ class Lecturer extends User{
                 types[element.type_id]={type:element.type,brand:element.brand,count:1}
             }
         });
-        console.log(types)
-        console.log(data[0])
+        // console.log(types)
+        // console.log(data[0])
         let res=data[0]
       
         let lec=await this._database.readSingleTable("lecturer",null,["user_id","=",this._u_id]);
@@ -254,7 +255,7 @@ class Lecturer extends User{
             })
         }
         lec=lec.result.rows[0];
-        console.log(res)
+        // console.log(res)
 
         res.lecturer=lec.first_name+" "+lec.last_name;
 
@@ -309,7 +310,7 @@ class Lecturer extends User{
             };
 
             let data=result.result.rows
-            console.log(data)
+            // console.log(data)
             let data1=[];
             let state=["Pending","Approved","Rejected"];
         for (let i=0;i<3;i++){

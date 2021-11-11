@@ -74,7 +74,7 @@ exports.forgotPassword =async (req,res)=>{
             sameSite:'None',
             secure:true
         };
-        console.log("action true")
+        // console.log("action true")
         const payload=JSON.parse(JSON.stringify({email:req.body.email,userType:req.body.userType}));
         const token = jwt.sign(payload,process.env.jwtPrivateKey,{expiresIn:"1h"});
        return res.cookie("reset-token",token,cookieOption).status(200).json({
@@ -134,7 +134,7 @@ exports.resendForgotPassword =async (req,res)=>{
                 message: "Internal Server Error",
               });      
         }
-        console.log(result)
+        // console.log(result)
         if (result.action){
             const cookieOption = {
                 expires:new Date(Date.now() - 24*60*60*1000),

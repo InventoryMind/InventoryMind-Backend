@@ -15,7 +15,7 @@ class TechnicalOffcier extends User {
       name: name,
       type_id: type_id,
     });
-    console.log(validateData);
+    // console.log(validateData);
     if (this._database.connectionError) {
       return new Promise((resolve) => resolve({ connectionError: true }));
     }
@@ -57,7 +57,7 @@ class TechnicalOffcier extends User {
         0,
         "NEW",
       ]);
-      console.log(result1);
+      // console.log(result1);
       if (!result1.error) {
         return new Promise((resolve) => resolve({ action: true,eqId:equipId }));
       }
@@ -79,7 +79,7 @@ class TechnicalOffcier extends User {
         resolve({action:false})
       })
     }
-    console.log(result)
+    // console.log(result)
     return new Promise((resolve)=>{
       resolve({action: true,data:result.result.rows});
     })
@@ -248,7 +248,7 @@ class TechnicalOffcier extends User {
       eqId: eqId,
       condition: condition,
     });
-    console.log(eqId);
+    // console.log(eqId);
     if (validateData.error) {
       return new Promise((resolve) =>
         resolve({ validationError: validateData.error })
@@ -364,14 +364,14 @@ class TechnicalOffcier extends User {
     if (!labId){
       return new Promise((resolve) => resolve({ action: false }));
     }
-    console.log(labId);
+    // console.log(labId);
 
     const result = await this._database.readSingleTable(
       "borrowed_items",
       null,
       ["lab_id", "=", labId]
     );
-    console.log(result);
+    // console.log(result);
     if (!result.error) {
       let data=result.result.rows;
       data.forEach((element)=>{
@@ -427,7 +427,7 @@ class TechnicalOffcier extends User {
           name: result[i].brand + "   " + result[i].type,
         };
       }
-      console.log(eqTypes[0]);
+      // console.log(eqTypes[0]);
       return new Promise((resolve) => resolve({ action: true, data: eqTypes }));
     }}
     return new Promise((resolve) => {
@@ -463,13 +463,13 @@ class TechnicalOffcier extends User {
     }
 
     let data=result.result.rows
-    console.log(data)
+    // console.log(data)
    let data1=[{state:"Available",count:0},{state:"Requested",count:0},{state:"Temporary Borrowed",count:0},{state:"Normal Borrowed",count:0},{state:"Not Usable",count:0},{state:"Removed",count:0}]
     data.forEach(element=>{
       data1[element.state].count=element.count;
     })
   
-    console.log(data1)
+    // console.log(data1)
 
     return new Promise((resolve)=>resolve({action:true,data:data1}));
   }
@@ -551,7 +551,7 @@ class TechnicalOffcier extends User {
       });
     }
 
-    console.log(result);
+    // console.log(result);
 
     let data=result.result.rows
 

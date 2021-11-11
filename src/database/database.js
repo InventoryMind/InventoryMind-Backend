@@ -41,7 +41,8 @@ class Database {
   connect(){
     return new Promise((resolve)=>{
       try{
-        _pool.get(this).connect().then((client)=>{console.log("DB isconnected")
+        _pool.get(this).connect().then((client)=>{
+          // console.log("DB isconnected")
         resolve(client)
       }).catch((e)=>console.error(e.stack));
         _connectionError.set(this,false);
@@ -69,13 +70,13 @@ class Database {
           values
         );
       }
-      console.log(query)
+      // console.log(query)
       const client=await this.connect();
 
       client
         .query(query, (error, results) =>{
           client.release();
-          console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)      
+          // console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)      
           resolve({ error: error, result: results })
     }
         );
@@ -89,7 +90,7 @@ class Database {
 
       client.query(query,(error,result)=>{
         client.release();
-        console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
+        // console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
         resolve({error:error,result:result});
       });
     }
@@ -121,9 +122,9 @@ class Database {
       const client=await this.connect();
       client
         .query(query, (error, results) =>{      
-          console.log("Before" +_pool.get(this).idleCount)    
+          // console.log("Before" +_pool.get(this).idleCount)    
           client.release();
-          console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
+          // console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
           resolve({ error: error, result: results })
       }
         );
@@ -160,7 +161,7 @@ class Database {
 
      client.query(query, (error, results) => {
       client.release();
-      console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
+      // console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
         resolve({ error: error, result: results });
       });
     });
@@ -198,7 +199,7 @@ class Database {
       const client=await this.connect();
       client.query(query, (error, results) => {
         client.release();
-        console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
+        // console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
         resolve({ error: error, result: results });
       });
     });
@@ -234,12 +235,12 @@ class Database {
         action[1],
         action[2]
       );}
-      console.log(query)
+      // console.log(query)
       const client=await this.connect();
       client.query(query, (error, results) => {
         client.release();
-        console.log(error)
-        console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
+        // console.log(error)
+        // console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
         resolve({ error: error, result: results });
       });
     });
@@ -256,11 +257,11 @@ class Database {
       //   action[1],
       //   action[2]
       // );
-      console.log(query);
+      // console.log(query);
       const client=await this.connect();
       client.query(query, (error, results) => {
         client.release();
-        console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
+        // console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
         resolve({ error: error, result: results });
       });
     });
@@ -281,7 +282,7 @@ class Database {
       const client=await this.connect();
       client.query(query, (error, results) => {
         client.release();
-        console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
+        // console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
         resolve({ error: error, result: results });
       });
     });
@@ -301,7 +302,24 @@ class Database {
 
       client.query(query, (error, results) => {
         client.release();
-        console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
+        // console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
+
+        resolve({ error: error, result: results });
+      });
+    });
+  }
+
+  clear(tableName) {
+    return new Promise(async(resolve) => {
+      let query = format(
+        "DELETE FROM %I",
+        tableName,
+      );
+      const client=await this.connect();
+
+      client.query(query, (error, results) => {
+        client.release();
+        // console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
 
         resolve({ error: error, result: results });
       });
@@ -328,12 +346,12 @@ class Database {
         query=format("SELECT COUNT(*) FROM %I WHERE %I %s %L",tableName,condition[0],condition[1],condition[2]);
 
       }
-      console.log(query);
+      // console.log(query);
       const client=await this.connect();
 
       client.query(query,(error,results)=>{
         client.release();
-        console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
+        // console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
         resolve({error:error,result:results});
       });
     });
@@ -345,7 +363,7 @@ class Database {
       const client=await this.connect();
       client.query(query,(error,results)=>{
         client.release();
-        console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
+        // console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
         resolve({error:error,result:results});
       });
     })
@@ -357,7 +375,7 @@ class Database {
       const client=await this.connect();
       client.query(query,(error,results)=>{
         client.release();
-        console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
+        // console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
         resolve({error:error,result:results});
       });
     })
@@ -369,7 +387,7 @@ class Database {
       const client=await this.connect();
       client.query(query,(error,results)=>{
         client.release();
-        console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
+        // console.log("Connection released"+",TotalCount:"+_pool.get(this).totalCount+",IdleCount:"+_pool.get(this).idleCount)    
         resolve({error:error,result:results});
       });
     })
@@ -385,7 +403,7 @@ class Database {
   ) {
     return new Promise(async (resolve) => {
       let rollback=()=>{
-        console.log("Rollbacked2");
+        // console.log("Rollbacked2");
           client.query("ROLLBACK");
           resolve({ error: true });
       }
@@ -445,7 +463,7 @@ class Database {
   ) {
     return new Promise(async (resolve) => {
       let rollback=()=>{
-          console.log("Rollbacked2");
+          // console.log("Rollbacked2");
             client.query("ROLLBACK");
             resolve({ error: true });
         }
@@ -499,7 +517,7 @@ class Database {
   async acceptReturns(borrowId,type){
     return new Promise(async (resolve) => {
       let rollback=()=>{
-          console.log("Rollbacked2");
+          // console.log("Rollbacked2");
             client.query("ROLLBACK");
             resolve({ error: true });
         }
@@ -519,15 +537,15 @@ class Database {
           query1=format("UPDATE temporary_borrowing SET state=2 WHERE borrow_id = %L",borrowId)
           query = format("SELECT * FROM temporary_borrowing JOIN temporary_borrowed_equipments USING (borrow_id) WHERE borrow_id = %L",borrowId);
         }
-        console.log(query);
+        // console.log(query);
         await client.query(query1,(err,result)=>{
           if (err)rollback();
-          console.log("updated borrowing table ");
+          // console.log("updated borrowing table ");
         });
 
         const result = await client
           .query(query, async (err, result) => {
-            console.log(result);
+            // console.log(result);
             let data = result.rows;
             let eqIds=[];
             data.forEach(element=>{
@@ -539,9 +557,9 @@ class Database {
                 "UPDATE equipment SET state=0 WHERE eq_id=%L",
                 eqId
               );
-              console.log(query);
+              // console.log(query);
               await client.query(query,(err,res)=>{if(err){
-                console.log(err);
+                // console.log(err);
                 rollback()}});
             });
             await client

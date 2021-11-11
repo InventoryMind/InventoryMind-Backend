@@ -573,9 +573,6 @@ describe("getEquipStats",()=>{
            return{
                getCount:()=>{
                    return Promise.resolve({error:true})
-               },
-               readSingleTable:()=>{
-                   return Promise.resolve({error:true})
                }
            }
        });
@@ -585,46 +582,11 @@ describe("getEquipStats",()=>{
        expect(result).toHaveProperty("action",false);
    });
 
-   it ("Should return failed",async ()=>{
-    Database.mockImplementation(()=>{
-        return{
-            getCount:()=>{
-                return Promise.resolve({error:true})
-            },
-            readSingleTable:()=>{
-                return Promise.resolve({error:false,result:{rows:[{state:0,count:1}]}})
-            }
-        }
-    });
-
-    const result=await new Admin({email:"st@xyz.com",userType:"administrator"}).getEquipStats();
-
-    expect(result).toHaveProperty("action",false);
-});
-
-it ("Should return failed",async ()=>{
-    Database.mockImplementation(()=>{
-        return{
-            getCount:()=>{
-                return Promise.resolve({error:false,result:{rows:[{}]}})
-            },
-            readSingleTable:()=>{
-                return Promise.resolve({error:true})
-            }
-        }
-    });
-
-    const result=await new Admin({email:"st@xyz.com",userType:"administrator"}).getEquipStats();
-
-    expect(result).toHaveProperty("action",false);
-});
+  
    
     it ("Should return success",async ()=>{
         Database.mockImplementation(()=>{
             return{
-                readSingleTable:()=>{
-                    return Promise.resolve({error:false,result:{rows:[{}]}})
-                },
                 getCount:()=>{
                     return Promise.resolve({error:false,result:{rows:[{state:0,count:1}]}})
                 }

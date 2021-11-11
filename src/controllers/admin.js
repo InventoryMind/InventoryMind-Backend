@@ -5,7 +5,7 @@ exports.addStaff =async (req,res)=>{
     const admin =new Admin({email: req.user.email, userType:req.user.user_type,userId:req.user.userId});
     // Admin.addStaff(0001,"Sri","Thuva","sth@gmail.com","0771234567","lecturer")
     const result=await admin.addStaff(req.body.userId,req.body.firstName,req.body.lastName,req.body.email,req.body.contactNo,req.body.userType);
-    console.log(result);
+    // console.log(result);
 
     if (result.validationError){
         return res.status(400).json({
@@ -40,7 +40,7 @@ exports.addStaff =async (req,res)=>{
 }
 
 exports.removeUser=async (req,res)=>{
-    console.log(req.body)
+    // console.log(req.body)
 
     const admin=new Admin({email:req.user.email,userType:req.user.user_type,userId:req.user.userId});
     const results=await admin.removeUser(req.body.userType,req.body.userId);
@@ -51,7 +51,7 @@ exports.removeUser=async (req,res)=>{
             message: "Internal Server Error",
         });
     }
-    console.log(results.action);
+    // console.log(results.action);
     if (results.action){
         return res.status(200).json({
             title: "Success",
@@ -83,7 +83,7 @@ exports.assignTO=async (req,res)=>{
         })
     }
     if(result.validationError){
-        return res.statuus(400).json({
+        return res.status(400).json({
             title: "Error",
             status: "400",
             message: "Validation Error",
@@ -108,7 +108,7 @@ exports.assignTO=async (req,res)=>{
 exports.addLaboratory=async (req,res)=>{
     const admin=new Admin({email:req.user.email,userType:req.user.user_type,userId:req.user.userId});
     const result=await admin.addLaboratory(req.body.labId,req.body.name,req.body.building,req.body.floor);
-    console.log(result);
+    // console.log(result);
     if(result.connectionError){
         return res.status(500).json({
             title: "Error",
@@ -220,7 +220,7 @@ exports.getUserDetails = async(req,res)=>{
 exports.viewLaboratories = async(req,res)=>{
     const admin= new Admin({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
     const result=await admin.viewLaboratories();
-    console.log(req.body)
+    // console.log(req.body)
     if (result.connectionError){
         return res.status(500).json({
             title:"Error",
@@ -244,7 +244,7 @@ exports.viewLaboratories = async(req,res)=>{
 exports.viewUsers = async(req,res)=>{
     const admin= new Admin({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
     const result=await admin.viewUsers(req.params.userType);
-    console.log(req.body)
+    // console.log(req.body)
     if (result.connectionError){
         return res.status(500).json({
             title:"Error",
@@ -268,7 +268,7 @@ exports.viewUsers = async(req,res)=>{
 exports.getBuildings = async(req,res)=>{
     const admin= new Admin({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
     const result=await admin.getBuildings();
-    console.log(req.body)
+    // console.log(req.body)
     if (result.connectionError){
         return res.status(500).json({
             title:"Error",
@@ -292,7 +292,7 @@ exports.getBuildings = async(req,res)=>{
 exports.getLabs = async(req,res)=>{
     const admin= new Admin({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
     const result=await admin.getLabs();
-    console.log(req.body)
+    // console.log(req.body)
     if (result.connectionError){
         return res.status(500).json({
             title:"Error",
@@ -316,7 +316,7 @@ exports.getLabs = async(req,res)=>{
 exports.getTOs = async(req,res)=>{
     const admin= new Admin({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
     const result=await admin.getTOs();
-    console.log(req.body)
+    // console.log(req.body)
     if (result.connectionError){
         return res.status(500).json({
             title:"Error",
@@ -359,7 +359,7 @@ exports.addEquipType=async (req,res)=>{
 
     return res.status(400).json({
         title:"Failed",
-        status:"200",
+        status:"400",
         message:"Type couldn't be added"
     })
 }

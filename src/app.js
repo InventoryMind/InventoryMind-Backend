@@ -36,6 +36,7 @@ server.use("/lecturer",lecturerRouter);
 //     scheduled: true,
 //     timezone: "Asia/Colombo"
 //   });
+
 let email=new Email();
 cron.schedule('* */1 * * *', () => {
     console.log("affaef");
@@ -43,6 +44,11 @@ cron.schedule('* */1 * * *', () => {
     //email.send('sthuva98@gmail.com',"hi","fgeg");
   });
 
-server.listen(port, () => {
+
+const app=server.listen(port, () => {
     console.log(`\n=== Server listening on port ${port} ===\n`)
 })
+
+
+module.exports=app;
+

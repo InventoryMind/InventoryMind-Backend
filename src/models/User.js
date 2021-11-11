@@ -49,7 +49,7 @@ class User {
             return new Promise((resolve)=> resolve({connectionError:true}));
         }
        
-        console.log(validateResult)
+        // console.log(validateResult)
         var userData= await this._database.readSingleTable(this._userType,null,['email','=',this._email]);
         // console.log(userData.result);
         if (userData.error || !userData.result.rows[0]){
@@ -64,7 +64,7 @@ class User {
         this._user_password=userData.rows[0].password;
         
         const isCompare= await bcrypt.compare(password,this._user_password);
-        console.log(isCompare);
+        // console.log(isCompare);
 
         if (!isCompare){
             return new Promise((resolve)=>resolve({allowedAccess: false,password:this._user_password}));
@@ -106,7 +106,7 @@ class User {
                 resolve({connectionError:true})
             })
         }
-        console.log(result)
+        // console.log(result)
         if (result.error){
             return new Promise((resolve)=>{
                 resolve({action:false})
@@ -120,7 +120,7 @@ class User {
     }
 
     async resetPassword(verificationCode,newPassword){
-        console.log("afa")
+        // console.log("afa")
         const result=await this._database.readSingleTable("verification_code",null,["email","=",this._email]);
         if (result.error || result.rowCount==0){
             return new Promise((resolve)=>{
@@ -135,18 +135,18 @@ class User {
                 code=element
             }
         });
-        console.log(verificationCode+" "+code.verification_code)
+        // console.log(verificationCode+" "+code.verification_code)
         if (code.is_used==true)code.verification_code=""
         if (verificationCode==code.verification_code){
 
             const result1=await this._database.update("verification_code",["is_used","=",true,"id","=",code.id])
-            console.log(result1)
+            // console.log(result1)
             if (result1.error){
                 return new Promise((resolve)=>{
                     resolve({action:false})
                 })
             }
-            console.log(newPassword)
+            // console.log(newPassword)
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(newPassword, salt);
             const result2=await this._database.update(this._userType,["password","=",hashedPassword,"email","=",this._email])
@@ -183,7 +183,7 @@ class User {
    
         let data=result.result.rows[0];
         data.password=undefined;
-        console.log(typeof data1)
+        // console.log(typeof data1)
         return new Promise((resolve)=>{
             resolve({action:true,data:data});
         });
