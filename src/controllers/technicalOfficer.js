@@ -1,6 +1,46 @@
 const TechnicalOffcier = require("../models/TechnicalOffcier");
 const Email = require("../utils/Email");
 
+
+exports.changePassword=async (req,res)=>{
+  // console.log(req.body)
+
+  const TO=new TechnicalOffcier({email:req.user.email,userType:req.user.userType,userId:req.user.userId});
+  const results=await TO.changePassword(req.body.currentPass,req.body.newPass);
+  if (results.connectionError){
+      return res.status(500).json({  
+          title: "Error",
+          status: "500",
+          message: "Internal Server Error",
+      });
+  }
+  // console.log(results.action);
+  if (results.action){
+      return res.status(200).json({
+          title: "Success",
+          status: "200",
+          message: "Successfully Changed Password",
+          // success:true
+      })
+  }
+
+  if (results.invalidPass){
+      return res.status(400).json({
+          title: "Failed",
+          status: "400",
+          message: "Invalid Password",
+          // success:false
+      })
+  }
+  return res.status(400).json({
+      title: "Failed",
+      status: "400",
+      message: "Try agin later",
+      // success:false
+  })
+
+}
+
 exports.addEquipment = async (req, res) => {
   const to = new TechnicalOffcier({
     email: req.user.email,

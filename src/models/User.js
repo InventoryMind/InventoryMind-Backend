@@ -164,6 +164,36 @@ class User {
         })
     }
 
+    async changePassword(currentPassword,newPassword){
+        console.log(this._userType)
+        const result=await this._database.readSingleTable(this._userType,null,["email","=",this._email]);
+        if (result.error || result.rowCount==0){
+            return new Promise((resolve)=>{
+                resolve({action:false});
+            })
+        }
+        let password=result.result.rows[0].password;
+        const isCompare= await bcrypt.compare(currentPassword,password);
+
+        if (isCompare){
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(newPassword, salt);
+            const result2=await this._database.update(this._userType,["password","=",hashedPassword,"email","=",this._email])
+            if (result2.error){
+                return new Promise((resolve)=>{
+                    resolve({action:false})
+                })
+            }
+            return new Promise((resolve)=>{
+                resolve({action:true})
+            })
+        }
+        return new Promise((resolve)=>{
+            resolve({action:false,invalidPass:true})
+        })
+    }
+
+
     async getUserDetails(){
         if (this._database.connectionError){
             return new Promise((resolve)=>{

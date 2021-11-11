@@ -4,6 +4,7 @@ const TOCOntroller=require('../controllers/technicalOfficer');
 
 const router=express.Router();
 
+router.post("/changePass",authorization.tokenAuthorize,authorization.isTechnicalOfficerRole,TOCOntroller.changePassword);
 router.post("/addEquipment",authorization.tokenAuthorize,authorization.isTechnicalOfficerRole,TOCOntroller.addEquipment);
 router.get("/getLabs",authorization.tokenAuthorize,authorization.isTechnicalOfficerRole,TOCOntroller.getLabs);
 router.get("/getUserStats",authorization.tokenAuthorize,authorization.isTechnicalOfficerRole,TOCOntroller.getUserStats);
