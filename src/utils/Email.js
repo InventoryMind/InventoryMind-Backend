@@ -5,6 +5,7 @@ dotenv.config();
 
 class Email {
   constructor() {
+    console.log(JSON.parse(process.env.email_transporter_credentials));
     _transporter.set(
       this,
       nodemailer.createTransport(JSON.parse(process.env.email_transporter_credentials))
@@ -24,6 +25,8 @@ class Email {
           html: HtmlContent,
         },
         (err, info) => {
+          console.log(err);
+          console.log(info);
           if (err) resolve({ err });
           resolve({ info });
         }

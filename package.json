@@ -18,7 +18,7 @@
   "predeploy": "npm install",
   "main": "src/index.js",
   "scripts": {
-    "start": "nodemon src/app.js",
+    "start": "node src/app.js",
     "start:dev": "nodemon src/app.js",
     "server": "nodemon src/app.js",
     "test": "jest --watchAll --verbose"

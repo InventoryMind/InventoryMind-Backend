@@ -12,12 +12,13 @@ const adminRouter=require("./routes/admin");
 const studentRouter = require('./routes/student');
 const TORouter=require("./routes/technicalOfficer");
 const lecturerRouter=require('./routes/lecturer')
+const Email=require('./utils/Email');
 
 server.use(express.json())
 server.use(express.urlencoded({extended:true}));
 server.use(cookieParser());
-server.use(cors({origin: "http://localhost:3000", credentials: true}));
-
+server.use(cors({origin: "https://inventorymind.netlify.app", credentials: true}));
+//server.use(cors());
 
 server.get('/', (req, res) => {
     res.send('<h1>This is a test application</h1>')
@@ -35,13 +36,19 @@ server.use("/lecturer",lecturerRouter);
 //     scheduled: true,
 //     timezone: "Asia/Colombo"
 //   });
-// cron.schedule('* */1 * * *', () => {
-//     console.log("affaef");
-//     console.log(new Date().toLocaleString());
-//   });
+
+let email=new Email();
+cron.schedule('* */1 * * *', () => {
+    console.log("affaef");
+    console.log(new Date().toLocaleString());
+    //email.send('sthuva98@gmail.com',"hi","fgeg");
+  });
+
 
 const app=server.listen(port, () => {
     console.log(`\n=== Server listening on port ${port} ===\n`)
 })
 
+
 module.exports=app;
+

@@ -125,7 +125,7 @@ class Student extends User {
       eqIds: Joi.array().items(Joi.string().max(20)).required(),
     }).validate({
       reason: reason,
-      eqIds: eqIds,
+      eqIds: eval(eqIds).map(i=>i.toString()),
     });
     // console.log(validateData);
     if (validateData.error) {
