@@ -115,7 +115,7 @@ describe("/getDashboardDataM",()=>{
             expect(res.body.msg.data[2].count).toBe("1");
         });
     });
-},10000);
+},1000000);
 
 describe("/getUserDetails",()=>{
     beforeEach(async()=>{
@@ -320,4 +320,4 @@ describe("/viewRequest/:id",()=>{
             expect(res.body.msg.request_id).toBe("1");
         });
     });
-});
+},500000);

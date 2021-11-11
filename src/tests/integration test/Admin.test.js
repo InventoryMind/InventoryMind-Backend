@@ -9,6 +9,8 @@ process.env.host="localhost"
 process.env.user="postgres"
 process.env.password="123"
 
+let token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6ImFkbWluaXN0cmF0b3IiLCJpYXQiOjE2MzY2MzUyMDUsImV4cCI6MTYzNjcyMTYwNX0.8Zl7DJfoev7beuv9dutz4RxKe4StPj8Dl-HpP13u50s";
+
 describe("/addStaff",()=>{
     beforeEach(()=>{
         server=require("../../app");
@@ -20,17 +22,18 @@ describe("/addStaff",()=>{
     });
 
     it("Should not add staff",async ()=>{
-        await request(server).post("/admin/addStaff").set('Accept','application/json').set("Cookie","auth-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6ImFkbWluaXN0cmF0b3IiLCJpYXQiOjE2MzY1NDYwNTYsImV4cCI6MTYzNjYzMjQ1Nn0.TgEksu1WHf_wMWS1X_Bkej3Q3__apyR7hLQLWfa6ADY").send({userId:"100001",firstName:"Sri",lastName:"Thuva",userType:"lecturer",contactNo:"0777123456",email:""}).then((res)=>{
+        await request(server).post("/admin/addStaff").set('Accept','application/json').set("Cookie",`auth-token=${token}`).send({userId:"100001",firstName:"Sri",lastName:"Thuva",userType:"lecturer",contactNo:"0777123456",email:""}).then((res)=>{
             expect(res.status).toBe(400)
         });
     })
 
     it("Should add staff",async ()=>{
-        await request(server).post("/admin/addStaff").set('Accept','application/json').set("Cookie","auth-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6ImFkbWluaXN0cmF0b3IiLCJpYXQiOjE2MzY1NDYwNTYsImV4cCI6MTYzNjYzMjQ1Nn0.TgEksu1WHf_wMWS1X_Bkej3Q3__apyR7hLQLWfa6ADY").send({userId:"100001",firstName:"Sri",lastName:"Thuva",userType:"lecturer",contactNo:"0777123456",email:"dtsh14@gmail.com"}).then((res)=>{
+        await request(server).post("/admin/addStaff").set('Accept','application/json').set("Cookie",`auth-token=${token}`).send({userId:"100001",firstName:"Sri",lastName:"Thuva",userType:"lecturer",contactNo:"0777123456",email:"dtsh14@gmail.com"}).then((res)=>{
+            // console.log(res.body)
             expect(res.status).toBe(200)
         });
     })
-});
+},10000);
 
 describe("/removeStaff",()=>{
     beforeEach(async()=>{
@@ -45,11 +48,11 @@ describe("/removeStaff",()=>{
     });
 
     it("Should remove staff",async ()=>{
-        await request(server).post("/admin/removeUser").set('Accept','application/json').set("Cookie","auth-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6ImFkbWluaXN0cmF0b3IiLCJpYXQiOjE2MzY1NDYwNTYsImV4cCI6MTYzNjYzMjQ1Nn0.TgEksu1WHf_wMWS1X_Bkej3Q3__apyR7hLQLWfa6ADY").send({userId:"100001",userType:"lecturer"}).then((res)=>{
+        await request(server).post("/admin/removeUser").set('Accept','application/json').set("Cookie",`auth-token=${token}`).send({userId:"100001",userType:"lecturer"}).then((res)=>{
             expect(res.status).toBe(200)
         });
     })
-})
+},1000000)
 
 describe("/assignTO",()=>{
     beforeEach(async()=>{
@@ -67,21 +70,21 @@ describe("/assignTO",()=>{
     });
 
     it("Should assign staff",async ()=>{
-        await request(server).post("/admin/assignTO").set('Accept','application/json').set("Cookie","auth-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6ImFkbWluaXN0cmF0b3IiLCJpYXQiOjE2MzY1NDYwNTYsImV4cCI6MTYzNjYzMjQ1Nn0.TgEksu1WHf_wMWS1X_Bkej3Q3__apyR7hLQLWfa6ADY").send({labId:"1",T_OId:"100001"}).then((res)=>{
+        await request(server).post("/admin/assignTO").set('Accept','application/json').set("Cookie",`auth-token=${token}`).send({labId:"1",T_OId:"100001"}).then((res)=>{
             expect(res.status).toBe(200);
             expect(res.body.title).toBe("Success");
         });
     });
 
     it("Should return failed",async ()=>{
-        await request(server).post("/admin/assignTO").set('Accept','application/json').set("Cookie","auth-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6ImFkbWluaXN0cmF0b3IiLCJpYXQiOjE2MzY1NDYwNTYsImV4cCI6MTYzNjYzMjQ1Nn0.TgEksu1WHf_wMWS1X_Bkej3Q3__apyR7hLQLWfa6ADY").send({labId:"1",T_OId:"10011001"}).then((res)=>{
+        await request(server).post("/admin/assignTO").set('Accept','application/json').set("Cookie",`auth-token=${token}`).send({labId:"1",T_OId:"10011001"}).then((res)=>{
             expect(res.status).toBe(200);
             expect(res.body.title).toBe("Failed");
         });
     })
 
     it("Should return validation error",async ()=>{
-        await request(server).post("/admin/assignTO").set('Accept','application/json').set("Cookie","auth-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6ImFkbWluaXN0cmF0b3IiLCJpYXQiOjE2MzY1NDYwNTYsImV4cCI6MTYzNjYzMjQ1Nn0.TgEksu1WHf_wMWS1X_Bkej3Q3__apyR7hLQLWfa6ADY").send({labId:"1",T_OId:""}).then((res)=>{
+        await request(server).post("/admin/assignTO").set('Accept','application/json').set("Cookie",`auth-token=${token}`).send({labId:"1",T_OId:""}).then((res)=>{
             expect(res.status).toBe(400)
         });
     });
@@ -98,14 +101,14 @@ describe("/addLaboratory",()=>{
     });
 
     it("Should remove staff",async ()=>{
-        await request(server).post("/admin/addLaboratory").set('Accept','application/json').set("Cookie","auth-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6ImFkbWluaXN0cmF0b3IiLCJpYXQiOjE2MzY1NDYwNTYsImV4cCI6MTYzNjYzMjQ1Nn0.TgEksu1WHf_wMWS1X_Bkej3Q3__apyR7hLQLWfa6ADY").send({labId:"1",name:"test",building:"1",floor:3}).then((res)=>{
+        await request(server).post("/admin/addLaboratory").set('Accept','application/json').set("Cookie",`auth-token=${token}`).send({labId:"1",name:"test",building:"1",floor:3}).then((res)=>{
             expect(res.status).toBe(200);
             expect(res.body.title).toBe("Success");
         });
     });
 
     it("Should return validation error",async ()=>{
-        await request(server).post("/admin/addLaboratory").set('Accept','application/json').set("Cookie","auth-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6ImFkbWluaXN0cmF0b3IiLCJpYXQiOjE2MzY1NDYwNTYsImV4cCI6MTYzNjYzMjQ1Nn0.TgEksu1WHf_wMWS1X_Bkej3Q3__apyR7hLQLWfa6ADY").send({labId:"",name:"test",building:"1",floor:3}).then((res)=>{
+        await request(server).post("/admin/addLaboratory").set('Accept','application/json').set("Cookie",`auth-token=${token}`).send({labId:"",name:"test",building:"1",floor:3}).then((res)=>{
             expect(res.status).toBe(400)
         });
     });
@@ -124,7 +127,7 @@ describe("/removeLaboratory",()=>{
     });
 
     it("Should remove staff",async ()=>{
-        await request(server).post("/admin/removeLaboratory").set('Accept','application/json').set("Cookie","auth-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6ImFkbWluaXN0cmF0b3IiLCJpYXQiOjE2MzY1NDYwNTYsImV4cCI6MTYzNjYzMjQ1Nn0.TgEksu1WHf_wMWS1X_Bkej3Q3__apyR7hLQLWfa6ADY").send({labId:'1'}).then((res)=>{
+        await request(server).post("/admin/removeLaboratory").set('Accept','application/json').set("Cookie",`auth-token=${token}`).send({labId:'1'}).then((res)=>{
             expect(res.status).toBe(200)
         });
     });
@@ -147,7 +150,7 @@ describe("/viewAssignedTO",()=>{
     });
 
     it("Should show details",async ()=>{
-        await request(server).get("/admin/viewAssignedTO").set('Accept','application/json').set("Cookie","auth-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6ImFkbWluaXN0cmF0b3IiLCJpYXQiOjE2MzY1NDYwNTYsImV4cCI6MTYzNjYzMjQ1Nn0.TgEksu1WHf_wMWS1X_Bkej3Q3__apyR7hLQLWfa6ADY").then((res)=>{
+        await request(server).get("/admin/viewAssignedTO").set('Accept','application/json').set("Cookie",`auth-token=${token}`).then((res)=>{
             expect(res.status).toBe(200);
             expect(res.body.data).toBeTruthy();
         });
@@ -163,7 +166,7 @@ describe("/getUserDetails",()=>{
     });
 
     it("Should view details",async ()=>{
-        await request(server).get("/admin/getUserDetails").set('Accept','application/json').set("Cookie","auth-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6ImFkbWluaXN0cmF0b3IiLCJpYXQiOjE2MzY1NDYwNTYsImV4cCI6MTYzNjYzMjQ1Nn0.TgEksu1WHf_wMWS1X_Bkej3Q3__apyR7hLQLWfa6ADY").then((res)=>{
+        await request(server).get("/admin/getUserDetails").set('Accept','application/json').set("Cookie",`auth-token=${token}`).then((res)=>{
             expect(res.status).toBe(200);
             expect(res.body.title).toBe("Success");
         });
@@ -187,7 +190,7 @@ describe("/viewLab",()=>{
     });
 
     it("Should show details",async ()=>{
-        await request(server).get("/admin/viewLab").set('Accept','application/json').set("Cookie","auth-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6ImFkbWluaXN0cmF0b3IiLCJpYXQiOjE2MzY1NDYwNTYsImV4cCI6MTYzNjYzMjQ1Nn0.TgEksu1WHf_wMWS1X_Bkej3Q3__apyR7hLQLWfa6ADY").then((res)=>{
+        await request(server).get("/admin/viewLab").set('Accept','application/json').set("Cookie",`auth-token=${token}`).then((res)=>{
             expect(res.status).toBe(200);
             expect(res.body.title).toBe("Success");
         });
@@ -207,7 +210,7 @@ describe("/viewUsers/student",()=>{
     });
 
     it("Should show details",async ()=>{
-        await request(server).get("/admin/viewUsers/student").set('Accept','application/json').set("Cookie","auth-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6ImFkbWluaXN0cmF0b3IiLCJpYXQiOjE2MzY1NDYwNTYsImV4cCI6MTYzNjYzMjQ1Nn0.TgEksu1WHf_wMWS1X_Bkej3Q3__apyR7hLQLWfa6ADY").then((res)=>{
+        await request(server).get("/admin/viewUsers/student").set('Accept','application/json').set("Cookie",`auth-token=${token}`).then((res)=>{
             expect(res.status).toBe(200);
             expect(res.body.msg.some(i=>i.user_id=="100001")).toBeTruthy();
         });
@@ -227,7 +230,7 @@ describe("/viewUsers/lecturer",()=>{
     });
 
     it("Should show details",async ()=>{
-        await request(server).get("/admin/viewUsers/lecturer").set('Accept','application/json').set("Cookie","auth-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6ImFkbWluaXN0cmF0b3IiLCJpYXQiOjE2MzY1NDYwNTYsImV4cCI6MTYzNjYzMjQ1Nn0.TgEksu1WHf_wMWS1X_Bkej3Q3__apyR7hLQLWfa6ADY").then((res)=>{
+        await request(server).get("/admin/viewUsers/lecturer").set('Accept','application/json').set("Cookie",`auth-token=${token}`).then((res)=>{
             expect(res.status).toBe(200);
             expect(res.body.msg.some(i=>i.user_id=="100001")).toBeTruthy();
         });
@@ -247,7 +250,7 @@ describe("/viewUsers/technical_officer",()=>{
     });
 
     it("Should show details",async ()=>{
-        await request(server).get("/admin/viewUsers/technical_officer").set('Accept','application/json').set("Cookie","auth-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6ImFkbWluaXN0cmF0b3IiLCJpYXQiOjE2MzY1NDYwNTYsImV4cCI6MTYzNjYzMjQ1Nn0.TgEksu1WHf_wMWS1X_Bkej3Q3__apyR7hLQLWfa6ADY").then((res)=>{
+        await request(server).get("/admin/viewUsers/technical_officer").set('Accept','application/json').set("Cookie",`auth-token=${token}`).then((res)=>{
             expect(res.status).toBe(200);
             expect(res.body.msg.some(i=>i.user_id=="100001")).toBeTruthy();
         });
@@ -267,7 +270,7 @@ describe("/getBuildings",()=>{
     });
 
     it("Should show buildings",async ()=>{
-        await request(server).get("/admin/getBuildings").set('Accept','application/json').set("Cookie","auth-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6ImFkbWluaXN0cmF0b3IiLCJpYXQiOjE2MzY1NDYwNTYsImV4cCI6MTYzNjYzMjQ1Nn0.TgEksu1WHf_wMWS1X_Bkej3Q3__apyR7hLQLWfa6ADY").then((res)=>{
+        await request(server).get("/admin/getBuildings").set('Accept','application/json').set("Cookie",`auth-token=${token}`).then((res)=>{
             expect(res.status).toBe(200);
             expect(res.body.msg.some(i=>i.b_id=="2")).toBeTruthy();
         });
@@ -286,7 +289,7 @@ describe("/getLabs",()=>{
     });
 
     it("Should show details",async ()=>{
-        await request(server).get("/admin/getLabs").set('Accept','application/json').set("Cookie","auth-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6ImFkbWluaXN0cmF0b3IiLCJpYXQiOjE2MzY1NDYwNTYsImV4cCI6MTYzNjYzMjQ1Nn0.TgEksu1WHf_wMWS1X_Bkej3Q3__apyR7hLQLWfa6ADY").then((res)=>{
+        await request(server).get("/admin/getLabs").set('Accept','application/json').set("Cookie",`auth-token=${token}`).then((res)=>{
             expect(res.status).toBe(200);
             expect(res.body.msg.some(i=>i.lab_id=="1")).toBeTruthy();
         });
@@ -305,7 +308,7 @@ describe("/getTOs",()=>{
     });
 
     it("Should show details",async ()=>{
-        await request(server).get("/admin/getTOs").set('Accept','application/json').set("Cookie","auth-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6ImFkbWluaXN0cmF0b3IiLCJpYXQiOjE2MzY1NDYwNTYsImV4cCI6MTYzNjYzMjQ1Nn0.TgEksu1WHf_wMWS1X_Bkej3Q3__apyR7hLQLWfa6ADY").then((res)=>{
+        await request(server).get("/admin/getTOs").set('Accept','application/json').set("Cookie",`auth-token=${token}`).then((res)=>{
             expect(res.status).toBe(200);
             expect(res.body.msg.some(i=>i.user_id=="100001")).toBeTruthy();
         });
@@ -324,13 +327,13 @@ describe("/addEquipType",()=>{
     });
 
     it("Should add equip type",async ()=>{
-        await request(server).post("/admin/addEquipType").set('Accept','application/json').set("Cookie","auth-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6ImFkbWluaXN0cmF0b3IiLCJpYXQiOjE2MzY1NDYwNTYsImV4cCI6MTYzNjYzMjQ1Nn0.TgEksu1WHf_wMWS1X_Bkej3Q3__apyR7hLQLWfa6ADY").send({type:"a",brand:"b"}).then((res)=>{
+        await request(server).post("/admin/addEquipType").set('Accept','application/json').set("Cookie",`auth-token=${token}`).send({type:"a",brand:"b"}).then((res)=>{
             expect(res.status).toBe(200);
         });
     });
 
     it("Should not add equip type",async ()=>{
-        await request(server).post("/admin/addEquipType").set('Accept','application/json').set("Cookie","auth-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6ImFkbWluaXN0cmF0b3IiLCJpYXQiOjE2MzY1NDYwNTYsImV4cCI6MTYzNjYzMjQ1Nn0.TgEksu1WHf_wMWS1X_Bkej3Q3__apyR7hLQLWfa6ADY").send({brand:"b"}).then((res)=>{
+        await request(server).post("/admin/addEquipType").set('Accept','application/json').set("Cookie",`auth-token=${token}`).send({brand:"b"}).then((res)=>{
             expect(res.status).toBe(400);
         });
     });
@@ -347,7 +350,7 @@ describe("/getDashboardData",()=>{
     });
 
     it("Should show data",async ()=>{
-        await request(server).get("/admin/getDashboardData").set('Accept','application/json').set("Cookie","auth-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6ImFkbWluaXN0cmF0b3IiLCJpYXQiOjE2MzY1NDYwNTYsImV4cCI6MTYzNjYzMjQ1Nn0.TgEksu1WHf_wMWS1X_Bkej3Q3__apyR7hLQLWfa6ADY").then((res)=>{
+        await request(server).get("/admin/getDashboardData").set('Accept','application/json').set("Cookie",`auth-token=${token}`).then((res)=>{
             expect(res.status).toBe(200);
             expect(res.body.title).toBe("Success");
         });
@@ -387,7 +390,7 @@ describe("/getRequestStats",()=>{
     });
 
     it("Should show stats",async ()=>{
-        await request(server).get("/admin/getRequestStats").set('Accept','application/json').set("Cookie","auth-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6ImFkbWluaXN0cmF0b3IiLCJpYXQiOjE2MzY1NDYwNTYsImV4cCI6MTYzNjYzMjQ1Nn0.TgEksu1WHf_wMWS1X_Bkej3Q3__apyR7hLQLWfa6ADY").then((res)=>{
+        await request(server).get("/admin/getRequestStats").set('Accept','application/json').set("Cookie",`auth-token=${token}`).then((res)=>{
             expect(res.status).toBe(200);
             expect(res.body.msg.pending).toBe(1);
             expect(res.body.msg.accepted).toBe(1);
@@ -406,7 +409,7 @@ describe("/getUserStats",()=>{
     });
 
     it("Should show stats",async ()=>{
-        await request(server).get("/admin/getUserStats").set('Accept','application/json').set("Cookie","auth-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6ImFkbWluaXN0cmF0b3IiLCJpYXQiOjE2MzY1NDYwNTYsImV4cCI6MTYzNjYzMjQ1Nn0.TgEksu1WHf_wMWS1X_Bkej3Q3__apyR7hLQLWfa6ADY").then((res)=>{
+        await request(server).get("/admin/getUserStats").set('Accept','application/json').set("Cookie",`auth-token=${token}`).then((res)=>{
             expect(res.status).toBe(200);
             expect(res.body.msg.lecturer).toBe("1");
             expect(res.body.msg.student).toBe("1");
@@ -437,7 +440,7 @@ describe("/getEquipStats",()=>{
     });
 
     it("Should show stats",async ()=>{
-        await request(server).get("/admin/getEquipStats").set('Accept','application/json').set("Cookie","auth-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6ImFkbWluaXN0cmF0b3IiLCJpYXQiOjE2MzY1NDYwNTYsImV4cCI6MTYzNjYzMjQ1Nn0.TgEksu1WHf_wMWS1X_Bkej3Q3__apyR7hLQLWfa6ADY").then((res)=>{
+        await request(server).get("/admin/getEquipStats").set('Accept','application/json').set("Cookie",`auth-token=${token}`).then((res)=>{
             expect(res.status).toBe(200);
             expect(res.body.msg.every(i=>i.count=="1")).toBeTruthy();
         });

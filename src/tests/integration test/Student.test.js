@@ -9,6 +9,8 @@ process.env.host="localhost"
 process.env.user="postgres"
 process.env.password="123"
 
+let token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6InN0dWRlbnQiLCJpYXQiOjE2MzY2MzUzMjMsImV4cCI6MTYzNjcyMTcyM30.FpnJToKcv6DpUddfvDIO9iEs_4GKMUZsAJqGKw4rBlk";
+
 describe("/register",()=>{
     beforeEach(()=>{
         server=require("../../app");
@@ -56,7 +58,7 @@ describe("/viewAllRequest",()=>{
     });
 
     it("Should show all request",async ()=>{
-        await request(server).get("/student/viewAllRequest").set('Accept','application/json').set("Cookie","auth-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6InN0dWRlbnQiLCJpYXQiOjE2MzY1OTc3OTEsImV4cCI6MTYzNjY4NDE5MX0.GjFrzAnLxSpy5mch1uQGSUwlwjJQYhW1ldCr-x8sblw").then((res)=>{
+        await request(server).get("/student/viewAllRequest").set('Accept','application/json').set("Cookie",`auth-token=${token}`).then((res)=>{
             expect(res.status).toBe(200);
             expect(res.body.msg.some(i=>i.requestId=='1')).toBeTruthy();
             expect(res.body.msg.some(i=>i.requestId=='2')).toBeTruthy();
@@ -91,7 +93,7 @@ describe("/viewRequest/:id",()=>{
     });
 
     it("Should show request details",async ()=>{
-        await request(server).get("/student/viewRequest/1").set('Accept','application/json').set("Cookie","auth-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6InN0dWRlbnQiLCJpYXQiOjE2MzY1OTc3OTEsImV4cCI6MTYzNjY4NDE5MX0.GjFrzAnLxSpy5mch1uQGSUwlwjJQYhW1ldCr-x8sblw").then((res)=>{
+        await request(server).get("/student/viewRequest/1").set('Accept','application/json').set("Cookie",`auth-token=${token}`).then((res)=>{
             expect(res.status).toBe(200);
             expect(res.body.msg.request_id).toBe("1");
         });
@@ -129,7 +131,7 @@ describe("/getDashboardDataM",()=>{
     });
 
     it("Should get dashboard data",async ()=>{
-        await request(server).get("/student/getDashboardDataM").set('Accept','application/json').set("Cookie","auth-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6InN0dWRlbnQiLCJpYXQiOjE2MzY1OTc3OTEsImV4cCI6MTYzNjY4NDE5MX0.GjFrzAnLxSpy5mch1uQGSUwlwjJQYhW1ldCr-x8sblw").then((res)=>{
+        await request(server).get("/student/getDashboardDataM").set('Accept','application/json').set("Cookie",`auth-token=${token}`).then((res)=>{
             expect(res.status).toBe(200);
             expect(res.body.msg.some(i=>i.requestId=="1" && i.type=="Normal Borrowed")).toBeTruthy();
             expect(res.body.msg.some(i=>i.borrowId=="1" && i.type=="Temporary Borrowed")).toBeTruthy();
@@ -168,7 +170,7 @@ describe("/viewBorrowedHistory",()=>{
     });
 
     it("Should get borrowed history",async ()=>{
-        await request(server).get("/student/viewBorrowedHistory").set('Accept','application/json').set("Cookie","auth-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6InN0dWRlbnQiLCJpYXQiOjE2MzY1OTc3OTEsImV4cCI6MTYzNjY4NDE5MX0.GjFrzAnLxSpy5mch1uQGSUwlwjJQYhW1ldCr-x8sblw").then((res)=>{
+        await request(server).get("/student/viewBorrowedHistory").set('Accept','application/json').set("Cookie",`auth-token=${token}`).then((res)=>{
             expect(res.status).toBe(200);
             expect(res.body.msg.some(i=>i.requestId=="1" && i.type=="Normal Borrowed")).toBeTruthy();
             expect(res.body.msg.some(i=>i.borrowId=="1" && i.type=="Temporary Borrowed")).toBeTruthy();
@@ -208,7 +210,7 @@ describe("/viewBorrowDetals",()=>{
     });
 
     it("Should get normal borrow detail",async ()=>{
-        await request(server).post("/student/viewBorrow").set('Accept','application/json').set("Cookie","auth-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6InN0dWRlbnQiLCJpYXQiOjE2MzY1OTc3OTEsImV4cCI6MTYzNjY4NDE5MX0.GjFrzAnLxSpy5mch1uQGSUwlwjJQYhW1ldCr-x8sblw").send({borrowId:'1',type:'normal'}).then((res)=>{
+        await request(server).post("/student/viewBorrow").set('Accept','application/json').set("Cookie",`auth-token=${token}`).send({borrowId:'1',type:'normal'}).then((res)=>{
             expect(res.status).toBe(200);
             expect(res.body.msg.borrow_id).toBe(1);
             expect(res.body.msg.types['1']['count']).toBe(1);
@@ -217,7 +219,7 @@ describe("/viewBorrowDetals",()=>{
 
     
     it("Should get temporary borrow detail",async ()=>{
-        await request(server).post("/student/viewBorrow").set('Accept','application/json').set("Cookie","auth-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6InN0dWRlbnQiLCJpYXQiOjE2MzY1OTc3OTEsImV4cCI6MTYzNjY4NDE5MX0.GjFrzAnLxSpy5mch1uQGSUwlwjJQYhW1ldCr-x8sblw").send({borrowId:'1',type:'temporary'}).then((res)=>{
+        await request(server).post("/student/viewBorrow").set('Accept','application/json').set("Cookie",`auth-token=${token}`).send({borrowId:'1',type:'temporary'}).then((res)=>{
             expect(res.status).toBe(200);
             expect(res.body.msg.borrow_id).toBe(1);
             expect(res.body.msg.types['1']['count']).toBe(1);
@@ -240,7 +242,7 @@ describe("/getLecturerList",()=>{
     });
 
     it("Should show lecturer list",async ()=>{
-        await request(server).get("/student/getLecturerList").set('Accept','application/json').set("Cookie","auth-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6InN0dWRlbnQiLCJpYXQiOjE2MzY1OTc3OTEsImV4cCI6MTYzNjY4NDE5MX0.GjFrzAnLxSpy5mch1uQGSUwlwjJQYhW1ldCr-x8sblw").then((res)=>{
+        await request(server).get("/student/getLecturerList").set('Accept','application/json').set("Cookie",`auth-token=${token}`).then((res)=>{
             expect(res.status).toBe(200);
             expect(res.body.msg.some(i=>i.user_id=="100001")).toBeTruthy();
             expect(res.body.msg.some(i=>i.user_id=="100002")).toBeTruthy();
@@ -264,7 +266,7 @@ describe("/getLabList",()=>{
     });
 
     it("Should show lab list",async ()=>{
-        await request(server).get("/student/getLabList").set('Accept','application/json').set("Cookie","auth-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6InN0dWRlbnQiLCJpYXQiOjE2MzY1OTc3OTEsImV4cCI6MTYzNjY4NDE5MX0.GjFrzAnLxSpy5mch1uQGSUwlwjJQYhW1ldCr-x8sblw").then((res)=>{
+        await request(server).get("/student/getLabList").set('Accept','application/json').set("Cookie",`auth-token=${token}`).then((res)=>{
             expect(res.status).toBe(200);
             expect(res.body.msg.some(i=>i.lab_id=="1")).toBeTruthy();
             expect(res.body.msg.some(i=>i.lab_id=="2")).toBeTruthy();
@@ -282,7 +284,7 @@ describe("/getUserDetails",()=>{
     });
 
     it("Should view details",async ()=>{
-        await request(server).get("/student/getUserDetails").set('Accept','application/json').set("Cookie","auth-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6InN0dWRlbnQiLCJpYXQiOjE2MzY1OTc3OTEsImV4cCI6MTYzNjY4NDE5MX0.GjFrzAnLxSpy5mch1uQGSUwlwjJQYhW1ldCr-x8sblw").then((res)=>{
+        await request(server).get("/student/getUserDetails").set('Accept','application/json').set("Cookie",`auth-token=${token}`).then((res)=>{
             expect(res.status).toBe(200);
         });
     });
