@@ -290,3 +290,97 @@ describe("/reportCondition",()=>{
         });
     });
 });
+
+describe("/viewInventory",()=>{
+    let database=new Database();
+    beforeEach(async()=>{
+        server=require("../../app");
+        await database.insert('laboratory',null,['1','Lab1','1',3,true]);
+        await database.insert("equipment_type",null,["1","a","a"]);
+        await database.insert("equipment",null,["1","1","a","1","10/11/2021",0,"some a"]);
+        await database.insert("equipment",null,["2","1","a","1","10/11/2021",0,"some a"]);
+        await database.insert("assigned_t_o",null,["10000","1"]);
+
+    })
+    afterEach(async()=>{
+        server.close();
+        await database.clear('laboratory');
+        await database.clear("assigned_t_o");
+        await database.clear("equipment");
+        await database.clear("equipment_type");
+
+    });
+
+    it("Should show equipment details",async ()=>{
+        await request(server).get("/techOff/viewInventory").set('Accept','application/json').set("Cookie",`auth-token=${token}`).then(async(res)=>{
+            expect(res.status).toBe(200);
+            // console.log(res.body)
+            expect(res.body.data.some(i=>i.eq_id=='1')).toBeTruthy();
+            expect(res.body.data.some(i=>i.eq_id=='2')).toBeTruthy();
+            expect(res.body.data.length).toBe(2);
+
+        });
+    });
+});
+
+describe("/viewAvailableEquips",()=>{
+    let database=new Database();
+    beforeEach(async()=>{
+        server=require("../../app");
+        await database.insert('laboratory',null,['1','Lab1','1',3,true]);
+        await database.insert("equipment_type",null,["1","a","a"]);
+        await database.insert("equipment",null,["1","1","a","1","10/11/2021",0,"some a"]);
+        await database.insert("equipment",null,["2","1","a","1","10/11/2021",1,"some a"]);
+        await database.insert("equipment",null,["3","1","a","1","10/11/2021",2,"some a"]);
+        await database.insert("equipment",null,["4","1","a","1","10/11/2021",3,"some a"]);
+        await database.insert("equipment",null,["5","1","a","1","10/11/2021",4,"some a"]);
+        await database.insert("equipment",null,["6","1","a","1","10/11/2021",5,"some a"]);
+        await database.insert("assigned_t_o",null,["10000","1"]);
+
+    })
+    afterEach(async()=>{
+        server.close();
+        await database.clear('laboratory');
+        await database.clear("assigned_t_o");
+        await database.clear("equipment");
+        await database.clear("equipment_type");
+
+    });
+
+    it("Should show available equipments",async ()=>{
+        await request(server).get("/techOff/viewAvailableEquips").set('Accept','application/json').set("Cookie",`auth-token=${token}`).then(async(res)=>{
+            expect(res.status).toBe(200);
+            // console.log(res.body)
+            expect(res.body.data.some(i=>i.eq_id=='1')).toBeTruthy();
+            expect(res.body.data.length).toBe(1);
+
+        });
+    });
+});
+
+describe("/getEquipTypes",()=>{
+    let database=new Database();
+    beforeEach(async()=>{
+        server=require("../../app");
+        await database.insert("equipment_type",null,["1","a","a"]);
+        await database.insert("equipment_type",null,["2","a","a"]);
+        await database.insert("equipment_type",null,["3","a","a"]); 
+    })
+    afterEach(async()=>{
+        server.close();
+        await database.clear("equipment_type");
+
+    });
+
+    it("Should show equipment types",async ()=>{
+        await request(server).get("/techOff/getEquipTypes").set('Accept','application/json').set("Cookie",`auth-token=${token}`).then(async(res)=>{
+            expect(res.status).toBe(200);
+            // console.log(res.body)
+            expect(res.body.data.some(i=>i.typeId=='1')).toBeTruthy();
+            expect(res.body.data.some(i=>i.typeId=='2')).toBeTruthy();
+            expect(res.body.data.some(i=>i.typeId=='3')).toBeTruthy();
+            expect(res.body.data.length).toBe(3);
+
+        });
+    });
+});

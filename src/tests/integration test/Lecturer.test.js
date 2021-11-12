@@ -9,8 +9,7 @@ process.env.host="localhost"
 process.env.user="postgres"
 process.env.password="123"
 
-let token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6ImxlY3R1cmVyIiwiaWF0IjoxNjM2NjIxNjA4LCJleHAiOjE2MzY3MDgwMDh9.ptvNXv15mFB7NlPZ9VuVQzqtG6pGuYOw3F76Jl6sYio";
-
+let token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMDAwMCIsImVtYWlsIjoiaW52ZW50b3J5bWluZEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJJbnZlbnRvcnkiLCJsYXN0TmFtZSI6IlRlc3QiLCJ1c2VyVHlwZSI6ImxlY3R1cmVyIiwiaWF0IjoxNjM2NzA4NjExLCJleHAiOjE2MzY3OTUwMTF9.tC-fRWRT3zdY0HmkUS2icUAz8Zh3ewj42Mjoc3VhrkI";
 describe("/approve/:id",()=>{
     let database=new Database();
     beforeEach(async()=>{
