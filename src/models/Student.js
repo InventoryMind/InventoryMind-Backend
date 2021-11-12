@@ -61,7 +61,7 @@ class Student extends User {
     emailSender.send(
       email,
       "Registration Successfull",
-      "Welcome to InventoryMind\nYou are successfully registered as a student to InventoryMind.\nFollowing are the credentials to the system. You can change the password usinng the Change Password option.\nUserName"+email+"\nPassword: "+password
+      "Welcome to InventoryMind.\nYou are successfully registered as a student to InventoryMind. Login credentials are as follows.\nUserName: "+email+"\nPassword: "+"\nPassword can be changed using the 'Change Password' option.
     );
 
     return new Promise((resolve) => resolve({ action: true }));
