@@ -33,7 +33,7 @@ describe("/addStaff",()=>{
             expect(res.status).toBe(200)
         });
     })
-},10000);
+},5000000);
 
 describe("/removeStaff",()=>{
     beforeEach(async()=>{
@@ -52,7 +52,7 @@ describe("/removeStaff",()=>{
             expect(res.status).toBe(200)
         });
     })
-},1000000)
+},5000000)
 
 describe("/assignTO",()=>{
     beforeEach(async()=>{
@@ -88,7 +88,7 @@ describe("/assignTO",()=>{
             expect(res.status).toBe(400)
         });
     });
-});
+},500000);
 
 describe("/addLaboratory",()=>{
     beforeEach(async()=>{
@@ -112,7 +112,7 @@ describe("/addLaboratory",()=>{
             expect(res.status).toBe(400)
         });
     });
-});
+},500000);
 
 describe("/removeLaboratory",()=>{
     beforeEach(async()=>{
@@ -131,7 +131,7 @@ describe("/removeLaboratory",()=>{
             expect(res.status).toBe(200)
         });
     });
-});
+},500000);
 
 describe("/viewAssignedTO",()=>{
     beforeEach(async()=>{
@@ -155,7 +155,7 @@ describe("/viewAssignedTO",()=>{
             expect(res.body.data).toBeTruthy();
         });
     });
-});
+},500000);
 
 describe("/getUserDetails",()=>{
     beforeEach(async()=>{
@@ -171,7 +171,7 @@ describe("/getUserDetails",()=>{
             expect(res.body.title).toBe("Success");
         });
     });
-});
+},500000);
 
 describe("/viewLab",()=>{
     beforeEach(async()=>{
@@ -195,7 +195,7 @@ describe("/viewLab",()=>{
             expect(res.body.title).toBe("Success");
         });
     });
-});
+},500000);
 
 describe("/viewUsers/student",()=>{
     beforeEach(async()=>{
@@ -215,7 +215,7 @@ describe("/viewUsers/student",()=>{
             expect(res.body.msg.some(i=>i.user_id=="100001")).toBeTruthy();
         });
     });
-});
+},500000);
 
 describe("/viewUsers/lecturer",()=>{
     beforeEach(async()=>{
@@ -235,7 +235,7 @@ describe("/viewUsers/lecturer",()=>{
             expect(res.body.msg.some(i=>i.user_id=="100001")).toBeTruthy();
         });
     });
-});
+},500000);
 
 describe("/viewUsers/technical_officer",()=>{
     beforeEach(async()=>{
@@ -255,7 +255,7 @@ describe("/viewUsers/technical_officer",()=>{
             expect(res.body.msg.some(i=>i.user_id=="100001")).toBeTruthy();
         });
     });
-});
+},500000);
 
 describe("/getBuildings",()=>{
     beforeEach(async()=>{
@@ -275,7 +275,7 @@ describe("/getBuildings",()=>{
             expect(res.body.msg.some(i=>i.b_id=="2")).toBeTruthy();
         });
     });
-});
+},500000);
 
 describe("/getLabs",()=>{
     beforeEach(async()=>{
@@ -294,7 +294,7 @@ describe("/getLabs",()=>{
             expect(res.body.msg.some(i=>i.lab_id=="1")).toBeTruthy();
         });
     });
-});
+},500000);
 
 describe("/getTOs",()=>{
     beforeEach(async()=>{
@@ -313,7 +313,7 @@ describe("/getTOs",()=>{
             expect(res.body.msg.some(i=>i.user_id=="100001")).toBeTruthy();
         });
     });
-});
+},500000);
 
 describe("/addEquipType",()=>{
     beforeEach(async()=>{
@@ -337,7 +337,7 @@ describe("/addEquipType",()=>{
             expect(res.status).toBe(400);
         });
     });
-});
+},500000);
 
 
 describe("/getDashboardData",()=>{
@@ -355,7 +355,7 @@ describe("/getDashboardData",()=>{
             expect(res.body.title).toBe("Success");
         });
     });
-});
+},500000);
 
 describe("/getRequestStats",()=>{
     beforeEach(async()=>{
@@ -397,7 +397,7 @@ describe("/getRequestStats",()=>{
             expect(res.body.msg.rejected).toBe(1);
         });
     });
-});
+},500000);
 
 describe("/getUserStats",()=>{
     beforeEach(async()=>{
@@ -416,7 +416,7 @@ describe("/getUserStats",()=>{
             expect(res.body.msg.technicalOfficer).toBe("1");
         });
     });
-});
+},500000);
 
 describe("/getEquipStats",()=>{
     beforeEach(async()=>{
@@ -445,4 +445,4 @@ describe("/getEquipStats",()=>{
             expect(res.body.msg.every(i=>i.count=="1")).toBeTruthy();
         });
     });
-});
+},500000);

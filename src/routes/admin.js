@@ -3,6 +3,7 @@ const authorization= require("../middlewares/authorization");
 const express = require ('express');
 const router = express.Router();
 
+router.post("/changePass",authorization.tokenAuthorize,authorization.isAdminRole,adminCotroller.changePassword);
 router.post("/addStaff",authorization.tokenAuthorize,authorization.isAdminRole,adminCotroller.addStaff);
 router.post("/removeUser",authorization.tokenAuthorize,authorization.isAdminRole,adminCotroller.removeUser);
 router.post("/addLaboratory",authorization.tokenAuthorize,authorization.isAdminRole,adminCotroller.addLaboratory);
