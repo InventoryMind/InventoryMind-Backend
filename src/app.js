@@ -12,7 +12,8 @@ const adminRouter=require("./routes/admin");
 const studentRouter = require('./routes/student');
 const TORouter=require("./routes/technicalOfficer");
 const lecturerRouter=require('./routes/lecturer')
-const Email=require('./utils/Email');
+
+const task = require("../src/models/scheduledTask");
 
 server.use(express.json())
 server.use(express.urlencoded({extended:true}));
@@ -30,20 +31,7 @@ server.use("/student",studentRouter);
 server.use("/techOff",TORouter);
 server.use("/lecturer",lecturerRouter);
 
-// cron.schedule('* * * * *', () => {
-//     console.log('Running a job at 01:00 at America/Sao_Paulo timezone');
-//   }, {
-//     scheduled: true,
-//     timezone: "Asia/Colombo"
-//   });
-
-let email=new Email();
-cron.schedule('* */1 * * *', () => {
-    console.log("affaef");
-    console.log(new Date().toLocaleString());
-    //email.send('sthuva98@gmail.com',"hi","fgeg");
-  });
-
+task.start();
 
 const app=server.listen(port, () => {
     console.log(`\n=== Server listening on port ${port} ===\n`)

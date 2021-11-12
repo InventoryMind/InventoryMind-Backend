@@ -110,7 +110,7 @@ class Admin extends User{
         }
         // console.log(password)
         let emailSender=await new Email();
-        await emailSender.send(email,"Registration Successfull","You are successfully registered as a "+staffType+" to InventoryMind.\nUsername: "+email+" \nPassword: "+password+"\nPlease login to the system using this credintials and change your password.");
+        await emailSender.send(email,"Registration Successful","Welcome to InventoryMind\nYou are successfully registered as a "+staffType+" to InventoryMind.\n Following are the credentials to the system. You can change the password using Change Password option. \nUsername: "+email+" \nPassword: "+password);
 
         return new Promise((resolve)=>resolve({action:true}));
 

@@ -130,7 +130,7 @@ describe("/getUserDetails",()=>{
             expect(res.status).toBe(200);
         });
     });
-});
+},500000);
 
 
 describe("/viewAllRequest",()=>{
@@ -171,7 +171,7 @@ describe("/viewAllRequest",()=>{
             expect(res.body.msg.length).toBe(3);
         });
     })
-});
+},500000);
 
 
 describe("/viewAcceptedRequest",()=>{
@@ -210,7 +210,7 @@ describe("/viewAcceptedRequest",()=>{
             expect(res.body.msg.length).toBe(1);
         });
     })
-});
+},500000);
 
 
 describe("/viewRejectedRequest",()=>{
@@ -249,7 +249,7 @@ describe("/viewRejectedRequest",()=>{
             expect(res.body.msg.length).toBe(1);
         });
     })
-});
+},500000);
 
 
 describe("/viewPendingRequest",()=>{
@@ -288,7 +288,7 @@ describe("/viewPendingRequest",()=>{
             expect(res.body.msg.length).toBe(1);
         });
     })
-});
+},500000);
 
 describe("/viewRequest/:id",()=>{
     beforeEach(async()=>{

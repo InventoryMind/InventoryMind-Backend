@@ -26,7 +26,7 @@ describe("/register",()=>{
             expect(res.status).toBe(200)
         });
     })
-});
+},500000);
 
 describe("/viewAllRequest",()=>{
     beforeEach(async()=>{
@@ -66,7 +66,7 @@ describe("/viewAllRequest",()=>{
 
         });
     })
-});
+},500000);
 
 describe("/viewRequest/:id",()=>{
     beforeEach(async()=>{
@@ -98,7 +98,7 @@ describe("/viewRequest/:id",()=>{
             expect(res.body.msg.request_id).toBe("1");
         });
     });
-});
+},500000);
 
 describe("/getDashboardDataM",()=>{
     beforeEach(async()=>{
@@ -137,7 +137,7 @@ describe("/getDashboardDataM",()=>{
             expect(res.body.msg.some(i=>i.borrowId=="1" && i.type=="Temporary Borrowed")).toBeTruthy();
         });
     });
-});
+},500000);
 
 describe("/viewBorrowedHistory",()=>{
     beforeEach(async()=>{
@@ -176,7 +176,7 @@ describe("/viewBorrowedHistory",()=>{
             expect(res.body.msg.some(i=>i.borrowId=="1" && i.type=="Temporary Borrowed")).toBeTruthy();
         });
     });
-});
+},500000);
 
 describe("/viewBorrowDetals",()=>{
     beforeEach(async()=>{
@@ -225,7 +225,7 @@ describe("/viewBorrowDetals",()=>{
             expect(res.body.msg.types['1']['count']).toBe(1);
         });
     });
-});
+},500000);
 
 describe("/getLecturerList",()=>{
     beforeEach(async()=>{
@@ -249,7 +249,7 @@ describe("/getLecturerList",()=>{
 
         });
     });
-});
+},500000);
 
 describe("/getLabList",()=>{
     beforeEach(async()=>{
@@ -273,7 +273,7 @@ describe("/getLabList",()=>{
             expect(res.body.msg.some(i=>i.lab_id=="3")).toBeTruthy();
         });
     });
-});
+},500000);
 
 describe("/getUserDetails",()=>{
     beforeEach(async()=>{
@@ -288,4 +288,4 @@ describe("/getUserDetails",()=>{
             expect(res.status).toBe(200);
         });
     });
-});
+},500000);
